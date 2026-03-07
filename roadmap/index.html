@@ -1,0 +1,3542 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevPlan — ESMT Task Manager</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <!-- ── SVG SPRITE ── -->
+  <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="ic-logo" viewBox="0 0 20 20">
+      <path fill="currentColor"
+        d="M3 5a2 2 0 012-2h10a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5zm6 1a1 1 0 00-1 1v2H6a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7a1 1 0 00-1-1z" />
+    </symbol>
+    <symbol id="ic-plan" viewBox="0 0 20 20">
+      <path fill="currentColor"
+        d="M5 3a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2H5zm0 2h10v10H5V5zm2 2v2h6V7H7zm0 4v2h4v-2H7z" />
+    </symbol>
+    <symbol id="ic-menu" viewBox="0 0 20 20">
+      <path fill="currentColor" d="M3 5h14v2H3V5zm0 4h14v2H3V9zm0 4h14v2H3v-2z" />
+    </symbol>
+    <symbol id="ic-close" viewBox="0 0 20 20">
+      <path fill="currentColor"
+        d="M15.898 4.101a.75.75 0 00-1.061 0L10 8.939 5.163 4.101a.75.75 0 00-1.061 1.061L8.939 10l-4.837 4.837a.75.75 0 001.061 1.061L10 11.061l4.837 4.837a.75.75 0 001.061-1.061L11.061 10l4.837-4.837a.75.75 0 000-1.061z" />
+    </symbol>
+    <symbol id="ic-model" viewBox="0 0 20 20">
+      <path fill="currentColor"
+        d="M2 6a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V6zm0 6a2 2 0 012-2h4a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+    </symbol>
+    <symbol id="ic-docs" viewBox="0 0 20 20">
+      <path fill="currentColor"
+        d="M9 4a1 1 0 012 0v.5A6.5 6.5 0 0116.5 11H17a1 1 0 010 2h-.5A6.5 6.5 0 0110 18.5V19a1 1 0 01-2 0v-.5A6.5 6.5 0 012.5 13H2a1 1 0 010-2h.5A6.5 6.5 0 019 4.5V4zm1 2.5A4.5 4.5 0 005.5 11H6a4 4 0 004 4v.5A4.5 4.5 0 0014.5 11H14a4 4 0 00-4-4v-.5z" />
+    </symbol>
+    <symbol id="ic-check" viewBox="0 0 16 16">
+      <path fill="currentColor"
+        d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z" />
+    </symbol>
+    <symbol id="ic-chevron" viewBox="0 0 16 16">
+      <path fill="currentColor"
+        d="M4.427 7.427l3.396 3.396a.25.25 0 00.354 0l3.396-3.396A.25.25 0 0011.396 7H4.604a.25.25 0 00-.177.427z" />
+    </symbol>
+    <symbol id="ic-ext" viewBox="0 0 16 16">
+      <path fill="currentColor"
+        d="M3.75 2h3.5a.75.75 0 010 1.5h-3.5a.25.25 0 00-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 00.25-.25v-3.5a.75.75 0 011.5 0v3.5A1.75 1.75 0 0112.25 14h-8.5A1.75 1.75 0 012 12.25v-8.5C2 2.784 2.784 2 3.75 2zm6.75.5a.75.75 0 01.75-.75H14a.75.75 0 01.75.75v2.75a.75.75 0 01-1.5 0V4.56l-3.72 3.72a.75.75 0 11-1.06-1.06L12.44 3.5H10.5A.75.75 0 0110 2.5z" />
+    </symbol>
+    <symbol id="ic-book" viewBox="0 0 16 16">
+      <path fill="currentColor"
+        d="M0 1.75A.75.75 0 01.75 1h4.253c1.227 0 2.317.59 3 1.501A3.744 3.744 0 0111.006 1h4.245a.75.75 0 01.75.75v10.5a.75.75 0 01-.75.75h-4.507a2.25 2.25 0 00-1.591.659l-.622.621a.75.75 0 01-1.06 0l-.622-.621A2.25 2.25 0 005.258 13H.75a.75.75 0 01-.75-.75zm7.251 10.324l.75.75.75-.75A3.75 3.75 0 0111.258 11.5h3.737V2.5h-3.49A2.25 2.25 0 009.25 4.749v5.501a.75.75 0 01-1.5 0V4.75A2.25 2.25 0 005.5 2.5H2.001v9H5.258a3.75 3.75 0 012.993 1.574z" />
+    </symbol>
+    <symbol id="ic-terminal" viewBox="0 0 16 16">
+      <path fill="currentColor"
+        d="M0 2.75C0 1.784.784 1 1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0114.25 15H1.75A1.75 1.75 0 010 13.25zm1.75-.25a.25.25 0 00-.25.25v10.5c0 .138.112.25.25.25h12.5a.25.25 0 00.25-.25V2.75a.25.25 0 00-.25-.25zM5.22 6.03a.75.75 0 00-1.06-1.06L2.22 6.91a.75.75 0 000 1.06l1.94 1.94a.75.75 0 001.06-1.06L3.81 7.44zM7 8.75a.75.75 0 01.75-.75h2.5a.75.75 0 010 1.5h-2.5A.75.75 0 017 8.75z" />
+    </symbol>
+    <symbol id="ic-lock" viewBox="0 0 16 16">
+      <path fill="currentColor"
+        d="M4 4a4 4 0 018 0v2h.25c.966 0 1.75.784 1.75 1.75v5.5A1.75 1.75 0 0112.25 15h-8.5A1.75 1.75 0 012 13.25v-5.5C2 6.784 2.784 6 3.75 6H4zm8 2V4a3.5 3.5 0 10-7 0v2zm-8 1.5a.25.25 0 00-.25.25v5.5c0 .138.112.25.25.25h8.5a.25.25 0 00.25-.25v-5.5a.25.25 0 00-.25-.25z" />
+    </symbol>
+    <symbol id="ic-db" viewBox="0 0 16 16">
+      <path fill="currentColor"
+        d="M8 1.5c-2.363 0-4 1.069-4 2.25V5c0 1.181 1.637 2.25 4 2.25S12 6.181 12 5V3.75C12 2.569 10.363 1.5 8 1.5zM4 7.166v1.585c0 1.181 1.637 2.25 4 2.25s4-1.069 4-2.25V7.166C10.896 7.901 9.534 8.25 8 8.25s-2.896-.349-4-1.084zM4 11v1.25c0 1.181 1.637 2.25 4 2.25s4-1.069 4-2.25V11c-1.104.735-2.466 1.084-4 1.084S5.104 11.735 4 11z" />
+    </symbol>
+    <symbol id="ic-gear" viewBox="0 0 16 16">
+      <path fill="currentColor"
+        d="M8 0a8 8 0 100 16A8 8 0 008 0zM1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0zm6.5-1a1 1 0 100 2 1 1 0 000-2z" />
+    </symbol>
+    <symbol id="ic-react" viewBox="0 0 16 16">
+      <path fill="currentColor"
+        d="M8 6.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3zm-4.83 1.5C2.62 8 2 7.38 2 6.5S2.62 5 3.17 5c.55 0 1.1.28 1.58.82.48.54.83 1.3.83 2.18s-.35 1.64-.83 2.18c-.48.54-1.03.82-1.58.82C2.62 11 2 10.38 2 9.5a1.5 1.5 0 010-1.5zM8 2C4.69 2 2 4.91 2 8s2.69 6 6 6 6-2.91 6-6-2.69-6-6-6z" />
+    </symbol>
+    <symbol id="ic-test" viewBox="0 0 16 16">
+      <path fill="currentColor"
+        d="M2 1.75C2 .784 2.784 0 3.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v9.586A1.75 1.75 0 0112.25 16h-8.5A1.75 1.75 0 012 14.25zm1.75-.25a.25.25 0 00-.25.25v12.5c0 .138.112.25.25.25h8.5a.25.25 0 00.25-.25V6h-2.75A1.75 1.75 0 018 4.25V1.5zm6.75.062V4.25c0 .138.112.25.25.25h2.688a.252.252 0 00-.011-.013L10.5 1.562zM5 8.75a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5h-4.5A.75.75 0 015 8.75zm0 2.5a.75.75 0 01.75-.75h2.5a.75.75 0 010 1.5h-2.5A.75.75 0 015 11.25z" />
+    </symbol>
+    <symbol id="ic-alert" viewBox="0 0 16 16">
+      <path fill="currentColor"
+        d="M8.22 1.754a.25.25 0 00-.44 0L1.698 13.132a.25.25 0 00.22.368h12.164a.25.25 0 00.22-.368L8.22 1.754zm-1.763-.707c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0114.082 15H1.918a1.75 1.75 0 01-1.543-2.575zM9 11a1 1 0 11-2 0 1 1 0 012 0zm-.25-5.25a.75.75 0 00-1.5 0v2.5a.75.75 0 001.5 0z" />
+    </symbol>
+    <symbol id="ic-info" viewBox="0 0 16 16">
+      <path fill="currentColor"
+        d="M0 8a8 8 0 1116 0A8 8 0 010 8zm8-6.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM6.5 7.75A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 110-2 1 1 0 010 2z" />
+    </symbol>
+    <symbol id="ic-pkg" viewBox="0 0 16 16">
+      <path fill="currentColor"
+        d="M8.878.392a1.75 1.75 0 00-1.756 0l-5.25 3.045A1.75 1.75 0 001 4.951v6.098c0 .624.332 1.2.872 1.514l5.25 3.045a1.75 1.75 0 001.756 0l5.25-3.045c.54-.313.872-.89.872-1.514V4.951a1.75 1.75 0 00-.872-1.514zm-.438 1.295a.25.25 0 01.25 0l5.25 3.046a.25.25 0 01.06.04L8 7.88 1.999 4.773a.25.25 0 01.061-.04zM2.5 6.026L7.75 8.92v5.704a.25.25 0 01-.124-.022L2.374 11.556A.25.25 0 012.25 11.05V6.026zm6.5 0v5.698L14.625 8.92V6.026L9 8.92zM8.25 14.624V8.92l5.25-2.894V11.05a.25.25 0 01-.124.506z" />
+    </symbol>
+    <symbol id="ic-star" viewBox="0 0 16 16">
+      <path fill="currentColor"
+        d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z" />
+    </symbol>
+    <symbol id="ic-git" viewBox="0 0 16 16">
+      <path fill="currentColor"
+        d="M15.198 3.52l-3.717-3.718a1.037 1.037 0 00-1.47 0L8.474 1.338A1.755 1.755 0 008.01 3.01L5.747 5.273a1.75 1.75 0 00-1.672.461L2.13 7.68a1.75 1.75 0 000 2.474l.892.892-2.268 2.268a.75.75 0 101.06 1.06l2.268-2.268.892.893a1.75 1.75 0 002.475 0l1.944-1.944a1.75 1.75 0 00.461-1.672l2.263-2.263c.413.042.829-.1 1.133-.404l1.537-1.537a1.037 1.037 0 000-1.469zm-1.299.47L12.42 5.468 10.532 3.58l1.479-1.48 1.888 1.89zM7.672 10.732l-1.944 1.944a.25.25 0 01-.354 0l-2.05-2.05a.25.25 0 010-.353l1.944-1.944a.25.25 0 01.354 0l2.05 2.05a.25.25 0 010 .353z" />
+    </symbol>
+    <symbol id="ic-mail" viewBox="0 0 16 16">
+      <path fill="currentColor"
+        d="M1.75 2A1.75 1.75 0 000 3.75v8.5C0 13.216.784 14 1.75 14h12.5A1.75 1.75 0 0016 12.25v-8.5A1.75 1.75 0 0014.25 2zm0 1.5h12.5a.25.25 0 01.25.25v.463l-6.5 3.32-6.5-3.32V3.75a.25.25 0 01.25-.25zM1.5 7.832l4.978 2.538a.75.75 0 00.688-.02l4.334-2.21v4.11a.25.25 0 01-.25.25H1.75a.25.25 0 01-.25-.25z" />
+    </symbol>
+    <!-- theme icons generated by JS; fallback in HTML for no-JS case -->
+    <symbol id="ic-sun" viewBox="0 0 24 24">
+      <path fill="currentColor"
+        d="M12 4.354a7.646 7.646 0 100 15.292 7.646 7.646 0 000-15.292zm0 13.292a5.646 5.646 0 110-11.292 5.646 5.646 0 010 11.292z" />
+    </symbol>
+    <symbol id="ic-moon" viewBox="0 0 24 24">
+      <path fill="currentColor"
+        d="M21.64 13.34a.996.996 0 00-1.07-.6 9 9 0 01-11.37-11.37.996.996 0 00-.6-1.07A9.99 9.99 0 0012 2c5.52 0 10 4.48 10 10 0 2.64-.99 5.04-2.6 6.84z" />
+    </symbol>
+    <!-- Additional icons used in the appended docs list -->
+    <symbol id="ic-api" viewBox="0 0 16 16">
+      <path fill="currentColor" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zm0 2a4.5 4.5 0 110 9 4.5 4.5 0 010-9z" />
+    </symbol>
+    <symbol id="ic-docker" viewBox="0 0 16 16">
+      <path fill="currentColor" d="M2 10h12v1H2v-1zm0-2h12v1H2V8zm0-2h6v1H2V6z" />
+    </symbol>
+    <symbol id="ic-server" viewBox="0 0 16 16">
+      <path fill="currentColor" d="M1 3h14v3H1V3zm0 5h14v3H1V8zm0 5h14v1H1v-1z" />
+    </symbol>
+    <symbol id="ic-proxy" viewBox="0 0 16 16">
+      <path fill="currentColor" d="M2 4h10v2H2V4zm0 4h8v2H2V8zm0 4h6v2H2v-2z" />
+    </symbol>
+    <symbol id="ic-queue" viewBox="0 0 16 16">
+      <path fill="currentColor" d="M2 3h12v2H2V3zm0 4h12v2H2V7zm0 4h12v2H2v-2z" />
+    </symbol>
+    <symbol id="ic-ws" viewBox="0 0 16 16">
+      <path fill="currentColor" d="M2 2h12v12H2V2zm2 3h8v1H4V5zm0 3h8v1H4V8z" />
+    </symbol>
+    <symbol id="ic-ci" viewBox="0 0 16 16">
+      <path fill="currentColor" d="M2 2h12v3H2V2zm0 4h12v3H2V6zm0 4h12v2H2v-2z" />
+    </symbol>
+    <symbol id="ic-monitor" viewBox="0 0 16 16">
+      <path fill="currentColor" d="M1 2h14v9H1V2zm2 11h10v1H3v-1z" />
+    </symbol>
+    <symbol id="ic-search" viewBox="0 0 16 16">
+      <path fill="currentColor"
+        d="M11.742 10.344l3.387 3.387-.708.708-3.387-3.387a5 5 0 111.108-1.108zM6.5 10a3.5 3.5 0 100-7 3.5 3.5 0 000 7z" />
+    </symbol>
+  </svg>
+
+  <!-- ══════════════════════════════════════
+     TOPBAR
+══════════════════════════════════════ -->
+  <header class="topbar">
+    <a class="topbar-logo" href="#">
+      <div class="logo-dot">
+        <svg width="16" height="16">
+          <use href="#ic-logo" />
+        </svg>
+      </div>
+      DevPlan <span style="color:var(--text3);font-weight:300">/ ESMT</span>
+    </a>
+    <button class="menu-toggle" onclick="toggleSidebarMobile()" aria-label="Menu">
+      <svg width="20" height="20" id="menu-icon-svg">
+        <use href="#ic-menu" />
+      </svg>
+    </button>
+    <div class="topbar-sep"></div>
+    <nav class="topbar-tabs">
+      <button class="topbar-tab active" onclick="switchView('plan',this)">
+        <svg width="14" height="14">
+          <use href="#ic-plan" />
+        </svg> Plan
+      </button>
+      <button class="topbar-tab" onclick="switchView('model',this)">
+        <svg width="14" height="14">
+          <use href="#ic-model" />
+        </svg> Modélisation
+      </button>
+      <button class="topbar-tab" onclick="switchView('docs',this)">
+        <svg width="14" height="14">
+          <use href="#ic-book" />
+        </svg> Documentation
+      </button>
+    </nav>
+    <div class="topbar-right">
+      <button id="theme-toggle" class="topbar-tab" onclick="toggleTheme()" title="Basculer thème">
+        <svg width="16" height="16">
+          <use href="#ic-moon" />
+        </svg>
+        <span style="margin-left:4px;">Thème</span>
+      </button>
+      <div class="progress-pill">
+        <svg width="12" height="12" color="var(--green)">
+          <use href="#ic-check" />
+        </svg>
+        <span id="prog-text">0 / 0</span>
+        <div class="prog-bar-mini">
+          <div class="prog-fill-mini" id="prog-fill" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════
+     LAYOUT
+══════════════════════════════════════ -->
+  <div class="layout">
+    <div class="sidebar-overlay" onclick="toggleSidebarMobile()"></div>
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar">
+      <button class="sidebar-model-btn" onclick="switchView('model', document.querySelectorAll('.topbar-tab')[1])">
+        <svg width="14" height="14">
+          <use href="#ic-model" />
+        </svg>
+        Voir la Modélisation
+      </button>
+
+      <div class="sidebar-search-wrap">
+        <svg width="14" height="14" color="var(--text3)">
+          <use href="#ic-search" />
+        </svg>
+        <input type="text" id="sidebar-search" placeholder="Rechercher une étape..." oninput="filterSidebar()">
+      </div>
+
+      <div style="height:8px"></div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label"><span class="sidebar-week-badge swb-1">S1</span> Semaine 1</div>
+        <a class="nav-item" href="#step1" onclick="openStep('step1')">
+          <span class="nav-item-num nn-1">01</span> Environnement
+          <svg class="nav-item-check" width="12" height="12" id="nc-1">
+            <use href="#ic-check" />
+          </svg>
+        </a>
+        <a class="nav-item" href="#step2" onclick="openStep('step2')">
+          <span class="nav-item-num nn-1">02</span> Modèles ORM
+          <svg class="nav-item-check" width="12" height="12" id="nc-2">
+            <use href="#ic-check" />
+          </svg>
+        </a>
+        <a class="nav-item" href="#step3" onclick="openStep('step3')">
+          <span class="nav-item-num nn-1">03</span> Authentification JWT
+          <svg class="nav-item-check" width="12" height="12" id="nc-3">
+            <use href="#ic-check" />
+          </svg>
+        </a>
+        <a class="nav-item" href="#step4" onclick="openStep('step4')">
+          <span class="nav-item-num nn-1">04</span> CRUD Projets
+          <svg class="nav-item-check" width="12" height="12" id="nc-4">
+            <use href="#ic-check" />
+          </svg>
+        </a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label"><span class="sidebar-week-badge swb-2">S2</span> Semaine 2</div>
+        <a class="nav-item" href="#step5" onclick="openStep('step5')">
+          <span class="nav-item-num nn-2">05</span> Django Templates
+          <svg class="nav-item-check" width="12" height="12" id="nc-5">
+            <use href="#ic-check" />
+          </svg>
+        </a>
+        <a class="nav-item" href="#step6" onclick="openStep('step6')">
+          <span class="nav-item-num nn-2">06</span> API Tâches
+          <svg class="nav-item-check" width="12" height="12" id="nc-6">
+            <use href="#ic-check" />
+          </svg>
+        </a>
+        <a class="nav-item" href="#step7" onclick="openStep('step7')">
+          <span class="nav-item-num nn-2">07</span> Stats &amp; Primes
+          <svg class="nav-item-check" width="12" height="12" id="nc-7">
+            <use href="#ic-check" />
+          </svg>
+        </a>
+        <a class="nav-item" href="#step8" onclick="openStep('step8')">
+          <span class="nav-item-num nn-2">08</span> Notifications
+          <svg class="nav-item-check" width="12" height="12" id="nc-8">
+            <use href="#ic-check" />
+          </svg>
+        </a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label"><span class="sidebar-week-badge swb-3">S3</span> Semaine 3</div>
+        <a class="nav-item" href="#step9" onclick="openStep('step9')">
+          <span class="nav-item-num nn-3">09</span> CORS &amp; Swagger
+          <svg class="nav-item-check" width="12" height="12" id="nc-9">
+            <use href="#ic-check" />
+          </svg>
+        </a>
+        <a class="nav-item" href="#step10" onclick="openStep('step10')">
+          <span class="nav-item-num nn-3">10</span> React — Auth
+          <svg class="nav-item-check" width="12" height="12" id="nc-10">
+            <use href="#ic-check" />
+          </svg>
+        </a>
+        <a class="nav-item" href="#step11" onclick="openStep('step11')">
+          <span class="nav-item-num nn-3">11</span> React — Dashboard
+          <svg class="nav-item-check" width="12" height="12" id="nc-11">
+            <use href="#ic-check" />
+          </svg>
+        </a>
+        <a class="nav-item" href="#step12" onclick="openStep('step12')">
+          <span class="nav-item-num nn-3">12</span> Tests pytest
+          <svg class="nav-item-check" width="12" height="12" id="nc-12">
+            <use href="#ic-check" />
+          </svg>
+        </a>
+        <a class="nav-item" href="#step13" onclick="openStep('step13')">
+          <span class="nav-item-num nn-3">13</span> Livraison
+          <svg class="nav-item-check" width="12" height="12" id="nc-13">
+            <use href="#ic-check" />
+          </svg>
+        </a>
+      </div>
+    </aside>
+
+    <!-- ── MAIN ── -->
+    <main class="main">
+
+      <!-- ══════════════════════════════════════
+     VUE : PLAN
+══════════════════════════════════════ -->
+      <div class="view active" id="view-plan">
+        <div class="plan-content">
+
+          <!-- ─────────────── SEMAINE 1 ─────────────── -->
+          <div class="week-head">
+            <div class="week-icon wi-1">
+              <svg width="22" height="22" color="var(--green)">
+                <use href="#ic-db" />
+              </svg>
+            </div>
+            <div class="week-meta">
+              <h2>Semaine 1 — Fondations &amp; Modèles</h2>
+              <p>Environnement Django, modèles ORM, authentification JWT, CRUD Projets avec permissions</p>
+              <div class="week-tags">
+                <span class="wtag wt-g">Django ORM</span>
+                <span class="wtag wt-g">Migrations</span>
+                <span class="wtag wt-b">JWT Auth</span>
+                <span class="wtag wt-p">DRF Permissions</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 1 -->
+          <div class="step-card" id="step1">
+            <div class="step-header" onclick="toggleStep(this)">
+              <div class="step-num sn-1">01</div>
+              <div class="step-meta">
+                <div class="step-title">
+                  <svg width="14" height="14" color="var(--green)">
+                    <use href="#ic-terminal" />
+                  </svg>
+                  Mise en place de l'environnement Django
+                </div>
+                <div class="step-sub">Python, virtualenv, structure du projet, apps, settings, .env</div>
+                <div class="step-tags-row">
+                  <span class="stag st-g"><svg width="10" height="10">
+                      <use href="#ic-pkg" />
+                    </svg> Django</span>
+                  <span class="stag st-t"><svg width="10" height="10">
+                      <use href="#ic-terminal" />
+                    </svg> CLI</span>
+                  <span class="stag st-y"><svg width="10" height="10">
+                      <use href="#ic-git" />
+                    </svg> Git</span>
+                </div>
+                <div class="step-info">15 tâches &nbsp;·&nbsp; ~3h &nbsp;·&nbsp; Démarrage</div>
+              </div>
+              <svg class="step-chevron" width="16" height="16">
+                <use href="#ic-chevron" />
+              </svg>
+            </div>
+            <div class="step-body">
+              <div class="step-body-inner">
+
+                <div class="concept-callout">
+                  <div class="concept-icon-wrap">
+                    <svg width="18" height="18" color="var(--green)">
+                      <use href="#ic-info" />
+                    </svg>
+                  </div>
+                  <div class="concept-text">
+                    <strong>Concept — Architecture Django (Apps)</strong>
+                    <p>Django organise le code en <strong>applications</strong> (apps). Chaque app est un module
+                      autonome avec ses modèles, vues et URLs. Notre projet aura 4 apps : <code>accounts</code>
+                      (utilisateurs), <code>projects</code> (projets), <code>tasks</code> (tâches), <code>stats</code>
+                      (statistiques). Le fichier <code>settings.py</code> est le cerveau de la configuration.</p>
+                    <a class="doc-link" href="https://docs.djangoproject.com/fr/5.0/ref/applications/" target="_blank">
+                      <svg width="12" height="12">
+                        <use href="#ic-book" />
+                      </svg>
+                      docs.djangoproject.com — Applications
+                      <svg width="10" height="10">
+                        <use href="#ic-ext" />
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+
+                <div class="docs-panel">
+                  <div class="docs-panel-title"><svg width="12" height="12" color="var(--blue)">
+                      <use href="#ic-book" />
+                    </svg> Documentation officielle pour cette étape</div>
+                  <div class="docs-grid">
+                    <a class="doc-card" href="https://docs.djangoproject.com/fr/5.0/intro/install/" target="_blank">
+                      <div class="doc-card-icon dci-g"><svg width="14" height="14" color="var(--green)">
+                          <use href="#ic-pkg" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">Installation Django</div>
+                        <div class="doc-card-url">docs.djangoproject.com</div>
+                      </div>
+                    </a>
+                    <a class="doc-card" href="https://docs.djangoproject.com/fr/5.0/intro/tutorial01/" target="_blank">
+                      <div class="doc-card-icon dci-g"><svg width="14" height="14" color="var(--green)">
+                          <use href="#ic-star" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">Tutoriel officiel Django</div>
+                        <div class="doc-card-url">docs.djangoproject.com</div>
+                      </div>
+                    </a>
+                    <a class="doc-card" href="https://docs.djangoproject.com/fr/5.0/topics/settings/" target="_blank">
+                      <div class="doc-card-icon dci-b"><svg width="14" height="14" color="var(--blue)">
+                          <use href="#ic-gear" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">Settings Django</div>
+                        <div class="doc-card-url">docs.djangoproject.com</div>
+                      </div>
+                    </a>
+                    <a class="doc-card" href="https://pypi.org/project/python-decouple/" target="_blank">
+                      <div class="doc-card-icon dci-o"><svg width="14" height="14" color="var(--orange)">
+                          <use href="#ic-lock" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">python-decouple (.env)</div>
+                        <div class="doc-card-url">pypi.org</div>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+
+                <div class="task-group">
+                  <div class="task-group-header"><svg width="12" height="12" color="var(--green)">
+                      <use href="#ic-terminal" />
+                    </svg><span class="task-group-title">Installation &amp; Configuration Python</span></div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Vérifier Python 3.11+ et créer le dossier du projet</div>
+                      <div class="task-detail">
+                        <p><strong>Objectif :</strong> Préparer votre espace de travail.</p>
+                        <p><strong>Instructions :</strong> Vérifiez votre version de Python, créez le dossier du projet
+                          et initialisez Git pour le suivi de version.</p>
+                        <div class="code-wrap">
+                          <div class="code-top">Inspiration : Terminal</div>
+                          <pre class="code"># Vérification de la version
+python --version
+
+# Création du dossier et initialisation Git
+mkdir esmt_tasks && cd esmt_tasks
+git init</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-easy">Facile</span>
+                  </div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Créer et activer l'environnement virtuel</div>
+                      <div class="task-detail">
+                        <p><strong>Objectif :</strong> Isoler les dépendances.</p>
+                        <p><strong>Instructions :</strong> Créez un environnement virtuel nommé <code>env</code> et
+                          activez-le selon votre système d'exploitation.</p>
+                        <div class="code-wrap">
+                          <div class="code-top">Inspiration : Commandes</div>
+                          <pre class="code"># Création
+python -m venv env
+
+# Activation (Windows)
+env\Scripts\activate
+
+# Activation (Linux/Mac)
+source env/bin/activate</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-easy">Facile</span>
+                  </div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Gérer les dépendances avec requirements.txt</div>
+                      <div class="task-detail">
+                        <p><strong>Objectif :</strong> Définir les outils du projet.</p>
+                        <p><strong>Instructions :</strong> Créez un fichier <code>requirements.txt</code> et listez les
+                          packages nécessaires : Django, djangorestframework, djangorestframework-simplejwt, etc.
+                          Installez-les ensuite via pip.</p>
+                        <div class="code-wrap">
+                          <div class="code-top">Inspiration : requirements.txt</div>
+                          <pre class="code">django>=4.2
+djangorestframework
+djangorestframework-simplejwt
+django-cors-headers
+Pillow
+python-decouple
+drf-spectacular
+pytest-django
+django-filter</pre>
+                        </div>
+                        <p>Commande : <code>pip install -r requirements.txt</code></p>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-easy">Facile</span>
+                  </div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Structure du projet et premières Apps</div>
+                      <div class="task-detail">
+                        <p><strong>Objectif :</strong> Initialiser le projet Django.</p>
+                        <p><strong>Instructions :</strong> Utilisez <code>django-admin</code> pour créer le projet
+                          (dossier de config nommé <code>config</code>) et créez les 4 applications :
+                          <code>accounts</code>, <code>projects</code>, <code>tasks</code>, <code>stats</code>.
+                        </p>
+                        <div class="code-wrap">
+                          <div class="code-top">Inspiration : Terminal</div>
+                          <pre class="code"># Créer le projet
+django-admin startproject config .
+
+# Créer les modules (applications)
+python manage.py startapp accounts
+python manage.py startapp projects
+python manage.py startapp tasks
+python manage.py startapp stats</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-easy">Facile</span>
+                  </div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Configuration initiale (settings.py)</div>
+                      <div class="task-detail">
+                        <p><strong>Objectif :</strong> Déclarer les applications et le modèle User.</p>
+                        <p><strong>Instructions :</strong> Dans <code>config/settings.py</code>, ajoutez vos
+                          applications à <code>INSTALLED_APPS</code>, déclarez <code>AUTH_USER_MODEL</code> et
+                          configurez les dossiers MEDIA pour les avatars.</p>
+                        <div class="code-wrap">
+                          <div class="code-top">Inspiration : settings.py</div>
+                          <pre class="code"># ...
+INSTALLED_APPS = [
+    # ...
+    # Nos Apps
+    'accounts',
+    'projects',
+    'tasks',
+    'stats',
+]
+
+AUTH_USER_MODEL = 'accounts.User'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-med">Moyen</span>
+                  </div>
+                </div>
+
+                <div class="tip-box">
+                  <svg width="16" height="16" color="var(--yellow)" style="flex-shrink:0;margin-top:1px">
+                    <use href="#ic-alert" />
+                  </svg>
+                  <span><strong style="color:var(--yellow)">Convention Git :</strong> Utilise des préfixes de commit :
+                    <code>feat:</code> (nouvelle fonctionnalité), <code>fix:</code> (correction), <code>chore:</code>
+                    (configuration), <code>docs:</code> (documentation). Exemple :
+                    <code>git commit -m "feat: add User model with role field"</code></span>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2 -->
+          <div class="step-card" id="step2">
+            <div class="step-header" onclick="toggleStep(this)">
+              <div class="step-num sn-1">02</div>
+              <div class="step-meta">
+                <div class="step-title">
+                  <svg width="14" height="14" color="var(--green)">
+                    <use href="#ic-db" />
+                  </svg>
+                  Création de tous les Modèles Django (ORM)
+                </div>
+                <div class="step-sub">User, Profile, Project, ProjectMember, Task, Statistique, Prime, Notification +
+                  migrations</div>
+                <div class="step-tags-row">
+                  <span class="stag st-g">Django ORM</span>
+                  <span class="stag st-g">Migrations</span>
+                  <span class="stag st-b">Relations FK</span>
+                </div>
+                <div class="step-info">22 tâches &nbsp;·&nbsp; ~4h &nbsp;·&nbsp; Cœur de l'application</div>
+              </div>
+              <svg class="step-chevron" width="16" height="16">
+                <use href="#ic-chevron" />
+              </svg>
+            </div>
+            <div class="step-body">
+              <div class="step-body-inner">
+
+                <div class="concept-callout">
+                  <div class="concept-icon-wrap">
+                    <svg width="18" height="18" color="var(--green)">
+                      <use href="#ic-db" />
+                    </svg>
+                  </div>
+                  <div class="concept-text">
+                    <strong>Concept — Django ORM &amp; Relations</strong>
+                    <p>Tu écris des classes Python → Django crée les tables SQL automatiquement. <code>ForeignKey</code>
+                      = relation N→1 (plusieurs tâches pour un projet). <code>OneToOneField</code> = relation 1→1 (un
+                      profil par user). <code>ManyToManyField</code> = N→N. Les <strong>migrations</strong> sont
+                      l'historique de ta BDD : ne jamais les modifier manuellement.</p>
+                    <a class="doc-link" href="https://docs.djangoproject.com/fr/5.0/topics/db/models/"
+                      target="_blank"><svg width="12" height="12">
+                        <use href="#ic-book" />
+                      </svg> Modèles Django <svg width="10" height="10">
+                        <use href="#ic-ext" />
+                      </svg></a>
+                    <a class="doc-link" href="https://docs.djangoproject.com/fr/5.0/topics/db/examples/" target="_blank"
+                      style="margin-left:8px"><svg width="12" height="12">
+                        <use href="#ic-book" />
+                      </svg> Exemples de relations <svg width="10" height="10">
+                        <use href="#ic-ext" />
+                      </svg></a>
+                  </div>
+                </div>
+
+                <div class="docs-panel">
+                  <div class="docs-panel-title"><svg width="12" height="12" color="var(--blue)">
+                      <use href="#ic-book" />
+                    </svg> Documentation officielle pour cette étape</div>
+                  <div class="docs-grid">
+                    <a class="doc-card"
+                      href="https://docs.djangoproject.com/fr/5.0/topics/auth/customizing/#substituting-a-custom-user-model"
+                      target="_blank">
+                      <div class="doc-card-icon dci-g"><svg width="14" height="14" color="var(--green)">
+                          <use href="#ic-lock" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">Custom User Model</div>
+                        <div class="doc-card-url">docs.djangoproject.com</div>
+                      </div>
+                    </a>
+                    <a class="doc-card" href="https://docs.djangoproject.com/fr/5.0/ref/models/fields/" target="_blank">
+                      <div class="doc-card-icon dci-g"><svg width="14" height="14" color="var(--green)">
+                          <use href="#ic-db" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">Champs de modèles</div>
+                        <div class="doc-card-url">docs.djangoproject.com</div>
+                      </div>
+                    </a>
+                    <a class="doc-card" href="https://docs.djangoproject.com/fr/5.0/topics/migrations/" target="_blank">
+                      <div class="doc-card-icon dci-b"><svg width="14" height="14" color="var(--blue)">
+                          <use href="#ic-gear" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">Migrations</div>
+                        <div class="doc-card-url">docs.djangoproject.com</div>
+                      </div>
+                    </a>
+                    <a class="doc-card" href="https://docs.djangoproject.com/fr/5.0/ref/models/relations/"
+                      target="_blank">
+                      <div class="doc-card-icon dci-b"><svg width="14" height="14" color="var(--blue)">
+                          <use href="#ic-db" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">Relations entre modèles</div>
+                        <div class="doc-card-url">docs.djangoproject.com</div>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+
+                <div class="task-group">
+                  <div class="task-group-header"><svg width="12" height="12" color="var(--green)">
+                      <use href="#ic-lock" />
+                    </svg><span class="task-group-title">App accounts — User &amp; Profile</span></div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Modèles User & Profile</div>
+                      <div class="task-detail">
+                        <p><strong>Objectif :</strong> Créer un système d'utilisateurs avec rôles et profils.</p>
+                        <p><strong>Instructions :</strong> Dans <code>accounts/models.py</code>, créez une classe
+                          <code>User</code> (héritant de <code>AbstractUser</code>) avec un champ <code>role</code>
+                          (choix: etudiant/professeur). Créez ensuite une classe <code>Profile</code> liée au User par
+                          un <code>OneToOneField</code> pour l'avatar et la bio.</p>
+                        <div class="code-wrap">
+                          <div class="code-top">Inspiration : accounts/models.py</div>
+                          <pre class="code">from django.contrib.auth.models import AbstractUser
+from django.db import models
+
+class User(AbstractUser):
+    ROLE_CHOICES = [('etudiant', 'Étudiant'), ('professeur', 'Professeur')]
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='etudiant')
+    email = models.EmailField(unique=True)
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
+    bio = models.TextField(blank=True)</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-key">Critique</span>
+                  </div>
+                </div>
+
+                <div class="concept-callout" style="margin-top:15px">
+                  <div class="concept-text">
+                    <strong>Explication : Pourquoi un Custom User ?</strong>
+                    <p>Par défaut, Django n'a pas de champ "rôle". En utilisant <code>AbstractUser</code>, vous gardez
+                      la flexibilité d'ajouter vos propres champs (comme <code>role</code>) dès le départ, ce qui est
+                      une bonne pratique indispensable pour toute application sérieuse.</p>
+                  </div>
+                </div>
+
+                <div class="task-group" style="margin-top:20px">
+                  <div class="task-group-header"><svg width="12" height="12" color="var(--blue)">
+                      <use href="#ic-db" />
+                    </svg><span class="task-group-title">App projects — Project &amp; ProjectMember</span></div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Modèle Project & Member</div>
+                      <div class="task-detail">
+                        <p>Définissez la structure d'un projet et ses membres.</p>
+                        <div class="code-wrap">
+                          <div class="code-top">projects/models.py</div>
+                          <pre class="code">class Project(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_projects')
+    name = models.CharField(max_length=200)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class ProjectMember(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='members')
+    
+    class Meta:
+        unique_together = ('user', 'project')</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-med">Moyen</span>
+                  </div>
+                </div>
+
+                <div class="task-group" style="margin-top:20px">
+                  <div class="task-group-header"><svg width="12" height="12" color="var(--orange)">
+                      <use href="#ic-check" />
+                    </svg><span class="task-group-title">App tasks — Logiciel de Tâches</span></div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Modèle Task (Auto-completion)</div>
+                      <div class="task-detail">
+                        <p>Ajoutez une logique automatique pour la date de complétion.</p>
+                        <div class="code-wrap">
+                          <div class="code-top">tasks/models.py</div>
+                          <pre class="code">from django.utils import timezone
+
+class Task(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, default='todo')
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self.status == 'done' and not self.completed_at:
+            self.completed_at = timezone.now()
+        super().save(*args, **kwargs)</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-key">Critique</span>
+                  </div>
+                </div>
+
+                <div class="task-group" style="margin-top:20px">
+                  <div class="task-group-header"><svg width="12" height="12" color="var(--purple)">
+                      <use href="#ic-star" />
+                    </svg><span class="task-group-title">App stats — Statistique, Prime &amp; Notification</span>
+                  </div>
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Créer le modèle Statistique (taux par période)</div>
+                      <div class="task-detail">Champs : <code>user</code> (FK), <code>period_type</code>
+                        (trimestriel/annuel), <code>year</code> (IntegerField), <code>quarter</code> (null, 1-4),
+                        <code>total_tasks</code>, <code>completed_tasks</code>, <code>completion_rate</code>
+                        (DecimalField max_digits=5, decimal_places=2), <code>generated_at</code>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-med">Moyen</span>
+                  </div>
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Créer le modèle Prime (30K ou 100K pour les professeurs)</div>
+                      <div class="task-detail">Champs : <code>user</code> (FK), <code>amount</code> (IntegerField),
+                        <code>year</code>, <code>completion_rate</code>, <code>attributed_at</code> (auto). Ajouter
+                        <code>unique_together = ['user','year']</code> pour n'avoir qu'une prime par an.
+                      </div>
+                    </div>
+                    <span class="task-badge tb-med">Moyen</span>
+                  </div>
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Créer le modèle Notification</div>
+                      <div class="task-detail">Champs : <code>user</code> (FK), <code>task</code> (FK null),
+                        <code>message</code> (TextField), <code>type</code> (choices: deadline/assignment/prime),
+                        <code>is_read</code> (default=False), <code>created_at</code>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-med">Moyen</span>
+                  </div>
+                </div>
+
+                <div class="task-group" style="margin-top:20px">
+                  <div class="task-group-header"><svg width="12" height="12" color="var(--teal)">
+                      <use href="#ic-gear" />
+                    </svg><span class="task-group-title">Migrations — Appliquer en base</span></div>
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Générer et appliquer les migrations</div>
+                      <div class="task-detail">
+                        <code>python manage.py makemigrations accounts projects tasks stats</code> puis
+                        <code>python manage.py migrate</code>. Ensuite <code>python manage.py createsuperuser</code>
+                        pour accéder à <code>/admin</code>. Enregistrer tous les modèles dans
+                        <code>app/admin.py</code>.
+                      </div>
+                      <a class="task-doc" href="https://docs.djangoproject.com/fr/5.0/ref/django-admin/#makemigrations"
+                        target="_blank"><svg width="10" height="10">
+                          <use href="#ic-book" />
+                        </svg> makemigrations / migrate</a>
+                    </div>
+                    <span class="task-badge tb-easy">Facile</span>
+                  </div>
+                </div>
+
+                <div class="warn-box">
+                  <svg width="16" height="16" color="var(--red)" style="flex-shrink:0;margin-top:1px">
+                    <use href="#ic-alert" />
+                  </svg>
+                  <span><strong style="color:var(--red)">Règle critique :</strong> Chaque modification d'un modèle
+                    nécessite <code>makemigrations</code> + <code>migrate</code>. Le modèle User personnalisé DOIT
+                    être
+                    défini avant la première migration sous peine de conflits impossibles à résoudre sans
+                    réinitialiser
+                    la base.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 3 -->
+          <div class="step-card" id="step3">
+            <div class="step-header" onclick="toggleStep(this)">
+              <div class="step-num sn-1">03</div>
+              <div class="step-meta">
+                <div class="step-title">
+                  <svg width="14" height="14" color="var(--green)">
+                    <use href="#ic-lock" />
+                  </svg>
+                  Authentification JWT — Inscription, Connexion, Profil
+                </div>
+                <div class="step-sub">Serializers DRF, vues d'auth, tokens JWT, signal auto-profil, endpoint /me/
+                </div>
+                <div class="step-tags-row">
+                  <span class="stag st-g">Django Auth</span>
+                  <span class="stag st-b">JWT / simplejwt</span>
+                  <span class="stag st-b">DRF Serializers</span>
+                  <span class="stag st-p">Signals</span>
+                </div>
+                <div class="step-info">18 tâches &nbsp;·&nbsp; ~4h &nbsp;·&nbsp; Sécurité</div>
+              </div>
+              <svg class="step-chevron" width="16" height="16">
+                <use href="#ic-chevron" />
+              </svg>
+            </div>
+            <div class="step-body">
+              <div class="step-body-inner">
+
+                <div class="concept-callout">
+                  <div class="concept-icon-wrap"><svg width="18" height="18" color="var(--blue)">
+                      <use href="#ic-lock" />
+                    </svg></div>
+                  <div class="concept-text">
+                    <strong>Concept — JWT (JSON Web Token)</strong>
+                    <p>Après login, le serveur génère 2 tokens : <code>access</code> (valide 60 min, envoyé à chaque
+                      requête) et <code>refresh</code> (7 jours, pour renouveler l'access). Le client l'envoie dans
+                      le
+                      header HTTP : <code>Authorization: Bearer eyJ...</code>. Avantage : le serveur n'a pas besoin
+                      de
+                      stocker de session — il vérifie juste la signature du token.</p>
+                    <a class="doc-link" href="https://django-rest-framework-simplejwt.readthedocs.io/en/latest/"
+                      target="_blank"><svg width="12" height="12">
+                        <use href="#ic-book" />
+                      </svg> simplejwt Docs <svg width="10" height="10">
+                        <use href="#ic-ext" />
+                      </svg></a>
+                    <a class="doc-link" href="https://www.django-rest-framework.org/api-guide/serializers/"
+                      target="_blank" style="margin-left:8px"><svg width="12" height="12">
+                        <use href="#ic-book" />
+                      </svg> DRF Serializers <svg width="10" height="10">
+                        <use href="#ic-ext" />
+                      </svg></a>
+                  </div>
+                </div>
+
+                <div class="docs-panel">
+                  <div class="docs-panel-title"><svg width="12" height="12" color="var(--blue)">
+                      <use href="#ic-book" />
+                    </svg> Documentation officielle pour cette étape</div>
+                  <div class="docs-grid">
+                    <a class="doc-card"
+                      href="https://django-rest-framework-simplejwt.readthedocs.io/en/latest/getting_started.html"
+                      target="_blank">
+                      <div class="doc-card-icon dci-b"><svg width="14" height="14" color="var(--blue)">
+                          <use href="#ic-lock" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">simplejwt — Getting Started</div>
+                        <div class="doc-card-url">readthedocs.io</div>
+                      </div>
+                    </a>
+                    <a class="doc-card" href="https://www.django-rest-framework.org/api-guide/serializers/"
+                      target="_blank">
+                      <div class="doc-card-icon dci-b"><svg width="14" height="14" color="var(--blue)">
+                          <use href="#ic-gear" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">DRF — Serializers</div>
+                        <div class="doc-card-url">django-rest-framework.org</div>
+                      </div>
+                    </a>
+                    <a class="doc-card" href="https://docs.djangoproject.com/fr/5.0/topics/signals/" target="_blank">
+                      <div class="doc-card-icon dci-p"><svg width="14" height="14" color="var(--purple)">
+                          <use href="#ic-info" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">Django Signals</div>
+                        <div class="doc-card-url">docs.djangoproject.com</div>
+                      </div>
+                    </a>
+                    <a class="doc-card" href="https://www.django-rest-framework.org/api-guide/views/" target="_blank">
+                      <div class="doc-card-icon dci-b"><svg width="14" height="14" color="var(--blue)">
+                          <use href="#ic-plan" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">DRF — APIView</div>
+                        <div class="doc-card-url">django-rest-framework.org</div>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+
+                <div class="task-group">
+                  <div class="task-group-header"><svg width="12" height="12" color="var(--blue)">
+                      <use href="#ic-gear" />
+                    </svg><span class="task-group-title">Configuration DRF &amp; JWT</span></div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Configuration globale (settings.py)</div>
+                      <div class="task-detail">
+                        <p><strong>Objectif :</strong> Activer JWT et restreindre l'API.</p>
+                        <p><strong>Instructions :</strong> Modifiez <code>REST_FRAMEWORK</code> dans vos paramètres
+                          pour
+                          utiliser <code>JWTAuthentication</code> et forcer l'authentification par défaut.
+                          Configurez
+                          <code>SIMPLE_JWT</code> pour régler la durée des tokens.
+                        </p>
+                        <div class="code-wrap">
+                          <div class="code-top">Inspiration : settings.py</div>
+                          <pre class="code"># REST_FRAMEWORK & SIMPLE_JWT configuration</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-med">Moyen</span>
+                  </div>
+                </div>
+
+                <div class="task-group" style="margin-top:20px">
+                  <div class="task-group-header"><svg width="12" height="12" color="var(--purple)">
+                      <use href="#ic-info" />
+                    </svg><span class="task-group-title">Logique d'inscription et Signal</span></div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Créer le Profil automatiquement (Signal)</div>
+                      <div class="task-detail">
+                        <p>Utilisez un signal <code>post_save</code> pour garantir que chaque utilisateur possède un
+                          profil dès sa création.</p>
+                        <div class="code-wrap">
+                          <div class="code-top">accounts/signals.py</div>
+                          <pre class="code">from django.db.models.signals import post_save
+from django.dispatch import receiver
+from .models import User, Profile
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)</pre>
+                        </div>
+                        <p><strong>Note :</strong> N'oubliez pas d'importer ce fichier dans
+                          <code>accounts/apps.py</code> dans la méthode <code>ready()</code>.
+                        </p>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-med">Moyen</span>
+                  </div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Serializer d'inscription (Register)</div>
+                      <div class="task-detail">
+                        <p>Gère la création de l'utilisateur avec hachage du mot de passe.</p>
+                        <div class="code-wrap">
+                          <div class="code-top">accounts/serializers.py</div>
+                          <pre class="code">from rest_framework import serializers
+from .models import User
+
+class RegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password', 'role')
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-key">Critique</span>
+                  </div>
+                </div>
+
+                <div class="task-group" style="margin-top:20px">
+                  <div class="task-group-header"><svg width="12" height="12" color="var(--teal)">
+                      <use href="#ic-plan" />
+                    </svg><span class="task-group-title">Vues et endpoints API</span></div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Routes d'authentification</div>
+                      <div class="task-detail">
+                        <p>Configurez les endpoints pour obtenir et rafraîchir les tokens.</p>
+                        <div class="code-wrap">
+                          <div class="code-top">accounts/urls.py</div>
+                          <pre class="code">from django.urls import path
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from .views import RegisterView
+
+urlpatterns = [
+    path('register/', RegisterView.as_view(), name='auth_register'),
+    path('login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+]</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-easy">Facile</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 4 -->
+          <div class="step-card" id="step4">
+            <div class="step-header" onclick="toggleStep(this)">
+              <div class="step-num sn-1">04</div>
+              <div class="step-meta">
+                <div class="step-title">
+                  <svg width="14" height="14" color="var(--green)">
+                    <use href="#ic-gear" />
+                  </svg>
+                  CRUD Projets, Membres &amp; Permissions Owner
+                </div>
+                <div class="step-sub">ViewSets DRF, Router, permission IsProjectOwner, gestion membres via @action
+                </div>
+                <div class="step-tags-row">
+                  <span class="stag st-b">ViewSets DRF</span>
+                  <span class="stag st-b">Router</span>
+                  <span class="stag st-p">Permissions</span>
+                  <span class="stag st-t">@action decorator</span>
+                </div>
+                <div class="step-info">16 tâches &nbsp;·&nbsp; ~4h &nbsp;·&nbsp; Logique projets</div>
+              </div>
+              <svg class="step-chevron" width="16" height="16">
+                <use href="#ic-chevron" />
+              </svg>
+            </div>
+            <div class="step-body">
+              <div class="step-body-inner">
+
+                <div class="concept-callout">
+                  <div class="concept-icon-wrap"><svg width="18" height="18" color="var(--blue)">
+                      <use href="#ic-gear" />
+                    </svg></div>
+                  <div class="concept-text">
+                    <strong>Concept — ViewSet + Router DRF</strong>
+                    <p>Un <code>ModelViewSet</code> regroupe list, create, retrieve, update, destroy en une classe.
+                      Le
+                      <code>Router</code> génère toutes les URLs automatiquement : <code>GET /projects/</code>
+                      (list),
+                      <code>POST /projects/</code> (create), <code>GET /projects/1/</code> (detail), etc. Les
+                      <code>@action</code> ajoutent des endpoints custom comme <code>/projects/1/members/</code>.
+                    </p>
+                    <a class="doc-link" href="https://www.django-rest-framework.org/api-guide/viewsets/"
+                      target="_blank"><svg width="12" height="12">
+                        <use href="#ic-book" />
+                      </svg> DRF ViewSets <svg width="10" height="10">
+                        <use href="#ic-ext" />
+                      </svg></a>
+                    <a class="doc-link" href="https://www.django-rest-framework.org/api-guide/routers/" target="_blank"
+                      style="margin-left:8px"><svg width="12" height="12">
+                        <use href="#ic-book" />
+                      </svg> DRF Routers <svg width="10" height="10">
+                        <use href="#ic-ext" />
+                      </svg></a>
+                  </div>
+                </div>
+
+                <div class="docs-panel">
+                  <div class="docs-panel-title"><svg width="12" height="12" color="var(--blue)">
+                      <use href="#ic-book" />
+                    </svg> Documentation officielle pour cette étape</div>
+                  <div class="docs-grid">
+                    <a class="doc-card" href="https://www.django-rest-framework.org/api-guide/permissions/"
+                      target="_blank">
+                      <div class="doc-card-icon dci-p"><svg width="14" height="14" color="var(--purple)">
+                          <use href="#ic-lock" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">DRF — Permissions</div>
+                        <div class="doc-card-url">django-rest-framework.org</div>
+                      </div>
+                    </a>
+                    <a class="doc-card"
+                      href="https://www.django-rest-framework.org/api-guide/viewsets/#marking-extra-actions-for-routing"
+                      target="_blank">
+                      <div class="doc-card-icon dci-b"><svg width="14" height="14" color="var(--blue)">
+                          <use href="#ic-star" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">DRF — @action decorator</div>
+                        <div class="doc-card-url">django-rest-framework.org</div>
+                      </div>
+                    </a>
+                    <a class="doc-card"
+                      href="https://docs.djangoproject.com/fr/5.0/topics/db/queries/#complex-lookups-with-q-objects"
+                      target="_blank">
+                      <div class="doc-card-icon dci-g"><svg width="14" height="14" color="var(--green)">
+                          <use href="#ic-db" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">Django Q() Objects</div>
+                        <div class="doc-card-url">docs.djangoproject.com</div>
+                      </div>
+                    </a>
+                    <a class="doc-card" href="https://www.django-rest-framework.org/api-guide/filtering/"
+                      target="_blank">
+                      <div class="doc-card-icon dci-b"><svg width="14" height="14" color="var(--blue)">
+                          <use href="#ic-gear" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">DRF — Filtering</div>
+                        <div class="doc-card-url">django-rest-framework.org</div>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+
+                <div class="task-group">
+                  <div class="task-group-header"><svg width="12" height="12" color="var(--purple)">
+                      <use href="#ic-lock" />
+                    </svg><span class="task-group-title">Permissions Owner &amp; Member</span></div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Permission personnalisée IsProjectOwner</div>
+                      <div class="task-detail">
+                        <p>Créez une permission qui permet uniquement au créateur du projet de le modifier ou le
+                          supprimer.</p>
+                        <div class="code-wrap">
+                          <div class="code-top">projects/permissions.py</div>
+                          <pre class="code">from rest_framework import permissions
+
+class IsProjectOwner(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        # Autoriser uniquement le propriétaire
+        return obj.owner == request.user</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-key">Critique</span>
+                  </div>
+                </div>
+
+                <div class="task-group" style="margin-top:20px">
+                  <div class="task-group-header"><svg width="12" height="12" color="var(--blue)">
+                      <use href="#ic-gear" />
+                    </svg><span class="task-group-title">Logique ViewSet et Filtrage</span></div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Filtrage intelligent (Queryset)</div>
+                      <div class="task-detail">
+                        <p>L'utilisateur ne doit voir que les projets qu'il possède OU dont il est membre.</p>
+                        <div class="code-wrap">
+                          <div class="code-top">projects/views.py</div>
+                          <pre class="code">from django.db.models import Q
+from rest_framework import viewsets
+from .models import Project
+from .serializers import ProjectSerializer
+
+class ProjectViewSet(viewsets.ModelViewSet):
+    serializer_class = ProjectSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return Project.objects.filter(
+            Q(owner=user) | Q(members__user=user)
+        ).distinct()</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-key">Critique</span>
+                  </div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Ajouter des membres (@action)</div>
+                      <div class="task-detail">
+                        <p>Endpoint dynamique pour gérer les membres d'un projet.</p>
+                        <div class="code-wrap">
+                          <pre class="code">@action(detail=True, methods=['post'])
+def add_member(self, request, pk=None):
+    project = self.get_object()
+    user_id = request.data.get('user_id')
+    # Logique d'ajout ici...</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-med">Moyen</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="week-sep"></div>
+
+          <!-- ─────────────── SEMAINE 2 ─────────────── -->
+          <div class="week-head">
+            <div class="week-icon wi-2">
+              <svg width="22" height="22" color="var(--blue)">
+                <use href="#ic-plan" />
+              </svg>
+            </div>
+            <div class="week-meta">
+              <h2>Semaine 2 — Interface &amp; API Complète</h2>
+              <p>Django Templates (Objectif 1), API tâches avec règles métier, statistiques et primes</p>
+              <div class="week-tags">
+                <span class="wtag wt-b">Templates HTML</span>
+                <span class="wtag wt-b">CBV Django</span>
+                <span class="wtag wt-o">API Tâches</span>
+                <span class="wtag wt-p">Stats &amp; Primes</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 5 -->
+          <div class="step-card" id="step5">
+            <div class="step-header" onclick="toggleStep(this)">
+              <div class="step-num sn-2">05</div>
+              <div class="step-meta">
+                <div class="step-title"><svg width="14" height="14" color="var(--blue)">
+                    <use href="#ic-plan" />
+                  </svg> Django Templates — Interface Complète (Objectif 1)</div>
+                <div class="step-sub">CBV Django, formulaires, dashboard filtrable, base.html, toutes les pages HTML
+                </div>
+                <div class="step-tags-row">
+                  <span class="stag st-b">Templates Django</span>
+                  <span class="stag st-b">CBV — ListView/DetailView</span>
+                  <span class="stag st-b">Forms Django</span>
+                </div>
+                <div class="step-info">24 tâches &nbsp;·&nbsp; ~6h &nbsp;·&nbsp; Interface utilisateur</div>
+              </div>
+              <svg class="step-chevron" width="16" height="16">
+                <use href="#ic-chevron" />
+              </svg>
+            </div>
+            <div class="step-body">
+              <div class="step-body-inner">
+                <div class="concept-callout">
+                  <div class="concept-icon-wrap"><svg width="18" height="18" color="var(--blue)">
+                      <use href="#ic-plan" />
+                    </svg></div>
+                  <div class="concept-text">
+                    <strong>Concept — CBV (Class-Based Views)</strong>
+                    <p><code>ListView</code> = liste d'objets. <code>DetailView</code> = un objet.
+                      <code>CreateView</code> = formulaire création. <code>UpdateView</code> = formulaire
+                      modification.
+                      <code>DeleteView</code> = confirmation suppression. Toujours utiliser
+                      <code>LoginRequiredMixin</code> pour protéger les vues. Le moteur de templates Django utilise
+                      la
+                      syntaxe <code>&#123;% %&#125;</code> pour la logique et <code>&#123;&#123; &#125;&#125;</code>
+                      pour les variables.
+                    </p>
+                    <a class="doc-link" href="https://docs.djangoproject.com/fr/5.0/topics/class-based-views/"
+                      target="_blank"><svg width="12" height="12">
+                        <use href="#ic-book" />
+                      </svg> CBV Django <svg width="10" height="10">
+                        <use href="#ic-ext" />
+                      </svg></a>
+                    <a class="doc-link" href="https://docs.djangoproject.com/fr/5.0/ref/templates/language/"
+                      target="_blank" style="margin-left:8px"><svg width="12" height="12">
+                        <use href="#ic-book" />
+                      </svg> Django Templates Language <svg width="10" height="10">
+                        <use href="#ic-ext" />
+                      </svg></a>
+                  </div>
+                </div>
+                <div class="docs-panel">
+                  <div class="docs-panel-title"><svg width="12" height="12" color="var(--blue)">
+                      <use href="#ic-book" />
+                    </svg> Documentation officielle pour cette étape</div>
+                  <div class="docs-grid">
+                    <a class="doc-card"
+                      href="https://docs.djangoproject.com/fr/5.0/ref/class-based-views/generic-display/"
+                      target="_blank">
+                      <div class="doc-card-icon dci-b"><svg width="14" height="14" color="var(--blue)">
+                          <use href="#ic-plan" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">Generic Display Views</div>
+                        <div class="doc-card-url">docs.djangoproject.com</div>
+                      </div>
+                    </a>
+                    <a class="doc-card"
+                      href="https://docs.djangoproject.com/fr/5.0/ref/class-based-views/generic-editing/"
+                      target="_blank">
+                      <div class="doc-card-icon dci-b"><svg width="14" height="14" color="var(--blue)">
+                          <use href="#ic-gear" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">Generic Editing Views</div>
+                        <div class="doc-card-url">docs.djangoproject.com</div>
+                      </div>
+                    </a>
+                    <a class="doc-card"
+                      href="https://docs.djangoproject.com/fr/5.0/topics/auth/default/#the-loginrequiredmixin-mixin"
+                      target="_blank">
+                      <div class="doc-card-icon dci-g"><svg width="14" height="14" color="var(--green)">
+                          <use href="#ic-lock" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">LoginRequiredMixin</div>
+                        <div class="doc-card-url">docs.djangoproject.com</div>
+                      </div>
+                    </a>
+                    <a class="doc-card" href="https://docs.djangoproject.com/fr/5.0/topics/forms/" target="_blank">
+                      <div class="doc-card-icon dci-o"><svg width="14" height="14" color="var(--orange)">
+                          <use href="#ic-test" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">Forms Django</div>
+                        <div class="doc-card-url">docs.djangoproject.com</div>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+                <div class="task-group">
+                  <div class="task-group-header"><svg width="12" height="12" color="var(--blue)">
+                      <use href="#ic-plan" />
+                    </svg><span class="task-group-title">Structure templates &amp; layout</span></div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Layout de base (base.html)</div>
+                      <div class="task-detail">
+                        <p><strong>Objectif :</strong> Créer une structure HTML commune.</p>
+                        <p><strong>Instructions :</strong> Créez un fichier <code>templates/base.html</code> avec
+                          des blocs <code>{% block content %}</code> pour que les autres pages puissent en hériter.
+                          Affichez la barre de navigation et les messages flash.</p>
+                        <div class="code-wrap">
+                          <div class="code-top">Inspiration : templates/base.html</div>
+                          <pre class="code">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+    &lt;nav&gt;
+        &lt;a href="/"&gt;Tableau de bord&lt;/a&gt;
+        {% if user.is_authenticated %}
+            &lt;span&gt;Bonjour, {{ user.username }}&lt;/span&gt;
+        {% endif %}
+    &lt;/nav&gt;
+    {% block content %}{% endblock %}
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-med">Moyen</span>
+                  </div>
+                </div>
+
+                <div class="task-group" style="margin-top:20px">
+                  <div class="task-group-header"><svg width="12" height="12" color="var(--orange)">
+                      <use href="#ic-plan" />
+                    </svg><span class="task-group-title">Vues et Dashboard</span></div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Dashboard avec ListView</div>
+                      <div class="task-detail">
+                        <p>Utilisez une vue générique pour lister les projets.</p>
+                        <div class="code-wrap">
+                          <div class="code-top">projects/views.py</div>
+                          <pre class="code">from django.views.generic import ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .models import Project
+
+class DashboardView(LoginRequiredMixin, ListView):
+    model = Project
+    template_name = 'projects/dashboard.html'
+    context_object_name = 'projects'
+
+    def get_queryset(self):
+        return Project.objects.filter(owner=self.request.user)</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-med">Moyen</span>
+                  </div>
+                </div>
+
+                <div class="tip-box">
+                  <svg width="16" height="16" color="var(--yellow)" style="flex-shrink:0;margin-top:1px">
+                    <use href="#ic-alert" />
+                  </svg>
+                  <span><strong style="color:var(--yellow)">Mixin essentiel :</strong> Toujours ajouter
+                    <code>LoginRequiredMixin</code> en premier dans l'héritage de tes vues protégées.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 6 -->
+          <div class="step-card" id="step6">
+            <div class="step-header" onclick="toggleStep(this)">
+              <div class="step-num sn-2">06</div>
+              <div class="step-meta">
+                <div class="step-title"><svg width="14" height="14" color="var(--orange)">
+                    <use href="#ic-check" />
+                  </svg> API Tâches — CRUD Complet avec Toutes les Règles Métier</div>
+                <div class="step-sub">Validation étudiant/prof, permissions assigné vs owner, filtres, F() objects
+                </div>
+                <div class="step-tags-row">
+                  <span class="stag st-b">DRF ViewSet</span>
+                  <span class="stag st-o">Validation métier</span>
+                  <span class="stag st-p">Permissions</span>
+                  <span class="stag st-t">django-filter</span>
+                </div>
+                <div class="step-info">18 tâches &nbsp;·&nbsp; ~5h &nbsp;·&nbsp; Règles fonctionnelles</div>
+              </div>
+              <svg class="step-chevron" width="16" height="16">
+                <use href="#ic-chevron" />
+              </svg>
+            </div>
+            <div class="step-body">
+              <div class="step-body-inner">
+                <div class="concept-callout">
+                  <div class="concept-icon-wrap"><svg width="18" height="18" color="var(--orange)">
+                      <use href="#ic-lock" />
+                    </svg></div>
+                  <div class="concept-text">
+                    <strong>Concept — Validation DRF Serializers</strong>
+                    <p><code>validate_NOM_CHAMP(value)</code> = valide un champ individuel.
+                      <code>validate(data)</code>
+                      = valide l'ensemble (pour des règles cross-champs). Lever
+                      <code>serializers.ValidationError("message")</code> pour refuser. Les erreurs sont retournées
+                      en
+                      JSON avec status 400, jamais un crash serveur.
+                    </p>
+                    <a class="doc-link"
+                      href="https://www.django-rest-framework.org/api-guide/serializers/#field-level-validation"
+                      target="_blank"><svg width="12" height="12">
+                        <use href="#ic-book" />
+                      </svg> DRF — Field Validation <svg width="10" height="10">
+                        <use href="#ic-ext" />
+                      </svg></a>
+                    <a class="doc-link"
+                      href="https://docs.djangoproject.com/fr/5.0/ref/models/expressions/#f-expressions" target="_blank"
+                      style="margin-left:8px"><svg width="12" height="12">
+                        <use href="#ic-book" />
+                      </svg> Django F() Expressions <svg width="10" height="10">
+                        <use href="#ic-ext" />
+                      </svg></a>
+                  </div>
+                </div>
+                <div class="docs-panel">
+                  <div class="docs-panel-title"><svg width="12" height="12" color="var(--blue)">
+                      <use href="#ic-book" />
+                    </svg> Documentation officielle pour cette étape</div>
+                  <div class="docs-grid">
+                    <div class="task-group">
+                      <div class="task-group-header"><svg width="12" height="12" color="var(--orange)">
+                          <use href="#ic-gear" />
+                        </svg><span class="task-group-title">Validation métier dans le Serializer</span></div>
+
+                      <div class="task-item">
+                        <div class="task-check" onclick="checkTask(this)"></div>
+                        <div class="task-body">
+                          <div class="task-main">Validation d'assignation</div>
+                          <div class="task-detail">
+                            <p><strong>Objectif :</strong> Appliquer une règle métier stricte sur l'assignation.</p>
+                            <p><strong>Instructions :</strong> Dans votre <code>TaskSerializer</code>, créez une
+                              méthode <code>validate_assigned_to</code>. Si l'utilisateur actuel est un étudiant,
+                              empêchez-le d'assigner la tâche à un professeur.</p>
+                            <div class="code-wrap">
+                              <div class="code-top">Inspiration : tasks/serializers.py</div>
+                              <pre class="code">def validate_assigned_to(self, value):
+    user = self.context['request'].user
+    if user.role == 'etudiant' and value.role == 'professeur':
+        raise serializers.ValidationError("Un étudiant ne peut pas assigner un prof.")
+    return value</pre>
+                            </div>
+                          </div>
+                        </div>
+                        <span class="task-badge tb-key">Critique</span>
+                      </div>
+                    </div>
+                    <a class="doc-card"
+                      href="https://www.django-rest-framework.org/api-guide/serializers/#object-level-validation"
+                      target="_blank">
+                      <div class="doc-card-icon dci-o"><svg width="14" height="14" color="var(--orange)">
+                          <use href="#ic-alert" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">Object-level validation</div>
+                        <div class="doc-card-url">django-rest-framework.org</div>
+                      </div>
+                    </a>
+                    <a class="doc-card"
+                      href="https://docs.djangoproject.com/fr/5.0/ref/models/expressions/#f-expressions"
+                      target="_blank">
+                      <div class="doc-card-icon dci-g"><svg width="14" height="14" color="var(--green)">
+                          <use href="#ic-db" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">F() Expressions ORM</div>
+                        <div class="doc-card-url">docs.djangoproject.com</div>
+                      </div>
+                    </a>
+                    <a class="doc-card"
+                      href="https://www.django-rest-framework.org/api-guide/permissions/#custom-permissions"
+                      target="_blank">
+                      <div class="doc-card-icon dci-p"><svg width="14" height="14" color="var(--purple)">
+                          <use href="#ic-lock" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">Custom Permissions DRF</div>
+                        <div class="doc-card-url">django-rest-framework.org</div>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+                <div class="task-group">
+                  <div class="task-group-header"><svg width="12" height="12" color="var(--orange)">
+                      <use href="#ic-alert" />
+                    </svg><span class="task-group-title">Validation métier dans le Serializer</span></div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Validation d'assignation</div>
+                      <div class="task-detail">
+                        <p>Empêchez un étudiant d'assigner un professeur.</p>
+                        <div class="code-wrap">
+                          <div class="code-top">tasks/serializers.py</div>
+                          <pre class="code">class TaskSerializer(serializers.ModelSerializer):
+    def validate_assigned_to(self, value):
+        user = self.context['request'].user
+        if user.role == 'etudiant' and value.role == 'professeur':
+            raise serializers.ValidationError("Interdit !")
+        return value</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-key">Critique</span>
+                  </div>
+                </div>
+
+                <div class="task-group" style="margin-top:20px">
+                  <div class="task-group-header"><svg width="12" height="12" color="var(--blue)">
+                      <use href="#ic-gear" />
+                    </svg><span class="task-group-title">TaskViewSet et Permissions</span></div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Vérification des délais (F objects)</div>
+                      <div class="task-detail">
+                        <p>Utilisez les expressions F() pour comparer les dates proprement.</p>
+                        <div class="code-wrap">
+                          <pre class="code">from django.db.models import F
+
+# Tâches terminées à temps
+ontime = Task.objects.filter(
+    status='done',
+    completed_at__date__lte=F('due_date')
+)</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-key">Critique</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 7 -->
+          <div class="step-card" id="step7">
+            <div class="step-header" onclick="toggleStep(this)">
+              <div class="step-num sn-2">07</div>
+              <div class="step-meta">
+                <div class="step-title"><svg width="14" height="14" color="var(--blue)">
+                    <use href="#ic-star" />
+                  </svg> Statistiques, Évaluation &amp; Calcul des Primes</div>
+                <div class="step-sub">Service de calcul ORM, management command, API stats, logique prime 30K/100K
+                </div>
+                <div class="step-tags-row">
+                  <span class="stag st-g">ORM Agrégation</span>
+                  <span class="stag st-g">F() Expressions</span>
+                  <span class="stag st-b">Services Pattern</span>
+                  <span class="stag st-t">Management Command</span>
+                </div>
+                <div class="step-info">16 tâches &nbsp;·&nbsp; ~4h &nbsp;·&nbsp; Logique métier</div>
+              </div>
+              <svg class="step-chevron" width="16" height="16">
+                <use href="#ic-chevron" />
+              </svg>
+            </div>
+            <div class="step-body">
+              <div class="step-body-inner">
+                <div class="concept-callout">
+                  <div class="concept-icon-wrap"><svg width="18" height="18" color="var(--green)">
+                      <use href="#ic-db" />
+                    </svg></div>
+                  <div class="concept-text">
+                    <strong>Concept — ORM Agrégation &amp; F() Objects</strong>
+                    <p><code>Count()</code>, <code>Avg()</code>, <code>annotate()</code> permettent de faire des
+                      calculs
+                      en base de données, bien plus efficace que charger tous les objets en Python.
+                      <code>F('champ')</code> permet de comparer deux colonnes entre elles dans un filtre :
+                      <code>filter(completed_at__date__lte=F('due_date'))</code> compare les dates sans charger les
+                      données en mémoire.
+                    </p>
+                    <a class="doc-link" href="https://docs.djangoproject.com/fr/5.0/topics/db/aggregation/"
+                      target="_blank"><svg width="12" height="12">
+                        <use href="#ic-book" />
+                      </svg> ORM Aggregation <svg width="10" height="10">
+                        <use href="#ic-ext" />
+                      </svg></a>
+                    <a class="doc-link" href="https://docs.djangoproject.com/fr/5.0/howto/custom-management-commands/"
+                      target="_blank" style="margin-left:8px"><svg width="12" height="12">
+                        <use href="#ic-book" />
+                      </svg> Management Commands <svg width="10" height="10">
+                        <use href="#ic-ext" />
+                      </svg></a>
+                  </div>
+                </div>
+                <div class="docs-panel">
+                  <div class="docs-panel-title"><svg width="12" height="12" color="var(--blue)">
+                      <use href="#ic-book" />
+                    </svg> Documentation officielle pour cette étape</div>
+                  <div class="docs-grid">
+                    <a class="doc-card" href="https://docs.djangoproject.com/fr/5.0/topics/db/aggregation/"
+                      target="_blank">
+                      <div class="doc-card-icon dci-g"><svg width="14" height="14" color="var(--green)">
+                          <use href="#ic-db" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">Aggregation ORM</div>
+                        <div class="doc-card-url">docs.djangoproject.com</div>
+                      </div>
+                    </a>
+                    <a class="doc-card"
+                      href="https://docs.djangoproject.com/fr/5.0/ref/models/expressions/#f-expressions"
+                      target="_blank">
+                      <div class="doc-card-icon dci-g"><svg width="14" height="14" color="var(--green)">
+                          <use href="#ic-gear" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">F() Expressions</div>
+                        <div class="doc-card-url">docs.djangoproject.com</div>
+                      </div>
+                    </a>
+                    <a class="doc-card" href="https://docs.djangoproject.com/fr/5.0/howto/custom-management-commands/"
+                      target="_blank">
+                      <div class="doc-card-icon dci-b"><svg width="14" height="14" color="var(--blue)">
+                          <use href="#ic-terminal" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">Custom Commands</div>
+                        <div class="doc-card-url">docs.djangoproject.com</div>
+                      </div>
+                    </a>
+                    <a class="doc-card"
+                      href="https://docs.djangoproject.com/fr/5.0/ref/models/querysets/#update-or-create"
+                      target="_blank">
+                      <div class="doc-card-icon dci-g"><svg width="14" height="14" color="var(--green)">
+                          <use href="#ic-db" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">update_or_create</div>
+                        <div class="doc-card-url">docs.djangoproject.com</div>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+                <div class="task-group">
+                  <div class="task-group-header"><svg width="12" height="12" color="var(--green)">
+                      <use href="#ic-star" />
+                    </svg><span class="task-group-title">stats/services.py — Fonctions de calcul</span></div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Calcul des primes (Logique métier)</div>
+                      <div class="task-detail">
+                        <p><strong>Objectif :</strong> Implémenter le calcul automatique des primes.</p>
+                        <p><strong>Instructions :</strong> Dans <code>stats/services.py</code>, créez une fonction
+                          <code>evaluate_prime</code>. Calculez le ratio de tâches terminées à temps. Si 100%, prime
+                          de 100k, si >= 90%, prime de 30k.
+                        </p>
+                        <div class="code-wrap">
+                          <div class="code-top">Inspiration : stats/services.py</div>
+                          <pre class="code">def evaluate_prime(user, year):
+    stats = compute_user_stats(user, year)
+    ratio = stats['ontime_count'] / stats['total']
+    # Logique de calcul du montant...
+    if amount > 0:
+        Prime.objects.update_or_create(user=user, year=year, defaults={'amount': amount})</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-key">Critique</span>
+                  </div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Commande de gestion (Cron job)</div>
+                      <div class="task-detail">
+                        <p>Automatisez le calcul des primes via le terminal.</p>
+                        <div class="code-wrap">
+                          <div class="code-top">stats/management/commands/compute_primes.py</div>
+                          <pre class="code">from django.core.management.base import BaseCommand
+from stats.services import evaluate_prime
+
+class Command(BaseCommand):
+    def handle(self, *args, **options):
+        # Boucler sur les profs...
+        self.stdout.write("Primes calculées !")</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-med">Moyen</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 8 -->
+          <div class="step-card" id="step8">
+            <div class="step-header" onclick="toggleStep(this)">
+              <div class="step-num sn-2">08</div>
+              <div class="step-meta">
+                <div class="step-title"><svg width="14" height="14" color="var(--blue)">
+                    <use href="#ic-mail" />
+                  </svg> Système de Notifications</div>
+                <div class="step-sub">Notifications auto via signals, rappels deadline par command, API
+                  notifications
+                </div>
+                <div class="step-tags-row">
+                  <span class="stag st-p">Django Signals</span>
+                  <span class="stag st-t">Management Command</span>
+                  <span class="stag st-b">API REST</span>
+                </div>
+                <div class="step-info">12 tâches &nbsp;·&nbsp; ~3h &nbsp;·&nbsp; UX</div>
+              </div>
+              <svg class="step-chevron" width="16" height="16">
+                <use href="#ic-chevron" />
+              </svg>
+            </div>
+            <div class="step-body">
+              <div class="step-body-inner">
+                <div class="concept-callout">
+                  <div class="concept-icon-wrap"><svg width="18" height="18" color="var(--purple)">
+                      <use href="#ic-info" />
+                    </svg></div>
+                  <div class="concept-text">
+                    <strong>Concept — Signals Django (post_save avec pre-save comparison)</strong>
+                    <p>Pour détecter qu'un champ a changé (ex : <code>assigned_to</code> a été modifié), il faut
+                      comparer l'ancienne valeur avec la nouvelle. Technique : dans <code>pre_save</code>,
+                      sauvegarder
+                      l'ancienne valeur. Dans <code>post_save</code>, comparer et créer la notification si
+                      nécessaire.
+                      Ou utiliser <code>update_fields</code> pour savoir quels champs ont changé.</p>
+                    <a class="doc-link" href="https://docs.djangoproject.com/fr/5.0/ref/signals/#pre-save"
+                      target="_blank"><svg width="12" height="12">
+                        <use href="#ic-book" />
+                      </svg> pre_save Signal <svg width="10" height="10">
+                        <use href="#ic-ext" />
+                      </svg></a>
+                  </div>
+                </div>
+                <div class="task-group">
+                  <div class="task-group-header"><svg width="12" height="12" color="var(--purple)">
+                      <use href="#ic-info" />
+                    </svg><span class="task-group-title">Notifications automatiques</span></div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Signal d'assignation</div>
+                      <div class="task-detail">
+                        <p><strong>Objectif :</strong> Notifier l'utilisateur lorsqu'on lui assigne une tâche.</p>
+                        <p><strong>Instructions :</strong> Dans <code>tasks/signals.py</code>, utilisez le signal
+                          <code>post_save</code>. Si un utilisateur est assigné à la tâche lors de la sauvegarde,
+                          créez une instance du modèle <code>Notification</code>.
+                        </p>
+                        <div class="code-wrap">
+                          <div class="code-top">Inspiration : tasks/signals.py</div>
+                          <pre class="code">from django.db.models.signals import post_save
+from .models import Task, Notification
+
+@receiver(post_save, sender=Task)
+def notify_assignee(sender, instance, created, **kwargs):
+    if instance.assigned_to:
+        Notification.objects.create(
+            user=instance.assigned_to,
+            task=instance,
+            message=f"Tâche assignée : {instance.title}"
+        )</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-med">Moyen</span>
+                  </div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Marquer comme lu (ViewSet)</div>
+                      <div class="task-detail">
+                        <p>Ajoutez une action personnalisée pour gérer l'UX des notifications.</p>
+                        <div class="code-wrap">
+                          <pre class="code">@action(detail=True, methods=['patch'])
+def read(self, request, pk=None):
+    notif = self.get_object()
+    notif.is_read = True
+    notif.save()
+    return Response({'status': 'read'})</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-easy">Facile</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="week-sep"></div>
+
+          <!-- ─────────────── SEMAINE 3 ─────────────── -->
+          <div class="week-head">
+            <div class="week-icon wi-3">
+              <svg width="22" height="22" color="var(--orange)">
+                <use href="#ic-react" />
+              </svg>
+            </div>
+            <div class="week-meta">
+              <h2>Semaine 3 — Frontend React &amp; Livraison</h2>
+              <p>CORS, documentation Swagger, application React avec JWT, tests complets, finalisation GitHub</p>
+              <div class="week-tags">
+                <span class="wtag wt-o">React + Vite</span>
+                <span class="wtag wt-o">Axios JWT</span>
+                <span class="wtag wt-r">pytest-django</span>
+                <span class="wtag wt-g">GitHub</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 9 -->
+          <div class="step-card" id="step9">
+            <div class="step-header" onclick="toggleStep(this)">
+              <div class="step-num sn-3">09</div>
+              <div class="step-meta">
+                <div class="step-title"><svg width="14" height="14" color="var(--orange)">
+                    <use href="#ic-gear" />
+                  </svg> CORS, Documentation Swagger &amp; Config Finale Backend</div>
+                <div class="step-sub">Activer CORS, générer la doc OpenAPI/Swagger, préparer pour React</div>
+                <div class="step-tags-row">
+                  <span class="stag st-o">CORS Headers</span>
+                  <span class="stag st-b">drf-spectacular</span>
+                  <span class="stag st-t">OpenAPI</span>
+                </div>
+                <div class="step-info">10 tâches &nbsp;·&nbsp; ~2h &nbsp;·&nbsp; Pont backend/frontend</div>
+              </div>
+              <svg class="step-chevron" width="16" height="16">
+                <use href="#ic-chevron" />
+              </svg>
+            </div>
+            <div class="step-body">
+              <div class="step-body-inner">
+                <div class="concept-callout">
+                  <div class="concept-icon-wrap"><svg width="18" height="18" color="var(--orange)">
+                      <use href="#ic-lock" />
+                    </svg></div>
+                  <div class="concept-text">
+                    <strong>Concept — CORS (Cross-Origin Resource Sharing)</strong>
+                    <p>Par défaut, un navigateur bloque toute requête vers un domaine différent (ex: React sur
+                      <code>localhost:3000</code> ne peut pas appeler Django sur <code>localhost:8000</code>).
+                      <code>django-cors-headers</code> ajoute les headers HTTP
+                      <code>Access-Control-Allow-Origin</code>
+                      qui autorisent ces échanges. En dev : <code>CORS_ALLOW_ALL_ORIGINS = True</code>. En prod :
+                      restreindre à ton domaine.
+                    </p>
+                    <a class="doc-link" href="https://github.com/adamchainz/django-cors-headers" target="_blank"><svg
+                        width="12" height="12">
+                        <use href="#ic-book" />
+                      </svg> django-cors-headers README <svg width="10" height="10">
+                        <use href="#ic-ext" />
+                      </svg></a>
+                    <a class="doc-link" href="https://drf-spectacular.readthedocs.io/en/latest/" target="_blank"
+                      style="margin-left:8px"><svg width="12" height="12">
+                        <use href="#ic-book" />
+                      </svg> drf-spectacular Docs <svg width="10" height="10">
+                        <use href="#ic-ext" />
+                      </svg></a>
+                  </div>
+                </div>
+                <div class="task-group">
+                  <div class="task-group-header"><svg width="12" height="12" color="var(--orange)">
+                      <use href="#ic-gear" />
+                    </svg><span class="task-group-title">Configuration CORS &amp; Swagger</span></div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Swagger UI (OpenAPI)</div>
+                      <div class="task-detail">
+                        <p><strong>Objectif :</strong> Rendre l'API explorable interactivement.</p>
+                        <p><strong>Instructions :</strong> Configurez les routes <code>api/schema/</code> et
+                          <code>api/docs/</code> dans votre fichier d'URLs global pour activer Swagger UI via
+                          <code>drf-spectacular</code>.
+                        </p>
+                        <div class="code-wrap">
+                          <div class="code-top">Inspiration : config/urls.py</div>
+                          <pre class="code">from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+
+urlpatterns += [
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema')),
+]</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-easy">Facile</span>
+                  </div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Middleware CORS</div>
+                      <div class="task-detail">
+                        <p>Autorisez le frontend React à communiquer avec Django.</p>
+                        <div class="code-wrap">
+                          <pre class="code">MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware', # EN PREMIER
+    'django.middleware.common.CommonMiddleware',
+    # ...
+]
+
+CORS_ALLOW_ALL_ORIGINS = True # En développement uniquement</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-easy">Facile</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 10 -->
+          <div class="step-card" id="step10">
+            <div class="step-header" onclick="toggleStep(this)">
+              <div class="step-num sn-3">10</div>
+              <div class="step-meta">
+                <div class="step-title"><svg width="14" height="14" color="var(--orange)">
+                    <use href="#ic-react" />
+                  </svg> React — Setup, Auth &amp; Gestion des Tokens JWT</div>
+                <div class="step-sub">Vite + React, Axios intercepteurs, AuthContext, Login/Register, routes
+                  protégées
+                </div>
+                <div class="step-tags-row">
+                  <span class="stag st-o">React + Vite</span>
+                  <span class="stag st-o">Axios</span>
+                  <span class="stag st-o">React Router v6</span>
+                  <span class="stag st-o">Context API</span>
+                </div>
+                <div class="step-info">20 tâches &nbsp;·&nbsp; ~5h &nbsp;·&nbsp; Frontend auth</div>
+              </div>
+              <svg class="step-chevron" width="16" height="16">
+                <use href="#ic-chevron" />
+              </svg>
+            </div>
+            <div class="step-body">
+              <div class="step-body-inner">
+                <div class="concept-callout">
+                  <div class="concept-icon-wrap"><svg width="18" height="18" color="var(--orange)">
+                      <use href="#ic-react" />
+                    </svg></div>
+                  <div class="concept-text">
+                    <strong>Concept — Auth JWT dans React (3 pilliers)</strong>
+                    <p>1) <code>axiosInstance</code> avec intercepteur request (injecte le token) + intercepteur
+                      response (refresh auto si 401). 2) <code>AuthContext</code> : état global (user, login(),
+                      logout()). 3) <code>ProtectedRoute</code> : composant wrapper qui redirige vers /login si non
+                      authentifié. Ces 3 éléments forment l'architecture d'auth complète.</p>
+                    <a class="doc-link" href="https://axios-http.com/docs/interceptors" target="_blank"><svg width="12"
+                        height="12">
+                        <use href="#ic-book" />
+                      </svg> Axios Interceptors <svg width="10" height="10">
+                        <use href="#ic-ext" />
+                      </svg></a>
+                    <a class="doc-link" href="https://reactrouter.com/en/main/start/overview" target="_blank"
+                      style="margin-left:8px"><svg width="12" height="12">
+                        <use href="#ic-book" />
+                      </svg> React Router v6 <svg width="10" height="10">
+                        <use href="#ic-ext" />
+                      </svg></a>
+                  </div>
+                </div>
+                <div class="docs-panel">
+                  <div class="docs-panel-title"><svg width="12" height="12" color="var(--blue)">
+                      <use href="#ic-book" />
+                    </svg> Documentation officielle pour cette étape</div>
+                  <div class="docs-grid">
+                    <a class="doc-card" href="https://vitejs.dev/guide/" target="_blank">
+                      <div class="doc-card-icon dci-o"><svg width="14" height="14" color="var(--orange)">
+                          <use href="#ic-pkg" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">Vite — Getting Started</div>
+                        <div class="doc-card-url">vitejs.dev</div>
+                      </div>
+                    </a>
+                    <a class="doc-card" href="https://axios-http.com/docs/interceptors" target="_blank">
+                      <div class="doc-card-icon dci-o"><svg width="14" height="14" color="var(--orange)">
+                          <use href="#ic-gear" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">Axios — Interceptors</div>
+                        <div class="doc-card-url">axios-http.com</div>
+                      </div>
+                    </a>
+                    <a class="doc-card" href="https://react.dev/reference/react/useContext" target="_blank">
+                      <div class="doc-card-icon dci-o"><svg width="14" height="14" color="var(--orange)">
+                          <use href="#ic-react" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">React — useContext</div>
+                        <div class="doc-card-url">react.dev</div>
+                      </div>
+                    </a>
+                    <a class="doc-card" href="https://reactrouter.com/en/main/components/navigate" target="_blank">
+                      <div class="doc-card-icon dci-o"><svg width="14" height="14" color="var(--orange)">
+                          <use href="#ic-plan" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">React Router — Navigate</div>
+                        <div class="doc-card-url">reactrouter.com</div>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+                <div class="task-group">
+                  <div class="task-group-header"><svg width="12" height="12" color="var(--orange)">
+                      <use href="#ic-terminal" />
+                    </svg><span class="task-group-title">Setup React + dépendances</span></div>
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Créer le projet React avec Vite dans un dossier frontend/</div>
+                      <div class="task-detail"><code>npm create vite@latest frontend -- --template react</code>.
+                        Puis
+                        <code>cd frontend &amp;&amp; npm install</code>. Installer les dépendances :
+                        <code>npm install axios react-router-dom recharts</code>.
+                      </div>
+                      <a class="task-doc" href="https://vitejs.dev/guide/#scaffolding-your-first-vite-project"
+                        target="_blank"><svg width="10" height="10">
+                          <use href="#ic-book" />
+                        </svg> Scaffolding Vite</a>
+                    </div>
+                    <span class="task-badge tb-easy">Facile</span>
+                  </div>
+                  <div class="task-group">
+                    <div class="task-group-header"><svg width="12" height="12" color="var(--blue)">
+                        <use href="#ic-gear" />
+                      </svg><span class="task-group-title">React Auth Architecture</span></div>
+
+                    <div class="task-item">
+                      <div class="task-check" onclick="checkTask(this)"></div>
+                      <div class="task-body">
+                        <div class="task-main">Intercepteurs Axios</div>
+                        <div class="task-detail">
+                          <p><strong>Objectif :</strong> Centraliser les appels API et l'authentification.</p>
+                          <p><strong>Instructions :</strong> Créez une instance Axios dans
+                            <code>src/api/axios.js</code> et ajoutez un intercepteur de requête pour injecter le
+                            token JWT présent dans le <code>localStorage</code>.
+                          </p>
+                          <div class="code-wrap">
+                            <div class="code-top">Inspiration : src/api/axios.js</div>
+                            <pre class="code">import axios from 'axios';
+
+const api = axios.create({ baseURL: 'http://localhost:8000/api' });
+
+api.interceptors.request.use(config => {
+    const token = localStorage.getItem('access');
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+    return config;
+});</pre>
+                          </div>
+                        </div>
+                      </div>
+                      <span class="task-badge tb-key">Critique</span>
+                    </div>
+
+                    <div class="task-item">
+                      <div class="task-check" onclick="checkTask(this)"></div>
+                      <div class="task-body">
+                        <div class="task-main">Route Protégée (ProtectedRoute)</div>
+                        <div class="task-detail">
+                          <p>Empêchez l'accès aux pages membres si non connecté.</p>
+                          <div class="code-wrap">
+                            <pre class="code">const ProtectedRoute = ({ children }) => {
+    const { user } = useAuth();
+    return user ? children : &lt;Navigate to="/login" /&gt;;
+};</pre>
+                          </div>
+                        </div>
+                      </div>
+                      <span class="task-badge tb-med">Moyen</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 11 -->
+          <div class="step-card" id="step11">
+            <div class="step-header" onclick="toggleStep(this)">
+              <div class="step-num sn-3">11</div>
+              <div class="step-meta">
+                <div class="step-title"><svg width="14" height="14" color="var(--orange)">
+                    <use href="#ic-plan" />
+                  </svg> React — Dashboard, Tâches, Stats &amp; Profil</div>
+                <div class="step-sub">Pages complètes, filtres, graphiques Recharts, gestion tâches avec règles
+                  rôles
+                </div>
+                <div class="step-tags-row">
+                  <span class="stag st-o">React Hooks</span>
+                  <span class="stag st-o">Recharts</span>
+                  <span class="stag st-o">Composants</span>
+                </div>
+                <div class="step-info">22 tâches &nbsp;·&nbsp; ~7h &nbsp;·&nbsp; Interface complète</div>
+              </div>
+              <svg class="step-chevron" width="16" height="16">
+                <use href="#ic-chevron" />
+              </svg>
+            </div>
+            <div class="step-body">
+              <div class="step-body-inner">
+                <div class="concept-callout">
+                  <div class="concept-icon-wrap"><svg width="18" height="18" color="var(--orange)">
+                      <use href="#ic-react" />
+                    </svg></div>
+                  <div class="concept-text">
+                    <strong>Concept — useEffect + useState (chargement de données)</strong>
+                    <p><code>useState</code> stocke les données en local (liste projets, état chargement, erreurs).
+                      <code>useEffect(fn, [deps])</code> exécute une fonction au montage du composant ou quand les
+                      dépendances changent. Pattern :
+                      <code>const [data, setData] = useState([]); const [loading, setLoading] = useState(true); useEffect(() => { api.get(...).then(r => setData(r.data)).finally(() => setLoading(false)); }, []);</code>
+                    </p>
+                    <a class="doc-link" href="https://react.dev/reference/react/useEffect" target="_blank"><svg
+                        width="12" height="12">
+                        <use href="#ic-book" />
+                      </svg> React useEffect <svg width="10" height="10">
+                        <use href="#ic-ext" />
+                      </svg></a>
+                    <a class="doc-link" href="https://recharts.org/en-US/examples" target="_blank"
+                      style="margin-left:8px"><svg width="12" height="12">
+                        <use href="#ic-book" />
+                      </svg> Recharts Examples <svg width="10" height="10">
+                        <use href="#ic-ext" />
+                      </svg></a>
+                  </div>
+                </div>
+                <div class="task-group">
+                  <div class="task-group-header"><svg width="12" height="12" color="var(--orange)">
+                      <use href="#ic-plan" />
+                    </svg><span class="task-group-title">Chargement et Affichage</span></div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Fetching de données (useEffect)</div>
+                      <div class="task-detail">
+                        <p><strong>Objectif :</strong> Récupérer dynamiquement les données du serveur.</p>
+                        <p><strong>Instructions :</strong> Utilisez le hook <code>useEffect</code> pour lancer un
+                          appel API <code>GET /projects/</code> au montage du composant Dashboard. Stockez le
+                          résultat dans un état <code>useState</code>.</p>
+                        <div class="code-wrap">
+                          <div class="code-top">Inspiration : src/pages/Dashboard.jsx</div>
+                          <pre class="code">useEffect(() => {
+    api.get('/projects/')
+       .then(res => setProjects(res.data))
+       .catch(err => console.error(err));
+}, []);</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-med">Moyen</span>
+                  </div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Composant ProjectCard</div>
+                      <div class="task-detail">
+                        <p>Exemple de composant React modulaire.</p>
+                        <div class="code-wrap">
+                          <div class="code-top">src/components/ProjectCard.jsx</div>
+                          <pre class="code">const ProjectCard = ({ project }) => (
+  &lt;div className="project-card"&gt;
+    &lt;h3&gt;{project.name}&lt;/h3&gt;
+    &lt;p&gt;{project.description}&lt;/p&gt;
+    &lt;button&gt;Gérer&lt;/button&gt;
+  &lt;/div&gt;
+);</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-easy">Facile</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 12 -->
+          <div class="step-card" id="step12">
+            <div class="step-header" onclick="toggleStep(this)">
+              <div class="step-num sn-3">12</div>
+              <div class="step-meta">
+                <div class="step-title"><svg width="14" height="14" color="var(--orange)">
+                    <use href="#ic-test" />
+                  </svg> Tests Unitaires Complets avec pytest-django</div>
+                <div class="step-sub">Auth, permissions, règles métier, calcul prime — couverture 70%+</div>
+                <div class="step-tags-row">
+                  <span class="stag st-r">pytest-django</span>
+                  <span class="stag st-r">APIClient DRF</span>
+                  <span class="stag st-r">Coverage</span>
+                </div>
+                <div class="step-info">20 tâches &nbsp;·&nbsp; ~4h &nbsp;·&nbsp; Qualité</div>
+              </div>
+              <svg class="step-chevron" width="16" height="16">
+                <use href="#ic-chevron" />
+              </svg>
+            </div>
+            <div class="step-body">
+              <div class="step-body-inner">
+                <div class="concept-callout">
+                  <div class="concept-icon-wrap"><svg width="18" height="18" color="var(--red)">
+                      <use href="#ic-test" />
+                    </svg></div>
+                  <div class="concept-text">
+                    <strong>Concept — Tests avec pytest-django + APIClient</strong>
+                    <p><code>@pytest.mark.django_db</code> = le test peut accéder à une base de test isolée.
+                      <code>APIClient.force_authenticate(user=u)</code> = simuler un user connecté instantanément.
+                      <code>@pytest.fixture</code> = préparer des données réutilisables. Chaque test s'exécute dans
+                      une
+                      transaction rollback → la BDD est propre entre chaque test.
+                    </p>
+                    <a class="doc-link" href="https://pytest-django.readthedocs.io/en/latest/" target="_blank"><svg
+                        width="12" height="12">
+                        <use href="#ic-book" />
+                      </svg> pytest-django Docs <svg width="10" height="10">
+                        <use href="#ic-ext" />
+                      </svg></a>
+                    <a class="doc-link" href="https://www.django-rest-framework.org/api-guide/testing/" target="_blank"
+                      style="margin-left:8px"><svg width="12" height="12">
+                        <use href="#ic-book" />
+                      </svg> DRF Testing <svg width="10" height="10">
+                        <use href="#ic-ext" />
+                      </svg></a>
+                  </div>
+                </div>
+                <div class="docs-panel">
+                  <div class="docs-panel-title"><svg width="12" height="12" color="var(--blue)">
+                      <use href="#ic-book" />
+                    </svg> Documentation officielle pour cette étape</div>
+                  <div class="docs-grid">
+                    <a class="doc-card"
+                      href="https://pytest-django.readthedocs.io/en/latest/helpers.html#pytest-mark-django-db"
+                      target="_blank">
+                      <div class="doc-card-icon dci-o"><svg width="14" height="14" color="var(--orange)">
+                          <use href="#ic-test" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">pytest.mark.django_db</div>
+                        <div class="doc-card-url">readthedocs.io</div>
+                      </div>
+                    </a>
+                    <a class="doc-card" href="https://www.django-rest-framework.org/api-guide/testing/#apiclient"
+                      target="_blank">
+                      <div class="doc-card-icon dci-b"><svg width="14" height="14" color="var(--blue)">
+                          <use href="#ic-gear" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">DRF — APIClient</div>
+                        <div class="doc-card-url">django-rest-framework.org</div>
+                      </div>
+                    </a>
+                    <a class="doc-card" href="https://docs.pytest.org/en/stable/how-to/fixtures.html" target="_blank">
+                      <div class="doc-card-icon dci-g"><svg width="14" height="14" color="var(--green)">
+                          <use href="#ic-star" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">pytest — Fixtures</div>
+                        <div class="doc-card-url">docs.pytest.org</div>
+                      </div>
+                    </a>
+                    <a class="doc-card" href="https://pytest-cov.readthedocs.io/en/latest/" target="_blank">
+                      <div class="doc-card-icon dci-g"><svg width="14" height="14" color="var(--green)">
+                          <use href="#ic-check" />
+                        </svg></div>
+                      <div class="doc-card-text">
+                        <div class="doc-card-name">pytest-cov Coverage</div>
+                        <div class="doc-card-url">readthedocs.io</div>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+                <div class="task-group">
+                  <div class="task-group-header"><svg width="12" height="12" color="var(--red)">
+                      <use href="#ic-gear" />
+                    </svg><span class="task-group-title">Configuration &amp; Fixtures</span></div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Config Pytest</div>
+                      <div class="task-detail">
+                        <p><strong>Objectif :</strong> Configurer l'environnement de test.</p>
+                        <p><strong>Instructions :</strong> Créez un fichier <code>pytest.ini</code> à la racine du
+                          projet et indiquez le chemin vers vos paramètres Django (<code>config.settings</code>).
+                        </p>
+                        <div class="code-wrap">
+                          <div class="code-top">Inspiration : pytest.ini</div>
+                          <pre class="code">[pytest]
+DJANGO_SETTINGS_MODULE = config.settings
+python_files = tests.py test_*.py</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-easy">Facile</span>
+                  </div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Fixtures (Client API)</div>
+                      <div class="task-detail">
+                        <div class="code-wrap">
+                          <div class="code-top">conftest.py</div>
+                          <pre class="code">@pytest.fixture
+def auth_client():
+    client = APIClient()
+    user = User.objects.create_user("test")
+    client.force_authenticate(user=user)
+    return client</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-med">Moyen</span>
+                  </div>
+                </div>
+                <div class="task-group" style="margin-top:20px">
+                  <div class="task-group-header"><svg width="12" height="12" color="var(--red)">
+                      <use href="#ic-test" />
+                    </svg><span class="task-group-title">Tests critiques à implémenter</span></div>
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Test : inscription réussie retourne les tokens JWT</div>
+                      <div class="task-detail">POST <code>/api/auth/register/</code> avec body valide → vérifier
+                        <code>status == 201</code> et que la réponse contient <code>access</code> et
+                        <code>refresh</code>.
+                      </div>
+                    </div>
+                    <span class="task-badge tb-easy">Facile</span>
+                  </div>
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Test : un étudiant ne peut pas assigner un professeur</div>
+                      <div class="task-detail"><code>api_client.force_authenticate(student)</code>. POST créer une
+                        tâche
+                        avec <code>assigned_to=professor.id</code> → <code>assert response.status_code == 400</code>
+                        et
+                        le message d'erreur est présent dans <code>response.data</code>.</div>
+                    </div>
+                    <span class="task-badge tb-key">Critique</span>
+                  </div>
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Test : seul l'owner peut supprimer un projet</div>
+                      <div class="task-detail">Connecter un autre user (non-owner). DELETE
+                        <code>/api/projects/{id}/</code> → <code>assert response.status_code == 403</code>.
+                      </div>
+                    </div>
+                    <span class="task-badge tb-key">Critique</span>
+                  </div>
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Test : completed_at rempli quand status → done</div>
+                      <div class="task-detail">Créer une tâche. PATCH avec <code>{"status": "done"}</code> →
+                        <code>assert response.data['completed_at'] is not None</code>.
+                      </div>
+                    </div>
+                    <span class="task-badge tb-med">Moyen</span>
+                  </div>
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Test : prime 100K si taux = 100%, prime 30K si ≥ 90%, rien sinon</div>
+                      <div class="task-detail">3 tests distincts en créant des tâches avec différents résultats
+                        (10/10,
+                        9/10, 7/10). Appeler <code>evaluate_prime(prof, year)</code>. Vérifier le montant de la
+                        prime
+                        avec <code>Prime.objects.get(...).amount</code>.</div>
+                      <a class="task-doc" href="https://docs.pytest.org/en/stable/how-to/parametrize.html"
+                        target="_blank"><svg width="10" height="10">
+                          <use href="#ic-book" />
+                        </svg> pytest parametrize</a>
+                    </div>
+                    <span class="task-badge tb-key">Critique</span>
+                  </div>
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Lancer pytest avec rapport de couverture HTML</div>
+                      <div class="task-detail">Commande :
+                        <code>pytest --cov=. --cov-report=html --cov-report=term-missing</code>. Ouvrir
+                        <code>htmlcov/index.html</code>. Viser 70%+ de couverture sur les modules critiques
+                        (accounts,
+                        projects, tasks, stats).
+                      </div>
+                      <a class="task-doc" href="https://pytest-cov.readthedocs.io/en/latest/reporting.html"
+                        target="_blank"><svg width="10" height="10">
+                          <use href="#ic-book" />
+                        </svg> Coverage Report</a>
+                    </div>
+                    <span class="task-badge tb-easy">Facile</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 13 -->
+          <div class="step-card" id="step13">
+            <div class="step-header" onclick="toggleStep(this)">
+              <div class="step-num sn-3">13</div>
+              <div class="step-meta">
+                <div class="step-title"><svg width="14" height="14" color="var(--orange)">
+                    <use href="#ic-git" />
+                  </svg> Finalisation, GitHub &amp; Documentation Complète</div>
+                <div class="step-sub">README professionnel, .env.example, fixtures demo, checklist livraison</div>
+                <div class="step-tags-row">
+                  <span class="stag st-y">GitHub/GitLab</span>
+                  <span class="stag st-y">README.md</span>
+                  <span class="stag st-y">Fixtures</span>
+                </div>
+                <div class="step-info">14 tâches &nbsp;·&nbsp; ~3h &nbsp;·&nbsp; Livraison</div>
+              </div>
+              <svg class="step-chevron" width="16" height="16">
+                <use href="#ic-chevron" />
+              </svg>
+            </div>
+            <div class="step-body">
+              <div class="step-body-inner">
+                <div class="task-group">
+                  <div class="task-group-header"><svg width="12" height="12" color="var(--yellow)">
+                      <use href="#ic-test" />
+                    </svg><span class="task-group-title">GitHub &amp; Documentation</span></div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">README.md Structure</div>
+                      <div class="task-detail">
+                        <p><strong>Objectif :</strong> Documenter le projet pour les futurs développeurs.</p>
+                        <p><strong>Instructions :</strong> Créez un fichier <code>README.md</code> clair expliquant
+                          les étapes d'installation du backend et du frontend.</p>
+                        <div class="code-wrap">
+                          <div class="code-top">Inspiration : README.md</div>
+                          <pre class="code"># Projet Étape par Étape
+## Installation
+1. `pip install -r requirements.txt`
+2. `python manage.py migrate`
+3. `npm install && npm run dev` (frontend)</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-easy">Facile</span>
+                  </div>
+
+                  <div class="task-item">
+                    <div class="task-check" onclick="checkTask(this)"></div>
+                    <div class="task-body">
+                      <div class="task-main">Git ignore</div>
+                      <div class="task-detail">
+                        <p>Ignorez les fichiers sensibles et temporaires.</p>
+                        <div class="code-wrap">
+                          <pre class="code">.env
+db.sqlite3
+__pycache__/
+node_modules/
+dist/</pre>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="task-badge tb-easy">Facile</span>
+                  </div>
+                </div>
+                <div class="tip-box">
+                  <svg width="16" height="16" color="var(--yellow)" style="flex-shrink:0;margin-top:1px">
+                    <use href="#ic-alert" />
+                  </svg>
+                  <span><strong style="color:var(--yellow)">Checklist finale :</strong>
+                    <code>python manage.py check</code> (0 erreur), <code>pytest</code> (tous les tests passent),
+                    <code>python manage.py runserver</code> (démarre sans warning), frontend se connecte à l'API,
+                    données de démo se chargent.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /plan-content -->
+      </div><!-- /view-plan -->
+
+      <!-- ══════════════════════════════════════
+     VUE : MODÉLISATION
+══════════════════════════════════════ -->
+      <div class="view" id="view-model">
+        <div class="model-content">
+
+          <div style="margin-bottom:32px">
+            <h1 style="font-size:1.6rem;font-weight:800;letter-spacing:-.03em;color:var(--text)">Modélisation du
+              Projet
+            </h1>
+            <p style="color:var(--text2);margin-top:6px;font-size:0.88rem">Modèle Conceptuel de Données, tables
+              Django,
+              routes API et règles métier</p>
+          </div>
+
+          <!-- MCD -->
+          <div class="model-section-title">
+            <svg width="16" height="16" color="var(--purple)">
+              <use href="#ic-model" />
+            </svg>
+            Modèle Conceptuel de Données (MCD)
+          </div>
+          <div class="mcd-wrap">
+            <svg viewBox="0 0 1060 660" xmlns="http://www.w3.org/2000/svg"
+              font-family="'JetBrains Mono','Courier New',monospace" font-size="11.5">
+              <defs>
+                <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                  <polygon points="0 0, 8 3, 0 6" fill="#484f58" />
+                </marker>
+                <marker id="arr-b" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                  <polygon points="0 0, 8 3, 0 6" fill="#58a6ff" />
+                </marker>
+                <filter id="sh">
+                  <feDropShadow dx="0" dy="2" stdDeviation="4" flood-opacity="0.3" flood-color="#000" />
+                </filter>
+              </defs>
+
+              <!-- Relations -->
+              <line x1="195" y1="155" x2="195" y2="230" stroke="#484f58" stroke-width="1.5" stroke-dasharray="5,3" />
+              <line x1="230" y1="165" x2="435" y2="308" stroke="#484f58" stroke-width="1.5" marker-end="url(#arr)" />
+              <line x1="600" y1="320" x2="510" y2="320" stroke="#484f58" stroke-width="1.5" marker-end="url(#arr)" />
+              <line x1="680" y1="372" x2="680" y2="445" stroke="#484f58" stroke-width="1.5" marker-end="url(#arr)" />
+              <line x1="225" y1="170" x2="570" y2="475" stroke="#58a6ff" stroke-width="1.5" stroke-dasharray="4,3"
+                marker-end="url(#arr-b)" />
+              <line x1="155" y1="175" x2="80" y2="445" stroke="#484f58" stroke-width="1.5" marker-end="url(#arr)" />
+              <line x1="175" y1="180" x2="305" y2="538" stroke="#d69e2e" stroke-width="1.5" stroke-dasharray="4,3"
+                marker-end="url(#arr)" />
+              <line x1="135" y1="510" x2="270" y2="560" stroke="#d69e2e" stroke-width="1.5" stroke-dasharray="3,3" />
+              <line x1="220" y1="185" x2="840" y2="435" stroke="#7c3aed" stroke-width="1.2" stroke-dasharray="4,3"
+                marker-end="url(#arr)" />
+              <line x1="730" y1="480" x2="840" y2="458" stroke="#7c3aed" stroke-width="1.2" stroke-dasharray="3,3" />
+
+              <!-- USER -->
+              <g filter="url(#sh)">
+                <rect x="60" y="58" width="270" height="168" rx="10" fill="#0d1117" stroke="#3fb950"
+                  stroke-width="1.5" />
+                <rect x="60" y="58" width="270" height="34" rx="10" fill="#3fb950" />
+                <rect x="60" y="78" width="270" height="14" fill="#3fb950" />
+                <text x="195" y="80" fill="white" font-weight="700" text-anchor="middle" font-size="13"
+                  letter-spacing=".04em">USER</text>
+                <rect x="68" y="100" width="254" height="17" fill="rgba(227,179,65,.08)" rx="3" />
+                <text x="76" y="113" fill="#e3b341" font-weight="700">PK</text><text x="108" y="113"
+                  fill="#e6edf3">id</text><text x="200" y="113" fill="#8b949e">AutoField</text>
+                <text x="76" y="131" fill="#8b949e"> </text><text x="108" y="131" fill="#e6edf3">username</text><text
+                  x="200" y="131" fill="#8b949e">VARCHAR</text>
+                <text x="76" y="149" fill="#8b949e"> </text><text x="108" y="149" fill="#e6edf3">email</text><text
+                  x="200" y="149" fill="#8b949e">VARCHAR unique</text>
+                <text x="76" y="167" fill="#8b949e"> </text><text x="108" y="167" fill="#e6edf3">password</text><text
+                  x="200" y="167" fill="#8b949e">VARCHAR (hash)</text>
+                <text x="76" y="185" fill="#8b949e"> </text><text x="108" y="185" fill="#e6edf3">role</text><text
+                  x="200" y="185" fill="#8b949e">ENUM etudiant/prof</text>
+                <text x="76" y="203" fill="#8b949e"> </text><text x="108" y="203" fill="#e6edf3">is_active</text><text
+                  x="200" y="203" fill="#8b949e">BOOLEAN</text>
+                <text x="76" y="219" fill="#8b949e"> </text><text x="108" y="219" fill="#e6edf3">date_joined</text><text
+                  x="200" y="219" fill="#8b949e">DATETIME</text>
+              </g>
+
+              <!-- PROFILE -->
+              <g filter="url(#sh)">
+                <rect x="60" y="230" width="270" height="116" rx="10" fill="#0d1117" stroke="#2ea043"
+                  stroke-width="1.5" />
+                <rect x="60" y="230" width="270" height="34" rx="10" fill="#2ea043" />
+                <rect x="60" y="250" width="270" height="14" fill="#2ea043" />
+                <text x="195" y="252" fill="white" font-weight="700" text-anchor="middle" font-size="13">PROFILE</text>
+                <rect x="68" y="272" width="254" height="17" fill="rgba(227,179,65,.08)" rx="3" />
+                <text x="76" y="285" fill="#e3b341" font-weight="700">PK</text><text x="108" y="285"
+                  fill="#e6edf3">id</text><text x="200" y="285" fill="#8b949e">AutoField</text>
+                <rect x="68" y="290" width="254" height="17" fill="rgba(88,166,255,.06)" rx="3" />
+                <text x="76" y="303" fill="#58a6ff" font-weight="700">FK</text><text x="108" y="303"
+                  fill="#e6edf3">user_id</text><text x="200" y="303" fill="#8b949e">→ User (1:1)</text>
+                <text x="76" y="321" fill="#8b949e"> </text><text x="108" y="321" fill="#e6edf3">avatar</text><text
+                  x="200" y="321" fill="#8b949e">ImageField</text>
+                <text x="76" y="339" fill="#8b949e"> </text><text x="108" y="339" fill="#e6edf3">bio</text><text x="200"
+                  y="339" fill="#8b949e">TEXT</text>
+              </g>
+
+              <!-- PROJECT -->
+              <g filter="url(#sh)">
+                <rect x="575" y="232" width="270" height="150" rx="10" fill="#0d1117" stroke="#58a6ff"
+                  stroke-width="1.5" />
+                <rect x="575" y="232" width="270" height="34" rx="10" fill="#388bfd" />
+                <rect x="575" y="252" width="270" height="14" fill="#388bfd" />
+                <text x="710" y="254" fill="white" font-weight="700" text-anchor="middle" font-size="13">PROJECT</text>
+                <rect x="583" y="274" width="254" height="17" fill="rgba(227,179,65,.08)" rx="3" />
+                <text x="591" y="287" fill="#e3b341" font-weight="700">PK</text><text x="623" y="287"
+                  fill="#e6edf3">id</text><text x="720" y="287" fill="#8b949e">AutoField</text>
+                <rect x="583" y="292" width="254" height="17" fill="rgba(88,166,255,.06)" rx="3" />
+                <text x="591" y="305" fill="#58a6ff" font-weight="700">FK</text><text x="623" y="305"
+                  fill="#e6edf3">owner_id</text><text x="720" y="305" fill="#8b949e">→ User</text>
+                <text x="591" y="323" fill="#8b949e"> </text><text x="623" y="323" fill="#e6edf3">name</text><text
+                  x="720" y="323" fill="#8b949e">VARCHAR(200)</text>
+                <text x="591" y="341" fill="#8b949e"> </text><text x="623" y="341"
+                  fill="#e6edf3">description</text><text x="720" y="341" fill="#8b949e">TEXT</text>
+                <text x="591" y="359" fill="#8b949e"> </text><text x="623" y="359" fill="#e6edf3">created_at</text><text
+                  x="720" y="359" fill="#8b949e">DATETIME</text>
+                <text x="591" y="377" fill="#8b949e"> </text><text x="623" y="377" fill="#e6edf3">updated_at</text><text
+                  x="720" y="377" fill="#8b949e">DATETIME</text>
+              </g>
+
+              <!-- PROJECT MEMBER -->
+              <g filter="url(#sh)">
+                <rect x="370" y="284" width="230" height="107" rx="10" fill="#0d1117" stroke="#3fb950"
+                  stroke-width="1.5" />
+                <rect x="370" y="284" width="230" height="34" rx="10" fill="#1a7f37" />
+                <rect x="370" y="304" width="230" height="14" fill="#1a7f37" />
+                <text x="485" y="306" fill="white" font-weight="700" text-anchor="middle" font-size="12.5">PROJECT
+                  MEMBER</text>
+                <rect x="378" y="326" width="214" height="17" fill="rgba(227,179,65,.08)" rx="3" />
+                <text x="386" y="339" fill="#e3b341" font-weight="700">PK</text><text x="418" y="339"
+                  fill="#e6edf3">id</text><text x="500" y="339" fill="#8b949e">AutoField</text>
+                <rect x="378" y="344" width="214" height="17" fill="rgba(88,166,255,.06)" rx="3" />
+                <text x="386" y="357" fill="#58a6ff" font-weight="700">FK</text><text x="418" y="357"
+                  fill="#e6edf3">user_id</text><text x="500" y="357" fill="#8b949e">→ User</text>
+                <rect x="378" y="362" width="214" height="17" fill="rgba(88,166,255,.06)" rx="3" />
+                <text x="386" y="375" fill="#58a6ff" font-weight="700">FK</text><text x="418" y="375"
+                  fill="#e6edf3">project_id</text><text x="500" y="375" fill="#8b949e">→ Project</text>
+              </g>
+
+              <!-- TASK -->
+              <g filter="url(#sh)">
+                <rect x="548" y="445" width="280" height="187" rx="10" fill="#0d1117" stroke="#f0883e"
+                  stroke-width="1.5" />
+                <rect x="548" y="445" width="280" height="34" rx="10" fill="#d1242f" stroke="none" />
+                <rect x="548" y="445" width="280" height="34" rx="10" fill="#c0392b" />
+                <rect x="548" y="465" width="280" height="14" fill="#c0392b" />
+                <text x="688" y="467" fill="white" font-weight="700" text-anchor="middle" font-size="13">TASK</text>
+                <rect x="556" y="487" width="264" height="17" fill="rgba(227,179,65,.08)" rx="3" />
+                <text x="564" y="500" fill="#e3b341" font-weight="700">PK</text><text x="596" y="500"
+                  fill="#e6edf3">id</text><text x="700" y="500" fill="#8b949e">AutoField</text>
+                <rect x="556" y="505" width="264" height="17" fill="rgba(88,166,255,.06)" rx="3" />
+                <text x="564" y="518" fill="#58a6ff" font-weight="700">FK</text><text x="596" y="518"
+                  fill="#e6edf3">project_id</text><text x="700" y="518" fill="#8b949e">→ Project</text>
+                <rect x="556" y="523" width="264" height="17" fill="rgba(88,166,255,.06)" rx="3" />
+                <text x="564" y="536" fill="#58a6ff" font-weight="700">FK</text><text x="596" y="536"
+                  fill="#e6edf3">assigned_to</text><text x="700" y="536" fill="#8b949e">→ User (null)</text>
+                <text x="564" y="554" fill="#8b949e"> </text><text x="596" y="554" fill="#e6edf3">title</text><text
+                  x="700" y="554" fill="#8b949e">VARCHAR(200)</text>
+                <text x="564" y="572" fill="#8b949e"> </text><text x="596" y="572" fill="#e6edf3">status</text><text
+                  x="700" y="572" fill="#8b949e">ENUM todo/doing/done</text>
+                <text x="564" y="590" fill="#8b949e"> </text><text x="596" y="590" fill="#e6edf3">due_date</text><text
+                  x="700" y="590" fill="#8b949e">DATE</text>
+                <text x="564" y="608" fill="#8b949e"> </text><text x="596" y="608"
+                  fill="#e6edf3">completed_at</text><text x="700" y="608" fill="#8b949e">DATETIME (auto)</text>
+              </g>
+
+              <!-- STATISTIQUE -->
+              <g filter="url(#sh)">
+                <rect x="18" y="445" width="250" height="140" rx="10" fill="#0d1117" stroke="#a371f7"
+                  stroke-width="1.5" />
+                <rect x="18" y="445" width="250" height="34" rx="10" fill="#7c3aed" />
+                <rect x="18" y="465" width="250" height="14" fill="#7c3aed" />
+                <text x="143" y="467" fill="white" font-weight="700" text-anchor="middle"
+                  font-size="13">STATISTIQUE</text>
+                <rect x="26" y="487" width="234" height="17" fill="rgba(227,179,65,.08)" rx="3" />
+                <text x="34" y="500" fill="#e3b341" font-weight="700">PK</text><text x="66" y="500"
+                  fill="#e6edf3">id</text><text x="162" y="500" fill="#8b949e">AutoField</text>
+                <rect x="26" y="505" width="234" height="17" fill="rgba(88,166,255,.06)" rx="3" />
+                <text x="34" y="518" fill="#58a6ff" font-weight="700">FK</text><text x="66" y="518"
+                  fill="#e6edf3">user_id</text><text x="162" y="518" fill="#8b949e">→ User</text>
+                <text x="34" y="536" fill="#8b949e"> </text><text x="66" y="536" fill="#e6edf3">period_type</text><text
+                  x="162" y="536" fill="#8b949e">ENUM trim/annual</text>
+                <text x="34" y="554" fill="#8b949e"> </text><text x="66" y="554" fill="#e6edf3">year</text><text x="162"
+                  y="554" fill="#8b949e">INT</text>
+                <text x="34" y="572" fill="#8b949e"> </text><text x="66" y="572" fill="#e6edf3">quarter</text><text
+                  x="162" y="572" fill="#8b949e">INT null (1-4)</text>
+                <text x="34" y="590" fill="#8b949e"> </text><text x="66" y="590"
+                  fill="#e6edf3">completion_rate</text><text x="162" y="590" fill="#8b949e">DECIMAL</text>
+              </g>
+
+              <!-- PRIME -->
+              <g filter="url(#sh)">
+                <rect x="270" y="528" width="250" height="114" rx="10" fill="#0d1117" stroke="#e3b341"
+                  stroke-width="1.5" />
+                <rect x="270" y="528" width="250" height="34" rx="10" fill="#d4a017" />
+                <rect x="270" y="548" width="250" height="14" fill="#d4a017" />
+                <text x="395" y="550" fill="white" font-weight="700" text-anchor="middle" font-size="13">PRIME</text>
+                <rect x="278" y="570" width="234" height="17" fill="rgba(227,179,65,.08)" rx="3" />
+                <text x="286" y="583" fill="#e3b341" font-weight="700">PK</text><text x="318" y="583"
+                  fill="#e6edf3">id</text><text x="415" y="583" fill="#8b949e">AutoField</text>
+                <rect x="278" y="588" width="234" height="17" fill="rgba(88,166,255,.06)" rx="3" />
+                <text x="286" y="601" fill="#58a6ff" font-weight="700">FK</text><text x="318" y="601"
+                  fill="#e6edf3">user_id</text><text x="415" y="601" fill="#8b949e">→ User (prof)</text>
+                <text x="286" y="619" fill="#8b949e"> </text><text x="318" y="619" fill="#e6edf3">amount</text><text
+                  x="415" y="619" fill="#8b949e">INT 30000/100000</text>
+                <text x="286" y="637" fill="#8b949e"> </text><text x="318" y="637" fill="#e6edf3">year</text><text
+                  x="415" y="637" fill="#8b949e">INT</text>
+              </g>
+
+              <!-- NOTIFICATION -->
+              <g filter="url(#sh)">
+                <rect x="830" y="425" width="215" height="126" rx="10" fill="#0d1117" stroke="#a371f7"
+                  stroke-width="1.5" />
+                <rect x="830" y="425" width="215" height="34" rx="10" fill="#6e40c9" />
+                <rect x="830" y="445" width="215" height="14" fill="#6e40c9" />
+                <text x="937" y="447" fill="white" font-weight="700" text-anchor="middle"
+                  font-size="13">NOTIFICATION</text>
+                <rect x="838" y="467" width="199" height="17" fill="rgba(227,179,65,.08)" rx="3" />
+                <text x="846" y="480" fill="#e3b341" font-weight="700">PK</text><text x="878" y="480"
+                  fill="#e6edf3">id</text><text x="960" y="480" fill="#8b949e">AutoField</text>
+                <rect x="838" y="485" width="199" height="17" fill="rgba(88,166,255,.06)" rx="3" />
+                <text x="846" y="498" fill="#58a6ff" font-weight="700">FK</text><text x="878" y="498"
+                  fill="#e6edf3">user_id</text><text x="960" y="498" fill="#8b949e">→ User</text>
+                <rect x="838" y="503" width="199" height="17" fill="rgba(88,166,255,.06)" rx="3" />
+                <text x="846" y="516" fill="#58a6ff" font-weight="700">FK</text><text x="878" y="516"
+                  fill="#e6edf3">task_id</text><text x="960" y="516" fill="#8b949e">→ Task (null)</text>
+                <text x="846" y="534" fill="#8b949e"> </text><text x="878" y="534" fill="#e6edf3">type</text><text
+                  x="960" y="534" fill="#8b949e">ENUM</text>
+                <text x="846" y="552" fill="#8b949e"> </text><text x="878" y="552" fill="#e6edf3">is_read</text><text
+                  x="960" y="552" fill="#8b949e">BOOL (def. False)</text>
+              </g>
+
+              <!-- Cardinalités -->
+              <text x="148" y="217" fill="#484f58" font-size="10">1:1</text>
+              <text x="253" y="278" fill="#484f58" font-size="10">1..N</text>
+              <text x="519" y="314" fill="#484f58" font-size="10">1..N</text>
+              <text x="659" y="438" fill="#484f58" font-size="10">1..N</text>
+              <text x="395" y="453" fill="#58a6ff" font-size="10">0..1 (assigné)</text>
+            </svg>
+          </div>
+
+          <!-- Modèles Django -->
+          <div class="model-section-title">
+            <svg width="16" height="16" color="var(--green)">
+              <use href="#ic-db" />
+            </svg>
+            Modèles Django — Détail des champs
+          </div>
+          <div class="model-grid">
+            <!-- User -->
+            <div class="model-card">
+              <div class="model-card-head">
+                <div class="model-card-icon" style="background:rgba(63,185,80,.12)"><svg width="16" height="16"
+                    color="var(--green)">
+                    <use href="#ic-lock" />
+                  </svg></div>
+                <div class="model-card-name">User <span style="color:var(--text2);font-weight:400;font-size:.8rem">—
+                    AbstractUser étendu</span></div>
+                <span class="model-card-badge">accounts</span>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Champ</th>
+                    <th>Type</th>
+                    <th>Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="row-pk">
+                    <td><span class="pk-badge">PK</span> <span class="field-name">id</span></td>
+                    <td><span class="field-type">AutoField</span></td>
+                    <td class="field-desc">Auto-incrémenté</td>
+                  </tr>
+                  <tr>
+                    <td><span class="field-name">username</span></td>
+                    <td><span class="field-type">CharField(150)</span></td>
+                    <td class="field-desc">Unique</td>
+                  </tr>
+                  <tr>
+                    <td><span class="field-name">email</span></td>
+                    <td><span class="field-type">EmailField</span></td>
+                    <td class="field-desc">Unique</td>
+                  </tr>
+                  <tr>
+                    <td><span class="field-name">password</span></td>
+                    <td><span class="field-type">CharField</span></td>
+                    <td class="field-desc">Hash bcrypt</td>
+                  </tr>
+                  <tr>
+                    <td><span class="field-name">role</span></td>
+                    <td><span class="field-type">CharField choices</span></td>
+                    <td class="field-desc">etudiant / professeur</td>
+                  </tr>
+                  <tr>
+                    <td><span class="field-name">is_active</span></td>
+                    <td><span class="field-type">BooleanField</span></td>
+                    <td class="field-desc">default=True</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- Project -->
+            <div class="model-card">
+              <div class="model-card-head">
+                <div class="model-card-icon" style="background:rgba(88,166,255,.12)"><svg width="16" height="16"
+                    color="var(--blue)">
+                    <use href="#ic-db" />
+                  </svg></div>
+                <div class="model-card-name">Project</div>
+                <span class="model-card-badge">projects</span>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Champ</th>
+                    <th>Type</th>
+                    <th>Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="row-pk">
+                    <td><span class="pk-badge">PK</span> <span class="field-name">id</span></td>
+                    <td><span class="field-type">AutoField</span></td>
+                    <td class="field-desc"></td>
+                  </tr>
+                  <tr class="row-fk">
+                    <td><span class="fk-badge">FK</span> <span class="field-name">owner</span></td>
+                    <td><span class="field-type">→ User</span></td>
+                    <td class="field-desc">CASCADE, related_name='owned_projects'</td>
+                  </tr>
+                  <tr>
+                    <td><span class="field-name">name</span></td>
+                    <td><span class="field-type">CharField(200)</span></td>
+                    <td class="field-desc"></td>
+                  </tr>
+                  <tr>
+                    <td><span class="field-name">description</span></td>
+                    <td><span class="field-type">TextField</span></td>
+                    <td class="field-desc">blank=True</td>
+                  </tr>
+                  <tr>
+                    <td><span class="field-name">created_at</span></td>
+                    <td><span class="field-type">DateTimeField</span></td>
+                    <td class="field-desc">auto_now_add</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- Task -->
+            <div class="model-card">
+              <div class="model-card-head">
+                <div class="model-card-icon" style="background:rgba(240,136,62,.12)"><svg width="16" height="16"
+                    color="var(--orange)">
+                    <use href="#ic-check" />
+                  </svg></div>
+                <div class="model-card-name">Task</div>
+                <span class="model-card-badge">tasks</span>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Champ</th>
+                    <th>Type</th>
+                    <th>Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="row-pk">
+                    <td><span class="pk-badge">PK</span> <span class="field-name">id</span></td>
+                    <td><span class="field-type">AutoField</span></td>
+                    <td class="field-desc"></td>
+                  </tr>
+                  <tr class="row-fk">
+                    <td><span class="fk-badge">FK</span> <span class="field-name">project</span></td>
+                    <td><span class="field-type">→ Project</span></td>
+                    <td class="field-desc">CASCADE</td>
+                  </tr>
+                  <tr class="row-fk">
+                    <td><span class="fk-badge">FK</span> <span class="field-name">assigned_to</span></td>
+                    <td><span class="field-type">→ User</span></td>
+                    <td class="field-desc">null=True, SET_NULL</td>
+                  </tr>
+                  <tr>
+                    <td><span class="field-name">status</span></td>
+                    <td><span class="field-type">CharField choices</span></td>
+                    <td class="field-desc">todo/doing/done</td>
+                  </tr>
+                  <tr>
+                    <td><span class="field-name">due_date</span></td>
+                    <td><span class="field-type">DateField</span></td>
+                    <td class="field-desc">Date limite</td>
+                  </tr>
+                  <tr>
+                    <td><span class="field-name">completed_at</span></td>
+                    <td><span class="field-type">DateTimeField</span></td>
+                    <td class="field-desc">null, auto via save()</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- Prime -->
+            <div class="model-card">
+              <div class="model-card-head">
+                <div class="model-card-icon" style="background:rgba(227,179,65,.12)"><svg width="16" height="16"
+                    color="var(--yellow)">
+                    <use href="#ic-star" />
+                  </svg></div>
+                <div class="model-card-name">Prime</div>
+                <span class="model-card-badge">stats</span>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Champ</th>
+                    <th>Type</th>
+                    <th>Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="row-pk">
+                    <td><span class="pk-badge">PK</span> <span class="field-name">id</span></td>
+                    <td><span class="field-type">AutoField</span></td>
+                    <td class="field-desc"></td>
+                  </tr>
+                  <tr class="row-fk">
+                    <td><span class="fk-badge">FK</span> <span class="field-name">user</span></td>
+                    <td><span class="field-type">→ User</span></td>
+                    <td class="field-desc">Professeur uniquement</td>
+                  </tr>
+                  <tr>
+                    <td><span class="field-name">amount</span></td>
+                    <td><span class="field-type">IntegerField</span></td>
+                    <td class="field-desc">30000 ou 100000</td>
+                  </tr>
+                  <tr>
+                    <td><span class="field-name">year</span></td>
+                    <td><span class="field-type">IntegerField</span></td>
+                    <td class="field-desc">unique_together (user, year)</td>
+                  </tr>
+                  <tr>
+                    <td><span class="field-name">completion_rate</span></td>
+                    <td><span class="field-type">DecimalField</span></td>
+                    <td class="field-desc">Taux déclencheur</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Règles métier -->
+          <div class="model-section-title">
+            <svg width="16" height="16" color="var(--orange)">
+              <use href="#ic-alert" />
+            </svg>
+            Règles Métier Critiques
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:40px">
+            <div style="background:var(--surface);border:1px solid rgba(63,185,80,.2);border-radius:12px;padding:18px">
+              <div
+                style="font-size:.82rem;font-weight:700;color:var(--green);margin-bottom:10px;display:flex;align-items:center;gap:6px">
+                <svg width="13" height="13">
+                  <use href="#ic-lock" />
+                </svg> Permissions &amp; Rôles
+              </div>
+              <div style="font-size:.82rem;color:var(--text2);line-height:1.7">
+                · Seul l'<strong style="color:var(--text)">owner</strong> peut ajouter/supprimer des tâches ou
+                membres<br>
+                · Un membre assigné peut uniquement modifier le <strong style="color:var(--text)">statut</strong><br>
+                · Un <strong style="color:var(--red)">étudiant ne peut pas assigner un professeur</strong><br>
+                · Non-membres : accès refusé (403)
+              </div>
+            </div>
+            <div style="background:var(--surface);border:1px solid rgba(227,179,65,.2);border-radius:12px;padding:18px">
+              <div
+                style="font-size:.82rem;font-weight:700;color:var(--yellow);margin-bottom:10px;display:flex;align-items:center;gap:6px">
+                <svg width="13" height="13">
+                  <use href="#ic-star" />
+                </svg> Calcul des Primes (Professeurs)
+              </div>
+              <div style="font-size:.82rem;color:var(--text2);line-height:1.7">
+                · Taux 100% → <strong style="color:var(--green)">100 000 FCFA</strong><br>
+                · Taux ≥ 90% et &lt; 100% → <strong style="color:var(--yellow)">30 000 FCFA</strong><br>
+                · Taux &lt; 90% → <strong style="color:var(--red)">Aucune prime</strong><br>
+                · Tâche "dans les délais" : <code
+                  style="font-size:.75rem;background:var(--surface3);padding:1px 5px;border-radius:3px">completed_at ≤ due_date</code>
+              </div>
+            </div>
+          </div>
+
+          <!-- API Routes -->
+          <div class="model-section-title">
+            <svg width="16" height="16" color="var(--blue)">
+              <use href="#ic-gear" />
+            </svg>
+            Routes API RESTful
+          </div>
+          <div class="routes-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Méthode</th>
+                  <th>Endpoint</th>
+                  <th>Description</th>
+                  <th>Accès</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="method m-post">POST</span></td>
+                  <td><span class="route-url">/api/auth/register/</span></td>
+                  <td>Inscription (role: etudiant/professeur)</td>
+                  <td><span class="access-badge ab-pub">Public</span></td>
+                </tr>
+                <tr>
+                  <td><span class="method m-post">POST</span></td>
+                  <td><span class="route-url">/api/auth/login/</span></td>
+                  <td>Login → access + refresh tokens</td>
+                  <td><span class="access-badge ab-pub">Public</span></td>
+                </tr>
+                <tr>
+                  <td><span class="method m-post">POST</span></td>
+                  <td><span class="route-url">/api/auth/refresh/</span></td>
+                  <td>Rafraîchir le token JWT</td>
+                  <td><span class="access-badge ab-pub">Public</span></td>
+                </tr>
+                <tr>
+                  <td><span class="method m-get">GET</span></td>
+                  <td><span class="route-url">/api/users/me/</span></td>
+                  <td>Mon profil complet</td>
+                  <td><span class="access-badge ab-auth">Auth</span></td>
+                </tr>
+                <tr>
+                  <td><span class="method m-put">PUT</span></td>
+                  <td><span class="route-url">/api/users/me/</span></td>
+                  <td>Modifier nom, email, avatar, bio</td>
+                  <td><span class="access-badge ab-auth">Auth</span></td>
+                </tr>
+                <tr>
+                  <td><span class="method m-get">GET</span></td>
+                  <td><span class="route-url">/api/projects/</span></td>
+                  <td>Mes projets (owner + membre)</td>
+                  <td><span class="access-badge ab-auth">Auth</span></td>
+                </tr>
+                <tr>
+                  <td><span class="method m-post">POST</span></td>
+                  <td><span class="route-url">/api/projects/</span></td>
+                  <td>Créer un projet</td>
+                  <td><span class="access-badge ab-auth">Auth</span></td>
+                </tr>
+                <tr>
+                  <td><span class="method m-put">PUT</span></td>
+                  <td><span class="route-url">/api/projects/{id}/</span></td>
+                  <td>Modifier le projet</td>
+                  <td><span class="access-badge ab-owner">Owner</span></td>
+                </tr>
+                <tr>
+                  <td><span class="method m-del">DELETE</span></td>
+                  <td><span class="route-url">/api/projects/{id}/</span></td>
+                  <td>Supprimer le projet</td>
+                  <td><span class="access-badge ab-owner">Owner</span></td>
+                </tr>
+                <tr>
+                  <td><span class="method m-post">POST</span></td>
+                  <td><span class="route-url">/api/projects/{id}/members/</span></td>
+                  <td>Ajouter un membre</td>
+                  <td><span class="access-badge ab-owner">Owner</span></td>
+                </tr>
+                <tr>
+                  <td><span class="method m-get">GET</span></td>
+                  <td><span class="route-url">/api/projects/{id}/tasks/</span></td>
+                  <td>Tâches du projet (?status=&amp;assigned=)</td>
+                  <td><span class="access-badge ab-member">Membre</span></td>
+                </tr>
+                <tr>
+                  <td><span class="method m-post">POST</span></td>
+                  <td><span class="route-url">/api/projects/{id}/tasks/</span></td>
+                  <td>Créer une tâche</td>
+                  <td><span class="access-badge ab-owner">Owner</span></td>
+                </tr>
+                <tr>
+                  <td><span class="method m-patch">PATCH</span></td>
+                  <td><span class="route-url">/api/tasks/{id}/</span></td>
+                  <td>Modifier le statut</td>
+                  <td><span class="access-badge ab-member">Assigné</span></td>
+                </tr>
+                <tr>
+                  <td><span class="method m-get">GET</span></td>
+                  <td><span class="route-url">/api/stats/me/?year=&amp;quarter=</span></td>
+                  <td>Mes statistiques</td>
+                  <td><span class="access-badge ab-auth">Auth</span></td>
+                </tr>
+                <tr>
+                  <td><span class="method m-get">GET</span></td>
+                  <td><span class="route-url">/api/primes/</span></td>
+                  <td>Mes primes (professeur)</td>
+                  <td><span class="access-badge ab-auth">Auth</span></td>
+                </tr>
+                <tr>
+                  <td><span class="method m-get">GET</span></td>
+                  <td><span class="route-url">/api/notifications/</span></td>
+                  <td>Mes notifications non-lues</td>
+                  <td><span class="access-badge ab-auth">Auth</span></td>
+                </tr>
+                <tr>
+                  <td><span class="method m-patch">PATCH</span></td>
+                  <td><span class="route-url">/api/notifications/{id}/read/</span></td>
+                  <td>Marquer comme lue</td>
+                  <td><span class="access-badge ab-auth">Auth</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div><!-- /model-content -->
+      </div><!-- /view-model -->
+
+      <!-- ══════════════════════════════════════
+     VUE : DOCUMENTATION
+══════════════════════════════════════ -->
+      <div class="view" id="view-docs">
+        <div class="docs-content">
+          <div style="margin-bottom:32px">
+            <h1 style="font-size:1.6rem;font-weight:800;letter-spacing:-.03em;color:var(--text)">Documentation
+              Officielle</h1>
+            <p style="color:var(--text2);margin-top:6px;font-size:0.88rem">Tous les liens de documentation classés
+              par
+              concept — chaque lien ouvre la page officielle</p>
+          </div>
+
+          <!-- Plan d'action Django -->
+          <div style="margin-top:18px;margin-bottom:28px">
+            <h2 style="font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:8px">Plan d'action —
+              Intégration
+              Django</h2>
+            <p style="color:var(--text2);font-size:0.9rem;margin-bottom:12px">Checklist concise pour mettre en place
+              l'application Django, tests et déploiement.</p>
+
+            <div class="step-card" id="django-step-1">
+              <div class="step-header" onclick="this.parentElement.classList.toggle('open')">
+                <div class="step-num sn-1">1</div>
+                <div class="step-meta">
+                  <div class="step-title">Initialiser le projet Django</div>
+                  <div class="step-sub">Créer l'environnement, settings, et structure d'apps</div>
+                  <div class="step-tags-row">
+                    <div class="stag st-g">env</div>
+                    <div class="stag st-b">settings</div>
+                  </div>
+                </div>
+                <div class="step-chevron">▾</div>
+              </div>
+              <div class="step-body">
+                <div class="step-body-inner">
+                  <div class="task-group">
+                    <div class="task-group-header">
+                      <div class="task-group-title">Tâches</div>
+                    </div>
+                    <div class="task-item">
+                      <div class="task-check" onclick="this.classList.toggle('checked');"> </div>
+                      <div class="task-body">
+                        <div class="task-main">Créer virtualenv & installer dépendances</div>
+                        <div class="task-detail">Python 3.11+, pip, requirements.txt</div>
+                      </div>
+                      <div class="task-badge tb-easy">15m</div>
+                    </div>
+                    <div class="task-item">
+                      <div class="task-check" onclick="this.classList.toggle('checked');"> </div>
+                      <div class="task-body">
+                        <div class="task-main">Créer projet & app principales</div>
+                        <div class="task-detail">startproject, startapp, config URLs</div>
+                      </div>
+                      <div class="task-badge tb-med">20m</div>
+                    </div>
+                    <div class="task-item">
+                      <div class="task-check" onclick="this.classList.toggle('checked');"> </div>
+                      <div class="task-body">
+                        <div class="task-main">Configurer settings pour prod/staging</div>
+                        <div class="task-detail">Séparer secrets, CORS, DB, staticfiles</div>
+                      </div>
+                      <div class="task-badge tb-med">30m</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-card" id="django-step-2">
+              <div class="step-header" onclick="this.parentElement.classList.toggle('open')">
+                <div class="step-num sn-2">2</div>
+                <div class="step-meta">
+                  <div class="step-title">Modèles, API & Sérializers</div>
+                  <div class="step-sub">Définir modèles, serializers DRF et permissions</div>
+                  <div class="step-tags-row">
+                    <div class="stag st-g">models</div>
+                    <div class="stag st-b">API</div>
+                  </div>
+                </div>
+                <div class="step-chevron">▾</div>
+              </div>
+              <div class="step-body">
+                <div class="step-body-inner">
+                  <div class="task-group">
+                    <div class="task-group-header">
+                      <div class="task-group-title">Tâches</div>
+                    </div>
+                    <div class="task-item">
+                      <div class="task-check" onclick="this.classList.toggle('checked');"> </div>
+                      <div class="task-body">
+                        <div class="task-main">Transposer les modèles du schéma</div>
+                        <div class="task-detail">Fields, FK, unique_together</div>
+                      </div>
+                      <div class="task-badge tb-med">45m</div>
+                    </div>
+                    <div class="task-item">
+                      <div class="task-check" onclick="this.classList.toggle('checked');"> </div>
+                      <div class="task-body">
+                        <div class="task-main">Créer serializers & ViewSets</div>
+                        <div class="task-detail">DRF: serializers, routers, permissions</div>
+                      </div>
+                      <div class="task-badge tb-hard">1h</div>
+                    </div>
+                    <div class="task-item">
+                      <div class="task-check" onclick="this.classList.toggle('checked');"> </div>
+                      <div class="task-body">
+                        <div class="task-main">Écrire tests unitaires pour API</div>
+                        <div class="task-detail">Endpoints critiques, auth, edge-cases</div>
+                      </div>
+                      <div class="task-badge tb-hard">1.5h</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-card" id="django-step-3">
+              <div class="step-header" onclick="this.parentElement.classList.toggle('open')">
+                <div class="step-num sn-3">3</div>
+                <div class="step-meta">
+                  <div class="step-title">Tests, CI & Déploiement</div>
+                  <div class="step-sub">Automatiser tests et pipeline de livraison</div>
+                  <div class="step-tags-row">
+                    <div class="stag st-p">ci</div>
+                    <div class="stag st-t">deploy</div>
+                  </div>
+                </div>
+                <div class="step-chevron">▾</div>
+              </div>
+              <div class="step-body">
+                <div class="step-body-inner">
+                  <div class="task-group">
+                    <div class="task-group-header">
+                      <div class="task-group-title">Tâches</div>
+                    </div>
+                    <div class="task-item">
+                      <div class="task-check" onclick="this.classList.toggle('checked');"> </div>
+                      <div class="task-body">
+                        <div class="task-main">Configurer GitHub Actions / CI</div>
+                        <div class="task-detail">Tests, linting, builds d'image</div>
+                      </div>
+                      <div class="task-badge tb-med">1h</div>
+                    </div>
+                    <div class="task-item">
+                      <div class="task-check" onclick="this.classList.toggle('checked');"> </div>
+                      <div class="task-body">
+                        <div class="task-main">Déployer en staging</div>
+                        <div class="task-detail">Vérifier migrations, variables d'env</div>
+                      </div>
+                      <div class="task-badge tb-med">30m</div>
+                    </div>
+                    <div class="task-item">
+                      <div class="task-check" onclick="this.classList.toggle('checked');"> </div>
+                      <div class="task-body">
+                        <div class="task-main">Monitorer la prod</div>
+                        <div class="task-detail">Sentry, métriques basiques et alertes</div>
+                      </div>
+                      <div class="task-badge tb-easy">20m</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="docs-category">
+            <div class="docs-cat-title"><svg width="15" height="15" color="var(--green)">
+                <use href="#ic-db" />
+              </svg> Django — Core Framework</div>
+            <div class="docs-list">
+              <a class="docs-item" href="https://docs.djangoproject.com/fr/5.0/intro/tutorial01/" target="_blank">
+                <div class="docs-item-icon" style="background:var(--green-dim)"><svg width="16" height="16"
+                    color="var(--green)">
+                    <use href="#ic-star" />
+                  </svg></div>
+                <div class="docs-item-text">
+                  <div class="docs-item-name">Tutoriel Django officiel (Partie 1-7)</div>
+                  <div class="docs-item-desc">Point de départ obligatoire pour comprendre Django</div>
+                </div><span class="docs-item-url">docs.djangoproject.com</span>
+              </a>
+              <a class="docs-item" href="https://docs.djangoproject.com/fr/5.0/topics/db/models/" target="_blank">
+                <div class="docs-item-icon" style="background:var(--green-dim)"><svg width="16" height="16"
+                    color="var(--green)">
+                    <use href="#ic-db" />
+                  </svg></div>
+                <div class="docs-item-text">
+                  <div class="docs-item-name">Modèles &amp; ORM Django</div>
+                  <div class="docs-item-desc">Définir les modèles, champs, relations FK/OneToOne/M2M</div>
+                </div><span class="docs-item-url">docs.djangoproject.com</span>
+              </a>
+              <a class="docs-item" href="https://docs.djangoproject.com/fr/5.0/topics/migrations/" target="_blank">
+                <div class="docs-item-icon" style="background:var(--green-dim)"><svg width="16" height="16"
+                    color="var(--green)">
+                    <use href="#ic-gear" />
+                  </svg></div>
+                <div class="docs-item-text">
+                  <div class="docs-item-name">Migrations Django</div>
+                  <div class="docs-item-desc">makemigrations, migrate, squashmigrations</div>
+                </div><span class="docs-item-url">docs.djangoproject.com</span>
+              </a>
+              <a class="docs-item" href="https://docs.djangoproject.com/fr/5.0/topics/db/queries/" target="_blank">
+                <div class="docs-item-icon" style="background:var(--green-dim)"><svg width="16" height="16"
+                    color="var(--green)">
+                    <use href="#ic-search" />
+                  </svg></div>
+                <div class="docs-item-text">
+                  <div class="docs-item-name">Requêtes &amp; ORM avancé</div>
+                  <div class="docs-item-desc">QuerySets, annotations, agrégations, optimisations</div>
+                </div><span class="docs-item-url">docs.djangoproject.com</span>
+              </a>
+              <a class="docs-item" href="https://www.django-rest-framework.org/" target="_blank">
+                <div class="docs-item-icon" style="background:var(--blue-dim)"><svg width="16" height="16"
+                    color="var(--blue)">
+                    <use href="#ic-api" />
+                  </svg></div>
+                <div class="docs-item-text">
+                  <div class="docs-item-name">Django REST Framework (DRF)</div>
+                  <div class="docs-item-desc">Serializers, ViewSets, Routers, permissions</div>
+                </div><span class="docs-item-url">www.django-rest-framework.org</span>
+              </a>
+              <a class="docs-item" href="https://docs.pytest.org/" target="_blank">
+                <div class="docs-item-icon" style="background:var(--purple-dim)"><svg width="16" height="16"
+                    color="var(--purple)">
+                    <use href="#ic-test" />
+                  </svg></div>
+                <div class="docs-item-text">
+                  <div class="docs-item-name">pytest — Tests</div>
+                  <div class="docs-item-desc">Écriture de tests unitaires et fixtures pour Django</div>
+                </div><span class="docs-item-url">docs.pytest.org</span>
+              </a>
+              <a class="docs-item" href="https://docs.docker.com/" target="_blank">
+                <div class="docs-item-icon" style="background:var(--teal-dim)"><svg width="16" height="16"
+                    color="var(--teal)">
+                    <use href="#ic-docker" />
+                  </svg></div>
+                <div class="docs-item-text">
+                  <div class="docs-item-name">Docker &amp; Docker Compose</div>
+                  <div class="docs-item-desc">Conteneuriser l'application, services (Postgres, Redis)</div>
+                </div><span class="docs-item-url">docs.docker.com</span>
+              </a>
+              <a class="docs-item" href="https://docs.gunicorn.org/" target="_blank">
+                <div class="docs-item-icon" style="background:var(--orange-dim)"><svg width="16" height="16"
+                    color="var(--orange)">
+                    <use href="#ic-server" />
+                  </svg></div>
+                <div class="docs-item-text">
+                  <div class="docs-item-name">Gunicorn — Serveur WSGI</div>
+                  <div class="docs-item-desc">Configuration de workers, timeouts et déploiement</div>
+                </div><span class="docs-item-url">docs.gunicorn.org</span>
+              </a>
+              <a class="docs-item" href="https://nginx.org/" target="_blank">
+                <div class="docs-item-icon" style="background:var(--blue-dim)"><svg width="16" height="16"
+                    color="var(--blue)">
+                    <use href="#ic-proxy" />
+                  </svg></div>
+                <div class="docs-item-text">
+                  <div class="docs-item-name">Nginx — Reverse proxy</div>
+                  <div class="docs-item-desc">Reverse proxy, SSL termination, caching</div>
+                </div><span class="docs-item-url">nginx.org</span>
+              </a>
+              <a class="docs-item" href="https://docs.celeryq.dev/" target="_blank">
+                <div class="docs-item-icon" style="background:var(--purple-dim)"><svg width="16" height="16"
+                    color="var(--purple)">
+                    <use href="#ic-queue" />
+                  </svg></div>
+                <div class="docs-item-text">
+                  <div class="docs-item-name">Celery — Tasks &amp; Workers</div>
+                  <div class="docs-item-desc">Background jobs, scheduling et intégration Redis/RabbitMQ</div>
+                </div><span class="docs-item-url">docs.celeryq.dev</span>
+              </a>
+              <a class="docs-item" href="https://channels.readthedocs.io/" target="_blank">
+                <div class="docs-item-icon" style="background:var(--teal-dim)"><svg width="16" height="16"
+                    color="var(--teal)">
+                    <use href="#ic-ws" />
+                  </svg></div>
+                <div class="docs-item-text">
+                  <div class="docs-item-name">Django Channels</div>
+                  <div class="docs-item-desc">WebSockets, consumers, ASGI deployment</div>
+                </div><span class="docs-item-url">channels.readthedocs.io</span>
+              </a>
+              <a class="docs-item" href="https://www.postgresql.org/docs/" target="_blank">
+                <div class="docs-item-icon" style="background:var(--yellow-dim)"><svg width="16" height="16"
+                    color="var(--yellow)">
+                    <use href="#ic-db" />
+                  </svg></div>
+                <div class="docs-item-text">
+                  <div class="docs-item-name">PostgreSQL — Base de données</div>
+                  <div class="docs-item-desc">Types, fonctions, optimisation, indexation</div>
+                </div><span class="docs-item-url">postgresql.org</span>
+              </a>
+              <a class="docs-item" href="https://docs.github.com/actions" target="_blank">
+                <div class="docs-item-icon" style="background:var(--purple-dim)"><svg width="16" height="16"
+                    color="var(--purple)">
+                    <use href="#ic-ci" />
+                  </svg></div>
+                <div class="docs-item-text">
+                  <div class="docs-item-name">GitHub Actions — CI/CD</div>
+                  <div class="docs-item-desc">Pipelines pour tests, lint et déploiement</div>
+                </div><span class="docs-item-url">github.com/actions</span>
+              </a>
+              <a class="docs-item" href="https://sentry.io/welcome/" target="_blank">
+                <div class="docs-item-icon" style="background:var(--red-dim)"><svg width="16" height="16"
+                    color="var(--red)">
+                    <use href="#ic-monitor" />
+                  </svg></div>
+                <div class="docs-item-text">
+                  <div class="docs-item-name">Sentry — Monitoring &amp; erreurs</div>
+                  <div class="docs-item-desc">Reporting d'erreurs et suivi des exceptions</div>
+                </div><span class="docs-item-url">sentry.io</span>
+              </a>
+            </div>
+          </div>
+
+          <script src="js/script.js"></script>

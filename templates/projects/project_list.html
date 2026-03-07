@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}Mes Projets - G.TAKE{% endblock %}
+
+{% block content %}
+<div class="p-6 h-full overflow-y-auto flex flex-col gap-8">
+
+    <!-- ── Header ── -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <h1 class="font-syne text-3xl font-bold text-white tracking-tight mb-2">Tous mes Projets</h1>
+            <p class="text-sm text-txt-sec">Gérez et suivez l'avancement de vos collaborations</p>
+        </div>
+        <a href="{% url 'project_add' %}"
+            class="flex items-center gap-2 px-6 py-3 rounded-2xl bg-accent-blue text-white text-sm font-bold shadow-glow hover:bg-accent-bright transition-all hover:-translate-y-1">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Nouveau Projet
+        </a>
+    </div>
+
+    <!-- ── Grid ── -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
+        {% for project in projects %}
+        <a href="{% url 'project_detail' project.pk %}"
+            class="group bg-bg-card border border-border-glass rounded-[24px] p-6 hover:border-accent-blue/40 transition-all hover:bg-white/[0.03] flex flex-col h-full shadow-lg relative overflow-hidden">
+
+            <!-- Glow effect on hover -->
+            <div
+                class="absolute -top-24 -right-24 w-48 h-48 bg-accent-blue/10 blur-[80px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+            </div>
+
+            <div class="flex items-center justify-between mb-6">
+                <div
+                    class="w-12 h-12 rounded-2xl bg-accent-blue/10 flex items-center justify-center text-accent-blue group-hover:bg-accent-blue group-hover:text-white transition-all duration-300">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2z" />
+                        <path d="M3 10h18" />
+                    </svg>
+                </div>
+                <div class="flex -space-x-2.5">
+                    {% for member in project.project_members.all|slice:":3" %}
+                    <div class="w-8 h-8 rounded-full border-2 border-bg-deep bg-accent-blue/20 flex items-center justify-center text-[10px] font-bold text-accent-blue"
+                        title="{{ member.user.username }}">
+                        {{ member.user.username|first|upper }}
+                    </div>
+                    {% endfor %}
+                    {% if project.project_members.count > 3 %}
+                    <div
+                        class="w-8 h-8 rounded-full border-2 border-bg-deep bg-white/5 flex items-center justify-center text-[10px] font-bold text-txt-dim">
+                        +{{ project.project_members.count|add:"-3" }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="mb-6 flex-1">
+                <h3
+                    class="font-syne font-bold text-lg text-white mb-2 group-hover:text-accent-glow transition-colors line-clamp-1">
+                    {{ project.name }}</h3>
+                <p class="text-xs text-txt-sec line-clamp-3 leading-relaxed">{{ project.description }}</p>
+            </div>
+
+            <div class="space-y-4 pt-6 mt-auto border-t border-white/5">
+                <div
+                    class="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-txt-dim">
+                    <span>{{ project.project_tasks.count }} Tâches</span>
+                    <span class="text-txt-sec">{{ project.created_at|date:"d M Y" }}</span>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    {% if project.owner == user %}
+                    <span
+                        class="px-3 py-1 bg-accent-blue/10 text-accent-blue text-[9px] font-black rounded-lg border border-accent-blue/20">PROPRIÉTAIRE</span>
+                    {% else %}
+                    <span
+                        class="px-3 py-1 bg-white/5 text-txt-sec text-[9px] font-black rounded-lg border border-white/5">MEMBRE</span>
+                    {% endif %}
+
+                    {% with done=project.project_tasks.all|dictsort:"status" %}
+                    <!-- This is a placeholder for actual progress calculation if needed -->
+                    {% endwith %}
+                </div>
+            </div>
+        </a>
+        {% empty %}
+        <div
+            class="col-span-full py-20 flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-[40px] bg-white/[0.01]">
+            <div
+                class="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-6 text-txt-dim opacity-40">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M14 2H6a2 2 0 00-2 2v16c0 1.1.9 2 2 2h12a2 2 0 00 2-2V8l-6-6z" />
+                </svg>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">Aucun projet trouvé</h3>
+            <p class="text-txt-sec text-sm mb-8">Vous n'avez pas encore de projet actif.</p>
+            <a href="{% url 'project_add' %}" class="btn-accent">Créer mon premier projet</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

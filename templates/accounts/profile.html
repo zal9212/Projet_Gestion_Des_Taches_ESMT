@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mon Profil - G.TAKE{% endblock %}
+
+{% block content %}
+<div class="flex gap-6 p-7 h-full overflow-y-auto items-start flex-col lg:flex-row">
+
+    <!-- ── LEFT: Carte profil ── -->
+    <div class="w-full lg:w-60 flex-shrink-0 bg-bg-card border border-border-col rounded-2xl overflow-hidden">
+        <!-- Bannière -->
+        <div class="h-20 bg-gradient-to-r from-blue-900 to-accent"></div>
+
+        <!-- Corps -->
+        <div class="flex flex-col items-center text-center px-5 pb-6 -mt-10">
+            <!-- Avatar -->
+            <div class="w-20 h-20 rounded-full border-[3px] border-[rgba(10,18,45,0.9)] bg-gradient-to-br from-accent to-accent-bright flex items-center justify-center text-2xl font-bold text-white overflow-hidden mb-3 flex-shrink-0"
+                id="avatar-container">
+                {% if user.profile.avatar %}
+                <img id="avatar-preview-img" src="{{ user.profile.avatar.url }}" class="w-full h-full object-cover"
+                    alt="Avatar">
+                {% else %}
+                <span id="avatar-placeholder">{{ user.display_name|first|upper }}</span>
+                <img id="avatar-preview-img" src="" class="w-full h-full object-cover hidden" alt="Avatar Preview">
+                {% endif %}
+            </div>
+
+            <h3 class="font-syne font-bold text-base text-txt mb-0.5">{{ user.display_name }}</h3>
+            <p class="text-xs text-txt-muted mb-3">@{{ user.username }}</p>
+            <span class="px-3 py-1 rounded-full bg-white/10 border border-border-col text-[11px] text-txt-sec mb-4">{{user.display_role }}</span>
+
+            <p
+                class="text-[12px] text-txt-sec italic leading-relaxed text-left w-full bg-white/[0.03] border border-border-col rounded-xl p-3">
+                "{{ user.profile.bio|default:"Aucune biographie renseignée." }}"
+            </p>
+        </div>
+
+        <!-- Footer carte -->
+        <div class="px-4 py-3 border-t border-border-col bg-bg-sidebar text-center">
+            <a href="{% url 'password_change' %}"
+                class="text-[13px] text-accent-bright hover:opacity-80 transition-opacity flex items-center justify-center gap-2">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" />
+                    <path d="M7 11V7a5 5 0 0110 0v4" />
+                </svg>
+                Modifier le mot de passe
+            </a>
+        </div>
+    </div>
+
+    <!-- ── RIGHT: Formulaire de mise à jour ── -->
+    <div class="flex-1 bg-bg-card border border-border-col rounded-2xl overflow-hidden min-w-0">
+        <div class="px-6 py-4 border-b border-border-col bg-bg-sidebar">
+            <h2 class="font-syne font-bold text-base text-txt">Mettre à jour les informations</h2>
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="p-6 flex flex-col gap-7">
+
+                <!-- Section : Informations personnelles -->
+                <div>
+                    <p
+                        class="text-[11px] font-bold uppercase tracking-widest text-accent-bright mb-4 pb-2 border-b border-white/[0.06]">
+                        Informations personnelles</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {% for field in user_form %}
+                        <div class="flex flex-col gap-1.5">
+                            <label for="{{ field.id_for_label }}" class="text-xs font-medium text-txt-sec">{{field.label }}</label>
+                            <input type="{{ field.field.widget.input_type|default:'text' }}" name="{{ field.name }}"
+                                id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}"
+                                class="w-full bg-white/[0.04] border border-border-col text-txt px-3.5 py-2.5 rounded-xl text-sm outline-none focus:border-accent transition-colors"
+                                {% if field.field.required %}required{% endif %}>
+                            {% for error in field.errors %}
+                            <span class="text-[11px] text-accent-red">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Section : Avatar & Biographie -->
+                <div>
+                    <p
+                        class="text-[11px] font-bold uppercase tracking-widest text-accent-bright mb-4 pb-2 border-b border-white/[0.06]">
+                        Avatar & Biographie</p>
+                    <div class="flex flex-col gap-4">
+                        {% for field in profile_form %}
+                        <div class="flex flex-col gap-1.5">
+                            <label for="{{ field.id_for_label }}" class="text-xs font-medium text-txt-sec">
+                                {{ field.label }}
+                            </label>
+
+                            {% if field.name == 'bio' %}
+                            <textarea name="{{ field.name }}" id="{{ field.id_for_label }}"
+                                class="w-full bg-white/[0.04] border border-border-col text-txt px-3.5 py-2.5 rounded-xl text-sm outline-none focus:border-accent transition-colors min-h-[90px] resize-y">{{ field.value|default:'' }}</textarea>
+
+                            {% elif field.name == 'avatar' %}
+                            <div class="relative">
+                                <input type="file" name="{{ field.name }}" id="{{ field.id_for_label }}"
+                                    accept="image/*"
+                                    class="opacity-0 absolute inset-0 w-full h-full cursor-pointer z-10"
+                                    onchange="previewAvatar(this)">
+                                <div
+                                    class="w-full bg-white/[0.04] border border-dashed border-border-lt text-txt-sec px-3.5 py-2.5 rounded-xl text-sm flex items-center justify-between hover:border-accent transition-colors">
+                                    <span id="fn-{{ field.name }}">
+                                        {% if user.profile.avatar %}
+                                        Changer l'avatar...
+                                        {% else %}
+                                        Choisir un avatar...
+                                        {% endif %}
+                                    </span>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" class="opacity-50">
+                                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                                        <polyline points="17 8 12 3 7 8" />
+                                        <line x1="12" y1="3" x2="12" y2="15" />
+                                    </svg>
+                                </div>
+                            </div>
+                            {% else %}
+                            {{ field }}
+                            {% endif %}
+
+                            {% for error in field.errors %}
+                            <span class="text-[11px] text-accent-red">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div><!-- /pfc-body -->
+
+            <div class="px-6 py-4 border-t border-border-col flex justify-end">
+                <button type="submit"
+                    class="px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-accent hover:bg-accent-bright shadow-[0_4px_15px_rgba(59,111,245,0.3)] hover:shadow-[0_6px_20px_rgba(59,111,245,0.4)] hover:-translate-y-0.5 transition-all">
+                    Enregistrer les modifications
+                </button>
+            </div>
+        </form>
+    </div>
+
+    {% block extra_js %}
+    <script>
+        function previewAvatar(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                const fileName = input.files[0].name;
+                const fileLabel = document.getElementById('fn-avatar');
+                const avatarPreview = document.getElementById('avatar-preview-img');
+                const avatarPlaceholder = document.getElementById('avatar-placeholder');
+
+                reader.onload = function (e) {
+                    if (avatarPreview) {
+                        avatarPreview.src = e.target.result;
+                        avatarPreview.classList.remove('hidden');
+                        if (avatarPlaceholder) avatarPlaceholder.classList.add('hidden');
+                    }
+                    if (fileLabel) fileLabel.textContent = fileName;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+    {% endblock %}
+</div>
+{% endblock %}

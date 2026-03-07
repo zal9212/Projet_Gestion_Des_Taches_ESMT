@@ -1,0 +1,298 @@
+{% extends "base.html" %}
+{% block title %}ESMT Tasks - Annuaire des Membres{% endblock %}
+
+{% block content %}
+<div class="space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-700">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div class="space-y-1">
+            <h1 class="text-4xl font-bold font-syne tracking-tight text-white">Annuaire des <span
+                    class="text-accent-blue bg-clip-text">Membres</span></h1>
+            <p class="text-txt-sec text-sm max-w-lg">Découvrez les talents de l'ESMT et leur fiabilité basée sur la
+                réalisation des tâches.</p>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <div
+                class="bg-white/5 border border-border-glass rounded-2xl px-5 py-3 flex items-center gap-4 backdrop-blur-md">
+                <div class="w-10 h-10 rounded-full bg-accent-blue/20 flex items-center justify-center text-accent-blue">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold leading-none">{{ members|length }}</h4>
+                    <p class="text-xs text-txt-dim font-medium uppercase tracking-wider">Membres Actifs</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if top_members %}
+    <!-- TOP 3 Participants -->
+    <div class="bg-white/[0.03] border border-border-glass rounded-[32px] p-8 shadow-xl">
+        <div class="flex items-center justify-between gap-4 mb-6">
+            <div>
+                <h2 class="text-xl font-bold font-syne text-white">Top 3 <span class="text-accent-blue">participants</span></h2>
+                <p class="text-xs text-txt-dim mt-1">Classement basé sur le taux de fiabilité (tâches terminées / tâches assignées).</p>
+            </div>
+            <div class="text-[10px] font-bold uppercase tracking-widest text-txt-dim">Podium</div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {% for m in top_members %}
+            <div class="relative bg-white/5 border border-white/5 rounded-3xl p-6 overflow-hidden">
+                <div class="absolute -top-16 -right-16 w-40 h-40 bg-accent-blue/10 rounded-full blur-[60px]"></div>
+
+                <div class="flex items-center justify-between relative z-10">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-accent-blue to-accent-glow p-0.5 shadow-lg">
+                            <div class="w-full h-full rounded-2xl bg-bg-deep flex items-center justify-center overflow-hidden">
+                                {% if m.user.profile.avatar %}
+                                <img src="{{ m.user.profile.avatar.url }}" class="w-full h-full object-cover">
+                                {% else %}
+                                <span class="text-lg font-bold text-white/90">{{ m.user.display_name|first|upper }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-sm font-bold text-white truncate">{{ m.user.display_name }}</p>
+                            <p class="text-[10px] font-semibold text-txt-dim uppercase tracking-widest">{{ m.role_display }}</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col items-end">
+                        <div class="text-[10px] font-black uppercase tracking-widest text-txt-dim">#{{ forloop.counter }}</div>
+                        <div class="text-2xl font-bold font-syne text-white leading-none mt-1">{{ m.reliability }}%</div>
+                        <div class="text-[10px] text-txt-dim mt-1">{{ m.completed_tasks }}/{{ m.total_tasks }} tâches</div>
+                    </div>
+                </div>
+
+                <div class="mt-5 relative z-10">
+                    <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden p-[1px]">
+                        <div class="h-full rounded-full shadow-glow"
+                            style="width: {{ m.reliability }}%; background: linear-gradient(90deg, #3b6ff5, #4f7fff);">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Filtre & Recherche (Visuel uniquement pour l'esthétique ici) -->
+    <div class="relative group max-w-md">
+        <div
+            class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-txt-dim group-focus-within:text-accent-blue transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+        </div>
+        <input id="memberSearch" type="text" placeholder="Rechercher par nom, rôle ou performance..."
+            class="auth-input pl-12 h-12 bg-white/5 border-border-glass hover:bg-white/10 focus:bg-white/10 transition-all rounded-2xl shadow-inner-glow">
+    </div>
+
+    <div id="membersGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for m in members %}
+        <div
+            class="member-card group relative bg-white/[0.03] border border-border-glass rounded-[32px] p-8 hover:bg-white/[0.06] hover:border-accent-blue/30 transition-all duration-500 overflow-hidden shadow-xl hover:-translate-y-1"
+            data-search="{{ m.user.display_name|lower }} {{ m.role_display|lower }} {{ m.reliability }} {{ m.total_tasks }} {{ m.completed_tasks }}">
+            <!-- Glow effect on hover -->
+            <div
+                class="absolute -top-24 -right-24 w-48 h-48 bg-accent-blue/10 rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+            </div>
+
+            <div class="flex items-start justify-between mb-6 relative z-10">
+                <div class="flex items-center gap-5">
+                    <div class="relative">
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent-blue to-accent-glow p-0.5 shadow-lg group-hover:scale-105 transition-transform duration-500">
+                            <div
+                                class="w-full h-full rounded-2xl bg-bg-deep flex items-center justify-center overflow-hidden">
+                                {% if m.user.profile.avatar %}
+                                <img src="{{ m.user.profile.avatar.url }}" class="w-full h-full object-cover">
+                                {% else %}
+                                <span
+                                    class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-tr from-white to-white/40">{{
+                                    m.user.display_name|first|upper }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- Reliability Indicator -->
+                        <div class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-2 border-bg-deep bg-green-500 text-white flex items-center justify-center shadow-lg"
+                            style="background-color: {% if m.reliability >= 80 %}#22c55e{% elif m.reliability >= 50 %}#eab308{% else %}#ef4444{% endif %};">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <h3
+                            class="text-lg font-bold text-white group-hover:text-accent-blue transition-colors duration-300">
+                            {{ m.user.display_name }}</h3>
+                        <p class="text-xs font-semibold text-txt-dim uppercase tracking-widest">{{ m.role_display }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-5 relative z-10">
+                <!-- Stats Row -->
+                <div
+                    class="flex justify-between items-end p-4 bg-white/5 rounded-2xl border border-white/5 shadow-inner">
+                    <div class="space-y-1">
+                        <p class="text-[11px] text-txt-dim font-bold uppercase tracking-wider">Fiabilité</p>
+                        <p class="text-2xl font-bold font-syne text-white">{{ m.reliability }}%</p>
+                    </div>
+                    <div class="text-right space-y-1">
+                        <p class="text-[11px] text-txt-dim font-bold uppercase tracking-wider">Tâches</p>
+                        <p class="text-sm font-bold text-txt-sec">{{ m.completed_tasks }} <span class="text-txt-dim">/
+                                {{ m.total_tasks }}</span></p>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="space-y-2">
+                    <div class="flex justify-between text-[10px] font-bold uppercase tracking-widest px-1">
+                        <span class="text-txt-dim">Performance globale</span>
+                        <span class="text-accent-blue">{{ m.reliability }}%</span>
+                    </div>
+                    <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden p-[1px]">
+                        <div class="h-full rounded-full transition-all duration-1000 ease-out shadow-glow"
+                            style="width: {{ m.reliability }}%; background: linear-gradient(90deg, #3b6ff5, #4f7fff);">
+                        </div>
+                    </div>
+                </div>
+
+                {% if user.role == 'professeur' or user.is_staff %}
+                <div class="pt-4 mt-2">
+                    <button type="button"
+                        data-user-id="{{ m.user.id }}"
+                        data-user-name="{{ m.user.display_name|escapejs }}"
+                        class="w-full py-3 bg-white/5 border border-border-glass rounded-xl text-xs font-bold text-txt-sec hover:bg-accent-blue hover:text-white hover:border-accent-blue hover:shadow-glow transition-all duration-300 uppercase tracking-widest group/btn">
+                        <span class="flex items-center justify-center gap-2">
+                            Inviter à un projet
+                            <svg class="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                        </span>
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-full py-20 text-center">
+            <p class="text-txt-dim text-lg">Aucun membre trouvé.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .shadow-inner-glow {
+        box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    }
+
+    .shadow-glow {
+        box-shadow: 0 0 10px rgba(59, 111, 245, 0.4);
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Modal invitation -->
+<div id="inviteModal" class="hidden fixed inset-0 z-[100] items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="w-full max-w-md bg-[#0a122d] border border-border-glass rounded-[28px] p-6 shadow-[0_40px_100px_rgba(0,0,0,0.8)]">
+        <div class="flex items-start justify-between gap-4 mb-4">
+            <div>
+                <h3 class="text-lg font-bold text-white font-syne">Inviter à un projet</h3>
+                <p id="inviteSubtitle" class="text-xs text-txt-dim mt-1"></p>
+            </div>
+            <button type="button" id="inviteClose" class="text-txt-dim hover:text-white">✕</button>
+        </div>
+
+        <form id="inviteForm" method="post" action="{% url 'project_invite' %}" class="space-y-4">
+            {% csrf_token %}
+            <input type="hidden" name="user_id" id="inviteUserId">
+
+            <div class="space-y-2">
+                <label class="text-[10px] font-bold text-txt-dim uppercase tracking-widest">Projet</label>
+                <select name="project_id" id="inviteProjectId" class="auth-input h-12 bg-white/5 border-border-glass rounded-2xl">
+                    {% for p in owned_projects %}
+                    <option value="{{ p.id }}">{{ p.name }}</option>
+                    {% empty %}
+                    <option value="" disabled>Aucun projet (créez un projet d'abord)</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="w-full py-3 bg-accent-blue rounded-xl text-xs font-bold text-white hover:opacity-95 transition-all uppercase tracking-widest">
+                Confirmer l’invitation →
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    (function () {
+        const input = document.getElementById('memberSearch');
+        const grid = document.getElementById('membersGrid');
+        if (!input || !grid) return;
+
+        const cards = Array.from(grid.querySelectorAll('.member-card'));
+
+        function applyFilter() {
+            const q = (input.value || '').trim().toLowerCase();
+            cards.forEach(card => {
+                const hay = (card.getAttribute('data-search') || '').toLowerCase();
+                const match = !q || hay.includes(q);
+                card.style.display = match ? '' : 'none';
+            });
+        }
+
+        input.addEventListener('input', applyFilter);
+        applyFilter();
+    })();
+</script>
+
+<script>
+    (function () {
+        const modal = document.getElementById('inviteModal');
+        const closeBtn = document.getElementById('inviteClose');
+        const subtitle = document.getElementById('inviteSubtitle');
+        const userIdInput = document.getElementById('inviteUserId');
+        const projectSelect = document.getElementById('inviteProjectId');
+
+        if (!modal || !closeBtn || !subtitle || !userIdInput || !projectSelect) return;
+
+        function openModal(userId, userName) {
+            userIdInput.value = userId;
+            subtitle.textContent = `Ajouter “${userName}” à un de vos projets.`;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        closeBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        document.querySelectorAll('button[data-user-id][data-user-name]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (!projectSelect.value) return;
+                openModal(btn.getAttribute('data-user-id'), btn.getAttribute('data-user-name'));
+            });
+        });
+    })();
+</script>
+{% endblock %}

@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G.Take Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-deep: #060d1f;
+    --bg-panel: rgba(255,255,255,0.04);
+    --bg-card: rgba(255,255,255,0.05);
+    --bg-sidebar: rgba(8,16,40,0.95);
+    --border: rgba(255,255,255,0.08);
+    --border-light: rgba(255,255,255,0.12);
+    --blue-accent: #3b6ff5;
+    --blue-bright: #4f7fff;
+    --blue-glow: rgba(59,111,245,0.3);
+    --text-primary: #e8edf8;
+    --text-secondary: rgba(200,215,240,0.6);
+    --text-muted: rgba(200,215,240,0.35);
+    --green: #22c55e;
+    --tag-bg: rgba(255,255,255,0.07);
+  }
+
+  html, body {
+    height: 100%;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    overflow: hidden;
+  }
+
+  /* ─── Background ─────────────────────────────────────── */
+  .bg-wrapper {
+    position: fixed; inset: 0; z-index: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 100%, #0a1a4a 0%, #060d1f 60%);
+    overflow: hidden;
+  }
+  .bg-wrapper::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: 
+      radial-gradient(ellipse 40% 30% at 20% 80%, rgba(30,60,140,0.4) 0%, transparent 70%),
+      radial-gradient(ellipse 30% 25% at 80% 85%, rgba(20,40,100,0.3) 0%, transparent 70%);
+  }
+  /* Stars */
+  .stars {
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 15% 20%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 30% 10%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 5%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 15%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 8%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 10% 35%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 45%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 45% 30%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 25%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 75% 40%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 35%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 5% 55%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 20% 60%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 40% 50%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 65%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 95% 55%, rgba(255,255,255,0.3) 0%, transparent 100%);
+  }
+  /* Mountain silhouette */
+  .mountain {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 200px;
+    background: linear-gradient(to top, #050d20, transparent);
+    clip-path: polygon(0% 100%, 0% 70%, 8% 55%, 15% 65%, 22% 40%, 30% 60%, 38% 30%, 48% 55%, 55% 20%, 63% 48%, 72% 35%, 80% 50%, 88% 38%, 95% 52%, 100% 42%, 100% 100%);
+  }
+
+  /* ─── Layout ─────────────────────────────────────────── */
+  .app {
+    position: relative; z-index: 1;
+    display: flex; align-items: center; justify-content: center;
+    height: 100vh; padding: 24px;
+  }
+  .window {
+    width: 100%; max-width: 1160px; height: calc(100vh - 48px); max-height: 820px;
+    display: flex;
+    background: rgba(10,18,45,0.88);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 40px 120px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
+  }
+
+  /* ─── Sidebar ─────────────────────────────────────────── */
+  .sidebar {
+    width: 210px; flex-shrink: 0;
+    background: var(--bg-sidebar);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    padding: 28px 0;
+  }
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+    padding: 0 24px 32px;
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: 18px; color: var(--text-primary);
+  }
+  .logo-icon {
+    width: 34px; height: 34px;
+    background: var(--blue-accent);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 900; color: white;
+    font-style: italic;
+  }
+  .nav { flex: 1; padding: 0 12px; display: flex; flex-direction: column; gap: 2px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 12px; border-radius: 12px;
+    font-size: 14px; font-weight: 500; color: var(--text-secondary);
+    cursor: pointer; transition: all 0.2s;
+    text-decoration: none;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); }
+  .nav-item.active {
+    background: var(--blue-accent);
+    color: white;
+    box-shadow: 0 4px 20px rgba(59,111,245,0.4);
+  }
+  .nav-item .icon { width: 20px; height: 20px; opacity: 0.8; flex-shrink: 0; }
+  .nav-item.active .icon { opacity: 1; }
+  .sidebar-bottom { padding: 0 12px; margin-top: auto; display: flex; flex-direction: column; gap: 2px; }
+
+  /* ─── Main content ─────────────────────────────────────── */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* Topbar */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 28px;
+    border-bottom: 1px solid var(--border);
+  }
+  .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-secondary); }
+  .breadcrumb span { color: var(--text-muted); }
+  .breadcrumb .current {
+    display: flex; align-items: center; gap: 6px;
+    color: var(--text-primary); font-weight: 500;
+  }
+  .topbar-right { display: flex; align-items: center; gap: 14px; }
+  .avatar-group { display: flex; }
+  .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 2px solid rgba(10,18,45,0.9);
+    background: linear-gradient(135deg, #3b6ff5, #6a9fff);
+    margin-left: -8px; overflow: hidden; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; color: white;
+  }
+  .avatar:first-child { margin-left: 0; }
+  .avatar.add-btn {
+    background: rgba(255,255,255,0.1);
+    border: 2px dashed rgba(255,255,255,0.2);
+    font-size: 16px; cursor: pointer;
+  }
+  .add-member-btn {
+    font-size: 13px; color: var(--text-secondary);
+    cursor: pointer; padding: 6px 10px;
+    border-radius: 8px; transition: color 0.2s;
+  }
+  .add-member-btn:hover { color: var(--text-primary); }
+  .icon-btn {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: background 0.2s;
+    color: var(--text-secondary);
+  }
+  .icon-btn:hover { background: rgba(255,255,255,0.1); }
+  .profile-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, #f59e3b, #ef6c3b);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: white; cursor: pointer;
+  }
+
+  /* Content area */
+  .content-area {
+    flex: 1; display: flex; gap: 20px; padding: 24px 28px; overflow: hidden;
+  }
+
+  /* Left column */
+  .left-col { flex: 1; display: flex; flex-direction: column; overflow: hidden; gap: 20px; }
+  
+  .hero { }
+  .hero h1 {
+    font-family: 'Syne', sans-serif; font-size: 34px; font-weight: 700;
+    line-height: 1.1; margin-bottom: 8px;
+  }
+  .hero h1 span { color: var(--blue-bright); }
+  .hero p { font-size: 13px; color: var(--text-secondary); line-height: 1.5; max-width: 340px; }
+
+  /* Filters */
+  .filters {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .filter-pill {
+    display: flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: 20px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid var(--border-light);
+    font-size: 12.5px; font-weight: 500; color: var(--text-primary);
+    cursor: pointer; transition: all 0.2s;
+  }
+  .filter-pill:hover { background: rgba(255,255,255,0.12); }
+  .filter-pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+  .filter-pill svg { width: 12px; height: 12px; opacity: 0.6; }
+  .spacer { flex: 1; }
+  .new-task-btn {
+    padding: 9px 20px; border-radius: 20px;
+    background: var(--blue-accent);
+    color: white; font-size: 13px; font-weight: 600;
+    cursor: pointer; border: none;
+    box-shadow: 0 4px 20px rgba(59,111,245,0.4);
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .new-task-btn:hover { background: var(--blue-bright); transform: translateY(-1px); }
+
+  /* Task list */
+  .task-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+  .task-list::-webkit-scrollbar { width: 4px; }
+  .task-list::-webkit-scrollbar-track { background: transparent; }
+  .task-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+  .task-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 18px;
+    transition: border-color 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .task-card:hover { border-color: var(--border-light); }
+  .task-card.featured {
+    background: linear-gradient(135deg, rgba(30,55,140,0.5), rgba(15,30,80,0.7));
+    border-color: rgba(59,111,245,0.3);
+  }
+  .task-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .task-badge {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11.5px; font-weight: 500; color: var(--blue-bright);
+  }
+  .task-badge .circle {
+    width: 8px; height: 8px; border-radius: 50%;
+    border: 2px solid var(--blue-bright);
+  }
+  .task-badge .circle.green { border-color: var(--green); }
+  .task-badge.green-badge { color: var(--green); }
+  .task-actions { margin-left: auto; display: flex; gap: 8px; }
+  .task-action-btn {
+    width: 28px; height: 28px; border-radius: 7px;
+    background: rgba(255,255,255,0.06);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text-secondary);
+    font-size: 14px; transition: background 0.2s;
+  }
+  .task-action-btn:hover { background: rgba(255,255,255,0.12); }
+  .task-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .task-desc { font-size: 12.5px; color: var(--text-secondary); line-height: 1.4; }
+  .task-desc b { color: var(--text-primary); font-weight: 500; }
+  .task-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
+  .task-time { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); }
+  .task-time svg { width: 14px; height: 14px; opacity: 0.5; }
+  .task-time .time { color: var(--text-primary); font-weight: 500; font-size: 12px; }
+  .task-time .time-sep { opacity: 0.4; }
+  .people { display: flex; align-items: center; gap: 6px; }
+  .mini-avatar {
+    width: 24px; height: 24px; border-radius: 50%;
+    border: 1.5px solid rgba(10,18,45,0.9);
+    margin-left: -6px; font-size: 9px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center; color: white;
+    flex-shrink: 0;
+  }
+  .mini-avatar:first-child { margin-left: 0; }
+  .people-count { font-size: 11.5px; color: var(--text-secondary); margin-left: 6px; }
+
+  /* Featured task extras */
+  .task-icon-wrap {
+    width: 46px; height: 46px; border-radius: 12px;
+    background: var(--blue-accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+  .task-main { flex: 1; }
+  .task-with-icon { display: flex; align-items: flex-start; gap: 14px; }
+  .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+  .tag {
+    padding: 4px 10px; border-radius: 20px;
+    background: var(--tag-bg); border: 1px solid var(--border);
+    font-size: 11px; color: var(--text-secondary);
+  }
+  .progress-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+  .progress-label { font-size: 12px; color: var(--text-secondary); }
+  .progress-bar-wrap {
+    flex: 1; height: 12px; border-radius: 6px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid var(--border); overflow: hidden;
+    position: relative;
+  }
+  .progress-bar {
+    height: 100%;
+    background: repeating-linear-gradient(
+      -45deg,
+      var(--blue-accent) 0px, var(--blue-accent) 6px,
+      #2a50cc 6px, #2a50cc 12px
+    );
+    border-radius: 6px;
+    width: 70%;
+  }
+  .progress-pct {
+    padding: 3px 8px; border-radius: 6px;
+    background: rgba(255,255,255,0.08); border: 1px solid var(--border);
+    font-size: 11.5px; font-weight: 600; color: var(--text-primary);
+  }
+
+  /* Right column */
+  .right-col { width: 260px; flex-shrink: 0; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; }
+  .right-col::-webkit-scrollbar { width: 4px; }
+  .right-col::-webkit-scrollbar-track { background: transparent; }
+  .right-col::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+  .panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+  }
+  .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .panel-title { font-size: 14px; font-weight: 600; }
+  .panel-more { color: var(--text-muted); cursor: pointer; font-size: 18px; line-height: 1; }
+
+  /* Today note */
+  .note-panel {
+    background: linear-gradient(135deg, rgba(40,70,180,0.5), rgba(20,40,120,0.7));
+    border-color: rgba(59,111,245,0.25);
+  }
+  .note-edit-btn {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: rgba(255,255,255,0.12);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text-primary);
+  }
+  .note-text {
+    font-size: 13px; color: var(--text-secondary); line-height: 1.5;
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 10px; margin-bottom: 10px;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .note-text b { color: var(--text-primary); font-weight: 600; }
+  .note-footer { display: flex; align-items: center; justify-content: space-between; }
+  .note-user { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); }
+  .note-user-dot {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: linear-gradient(135deg, #3b6ff5, #6a9fff);
+    flex-shrink: 0;
+  }
+  .note-going {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 10px; border-radius: 20px;
+    background: rgba(255,255,255,0.08);
+    font-size: 11.5px; color: var(--text-secondary);
+  }
+  .check-icon { color: var(--green); font-size: 12px; }
+  .x-icon { color: var(--text-muted); cursor: pointer; }
+  .refresh-icon { color: var(--text-muted); cursor: pointer; font-size: 12px; }
+
+  /* My files */
+  .files-panel { }
+  .files-empty {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 16px; gap: 8px;
+  }
+  .files-empty-icon {
+    width: 110px; height: 60px; border-radius: 10px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 4px;
+  }
+  .files-empty-icon svg { width: 28px; height: 28px; color: var(--blue-accent); }
+  .files-empty-text { font-size: 12px; color: var(--text-secondary); }
+  .files-formats { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+  .files-formats-label { font-size: 11px; color: var(--text-muted); }
+  .format-icon {
+    width: 26px; height: 26px; border-radius: 6px;
+    background: rgba(255,255,255,0.07);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+  }
+  .fmt-w { color: #2196f3; }
+  .fmt-f { color: #f24e1e; }
+  .fmt-n { color: #e5e5e5; }
+  .fmt-p { color: #31a8ff; }
+  .add-file-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: 20px;
+    background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+    font-size: 12px; color: var(--text-secondary); cursor: pointer;
+    transition: all 0.2s; margin-left: auto;
+  }
+  .add-file-btn:hover { background: rgba(255,255,255,0.1); }
+  .files-row { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; flex-wrap: wrap; gap: 8px; }
+
+  /* Activity */
+  .activity-panel { }
+  .activity-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+  .get-report-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 10px 6px 14px; border-radius: 20px;
+    background: rgba(59,111,245,0.2); border: 1px solid rgba(59,111,245,0.3);
+    font-size: 11.5px; color: var(--text-primary); cursor: pointer;
+    transition: all 0.2s;
+  }
+  .get-report-btn:hover { background: rgba(59,111,245,0.3); }
+  .arrow-btn {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--blue-accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+  }
+  .tasks-completed { font-size: 12px; color: var(--text-secondary); margin-bottom: 14px; }
+  .chart-area { position: relative; height: 70px; }
+  .chart-bar-group { display: flex; align-items: flex-end; gap: 2px; height: 60px; }
+  .chart-bar {
+    flex: 1; background: rgba(255,255,255,0.06);
+    border-radius: 3px; transition: height 0.3s;
+  }
+  .chart-bar.active { background: rgba(59,111,245,0.5); }
+  .chart-highlight {
+    position: absolute; top: 0; right: 50%;
+    background: var(--blue-accent);
+    width: 36px; height: 22px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10.5px; font-weight: 700; color: white;
+    transform: translateX(18px);
+  }
+  .chart-labels { display: flex; justify-content: space-between; margin-top: 6px; }
+  .chart-label { font-size: 10px; color: var(--text-muted); }
+  .chart-label.active { color: var(--text-primary); font-weight: 600; }
+
+  /* SVG icons helpers */
+  svg { display: block; }
+</style>
+</head>
+<body>
+
+<div class="bg-wrapper">
+  <div class="stars"></div>
+  <div class="mountain"></div>
+</div>
+
+<div class="app">
+  <div class="window">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-icon">✕</div>
+        G.Take
+      </div>
+
+      <nav class="nav">
+        <a class="nav-item active" href="#">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
+          </svg>
+          Dashboard
+        </a>
+        <a class="nav-item" href="#">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+          </svg>
+          Tasks
+        </a>
+        <a class="nav-item" href="#">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+          </svg>
+          Messages
+        </a>
+        <a class="nav-item" href="#">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+          Activity
+        </a>
+        <a class="nav-item" href="#">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          Calendar
+        </a>
+        <a class="nav-item" href="#">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          Options
+        </a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <a class="nav-item" href="#">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/><path d="M19.07 4.93A10 10 0 113.93 19.07M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2"/>
+          </svg>
+          Settings
+        </a>
+        <a class="nav-item" href="#">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          Log out
+        </a>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+
+      <!-- Topbar -->
+      <div class="topbar">
+        <div class="breadcrumb">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+          Home
+          <span>/</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Dashboard
+          <span>/</span>
+          <div class="current">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            20 Sep
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <div class="avatar-group">
+            <div class="avatar" style="background:linear-gradient(135deg,#e05252,#c02060)">A</div>
+            <div class="avatar" style="background:linear-gradient(135deg,#52a0e0,#2060c0)">B</div>
+            <div class="avatar" style="background:linear-gradient(135deg,#52e09a,#20c060)">C</div>
+            <div class="avatar add-btn">+</div>
+          </div>
+          <span class="add-member-btn">Add member</span>
+          <div class="icon-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+          <div class="icon-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+          </div>
+          <div class="profile-avatar">J</div>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="content-area">
+
+        <!-- LEFT COLUMN -->
+        <div class="left-col">
+          <div class="hero">
+            <h1>Make Things <span>Simple</span> !</h1>
+            <p>Management and planning in a simple and attractive style will bring you success</p>
+          </div>
+
+          <div class="filters">
+            <div class="filter-pill">
+              <span class="dot"></span>
+              To do
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="filter-pill">
+              Work
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="filter-pill">
+              High priority
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="filter-pill" style="padding:7px 10px">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="10" y2="18"/></svg>
+            </div>
+            <div class="spacer"></div>
+            <button class="new-task-btn">+ New task</button>
+          </div>
+
+          <div class="task-list">
+
+            <!-- Task 1 -->
+            <div class="task-card">
+              <div class="task-header">
+                <div class="task-badge">
+                  <div class="circle"></div>
+                  Today
+                </div>
+                <div class="task-actions" style="margin-left:auto">
+                  <div class="task-action-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+                  </div>
+                  <div class="task-action-btn">···</div>
+                </div>
+              </div>
+              <div class="task-title">Meeting with pela members</div>
+              <div class="task-desc"><b>Description :</b> meeting to review the new website design with updated features <span style="color:var(--blue-bright)">...</span></div>
+              <div class="task-footer">
+                <div class="task-time">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <span class="time">08:00 Am</span>
+                  <span class="time-sep">—</span>
+                  <span class="time">10:00 Am</span>
+                </div>
+                <div class="people">
+                  <div class="mini-avatar" style="background:linear-gradient(135deg,#e05252,#c02060)">A</div>
+                  <div class="mini-avatar" style="background:linear-gradient(135deg,#52a0e0,#2060c0)">B</div>
+                  <div class="mini-avatar" style="background:linear-gradient(135deg,#e0b452,#c08020)">C</div>
+                  <span class="people-count">+4 People</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Task 2 (featured) -->
+            <div class="task-card featured">
+              <div class="task-header">
+                <div class="task-badge">
+                  <div class="circle"></div>
+                  Today
+                </div>
+                <div class="task-actions" style="margin-left:auto; display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:11px; color:var(--text-secondary); display:flex; align-items:center; gap:4px;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                    6 Files
+                  </span>
+                  <div class="task-action-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+                  </div>
+                  <div class="task-action-btn">···</div>
+                </div>
+              </div>
+              <div class="task-with-icon">
+                <div class="task-icon-wrap">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                </div>
+                <div class="task-main">
+                  <div class="task-title">Design System</div>
+                  <div class="task-desc"><b>Description :</b> create a responsive design system for landing pages and projects, focusing on consistency, scalability, and reusable components.</div>
+                </div>
+              </div>
+              <div class="task-footer" style="margin-top:10px">
+                <div class="task-time">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <span class="time">08:00 Am</span>
+                  <span class="time-sep">—</span>
+                  <span class="time">08:00 Pm</span>
+                </div>
+                <div class="people">
+                  <div class="mini-avatar" style="background:linear-gradient(135deg,#e05252,#c02060)">A</div>
+                  <div class="mini-avatar" style="background:linear-gradient(135deg,#52a0e0,#2060c0)">B</div>
+                  <div class="mini-avatar" style="background:linear-gradient(135deg,#52e09a,#20c060)">C</div>
+                  <span class="people-count">+8 People</span>
+                </div>
+              </div>
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-top:10px; flex-wrap:wrap; gap:8px;">
+                <div>
+                  <div style="font-size:11.5px; color:var(--text-secondary); margin-bottom:6px;">Participants :</div>
+                  <div class="tags">
+                    <span class="tag">Design team</span>
+                    <span class="tag">Marketing team</span>
+                    <span class="tag">Development Team</span>
+                  </div>
+                </div>
+                <div class="progress-row" style="margin-top:0; width:200px;">
+                  <span class="progress-label">Progress :</span>
+                  <div class="progress-bar-wrap">
+                    <div class="progress-bar"></div>
+                  </div>
+                  <span class="progress-pct">%70</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Task 3 -->
+            <div class="task-card">
+              <div class="task-header">
+                <div class="task-badge green-badge">
+                  <div class="circle green"></div>
+                  Today
+                </div>
+                <div class="task-actions" style="margin-left:auto">
+                  <div class="task-action-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+                  </div>
+                  <div class="task-action-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/></svg>
+                  </div>
+                  <div class="task-action-btn">···</div>
+                </div>
+              </div>
+              <div class="task-title">Meeting With The Sales Team</div>
+              <div class="task-desc"><b>Description :</b> checking the sales of the month and estimating the costs and sales of the next month</div>
+              <div class="task-footer">
+                <div class="task-time">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <span class="time">11:00 Am</span>
+                  <span class="time-sep">—</span>
+                  <span class="time">02:00 Am</span>
+                </div>
+                <div class="people">
+                  <div class="mini-avatar" style="background:linear-gradient(135deg,#9052e0,#6020c0)">D</div>
+                  <div class="mini-avatar" style="background:linear-gradient(135deg,#e05252,#c02060)">E</div>
+                  <div class="mini-avatar" style="background:linear-gradient(135deg,#52a0e0,#2060c0)">F</div>
+                  <span class="people-count">+2 People</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="right-col">
+
+          <!-- Today Note -->
+          <div class="panel note-panel">
+            <div class="panel-header">
+              <span class="panel-title">Today note</span>
+              <div class="note-edit-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </div>
+            </div>
+            <div class="note-text">
+              Going to the company and <b>planning meetings</b> for the week ahead 🏀
+            </div>
+            <div class="note-footer">
+              <div class="note-user">
+                <div class="note-user-dot"></div>
+                20min ago
+              </div>
+              <div class="note-going">
+                <span class="check-icon">✓</span>
+                I'm going
+                <span class="x-icon">✕</span>
+                <span class="refresh-icon">↻</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- My Files -->
+          <div class="panel files-panel">
+            <div class="panel-header">
+              <span class="panel-title">My files</span>
+              <span class="panel-more">···</span>
+            </div>
+            <div class="files-empty">
+              <div class="files-empty-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <circle cx="12" cy="12" r="9" stroke-dasharray="3 2"/>
+                  <circle cx="12" cy="12" r="4" fill="rgba(59,111,245,0.3)" stroke="var(--blue-accent)"/>
+                </svg>
+              </div>
+              <div class="files-empty-text">You have not added a file yet</div>
+            </div>
+            <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">More than 20 formats :</div>
+            <div class="files-row">
+              <div style="display:flex; gap:6px;">
+                <div class="format-icon fmt-w">W</div>
+                <div class="format-icon fmt-f">F</div>
+                <div class="format-icon fmt-n">N</div>
+                <div class="format-icon fmt-p">Ps</div>
+              </div>
+              <div class="add-file-btn">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add file
+              </div>
+            </div>
+          </div>
+
+          <!-- Activity -->
+          <div class="panel activity-panel">
+            <div class="activity-header">
+              <span class="panel-title">Activity</span>
+              <div class="get-report-btn">
+                Get the report
+                <div class="arrow-btn">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
+                </div>
+              </div>
+            </div>
+            <div class="tasks-completed">13 Tasks Completed 🤩</div>
+            <div class="chart-area">
+              <div class="chart-highlight">80%</div>
+              <div class="chart-bar-group">
+                <div class="chart-bar" style="height:35%"></div>
+                <div class="chart-bar" style="height:50%"></div>
+                <div class="chart-bar" style="height:40%"></div>
+                <div class="chart-bar active" style="height:80%"></div>
+                <div class="chart-bar" style="height:60%"></div>
+                <div class="chart-bar" style="height:45%"></div>
+              </div>
+              <div class="chart-labels">
+                <span class="chart-label">Jan</span>
+                <span class="chart-label">Feb</span>
+                <span class="chart-label">Mar</span>
+                <span class="chart-label active">Apr</span>
+                <span class="chart-label">May</span>
+                <span class="chart-label">Jun</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

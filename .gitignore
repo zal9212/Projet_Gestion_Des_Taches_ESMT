@@ -1,0 +1,16 @@
+ 
+# Environnements virtuels
+env/
+
+# Fichiers compilés Python
+*.pyc
+__pycache__/
+
+# Variables d'environnement
+.env
+
+# Base de données SQLite
+db.sqlite3
+
+# Dossier des médias (uploads utilisateurs)
+media/

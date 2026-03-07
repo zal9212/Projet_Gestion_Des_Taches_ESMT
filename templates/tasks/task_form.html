@@ -1,0 +1,135 @@
+﻿{% extends 'base.html' %}
+
+{% block title %}{% if object %}Modifier la tâche{% else %}Ajouter une tâche{% endif %} - G.TAKE{% endblock %}
+
+{% block content %}
+<div class="flex justify-center items-start pt-8 px-6 h-full overflow-y-auto">
+    <div class="w-full max-w-2xl">
+        <div
+            class="bg-bg-card border border-border-col rounded-2xl overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.3)]">
+
+            <!-- Header -->
+            <div class="px-6 py-4 bg-bg-sidebar border-b border-border-col flex items-center justify-between">
+                <div>
+                    <h2 class="font-syne font-bold text-base text-txt">
+                        {% if object %}Modifier la tâche{% else %}Nouvelle tâche{% endif %}
+                    </h2>
+                    {% if not object and project %}
+                    <p class="text-xs text-txt-sec mt-0.5">Au sein du projet : <strong class="text-txt">{{ project.name
+                            }}</strong></p>
+                    {% endif %}
+                </div>
+                <div
+                    class="w-9 h-9 rounded-xl bg-accent-green/10 flex items-center justify-center text-accent-green flex-shrink-0">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4" />
+                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Formulaire -->
+            <div class="p-6">
+                <form method="post" class="flex flex-col gap-5">
+                    {% csrf_token %}
+
+                    {% for field in form %}
+                    <div class="flex flex-col gap-1.5">
+                        <label for="{{ field.id_for_label }}" class="text-xs font-medium text-txt-sec">{{ field.label
+                            }}</label>
+
+                        {% if field.name == 'status' %}
+                        <div class="relative">
+                            <select name="{{ field.name }}" id="{{ field.id_for_label }}"
+                                class="w-full bg-white/[0.04] border border-border-col text-txt px-3.5 py-2.5 rounded-xl text-sm outline-none focus:border-accent transition-colors appearance-none">
+                                <option value="todo" {% if field.value == 'todo' %}selected{% endif %}>À faire</option>
+                                <option value="in_progress" {% if field.value == 'in_progress' %}selected{% endif %}>En
+                                    cours</option>
+                                <option value="done" {% if field.value == 'done' %}selected{% endif %}>Terminé</option>
+                            </select>
+                            <svg class="absolute right-3.5 top-1/2 -translate-y-1/2 text-txt-muted pointer-events-none"
+                                width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="6 9 12 15 18 9" />
+                            </svg>
+                        </div>
+
+                        {% elif field.name == 'description' %}
+                        <textarea name="{{ field.name }}" id="{{ field.id_for_label }}"
+                            class="w-full bg-white/[0.04] border border-border-col text-txt px-3.5 py-2.5 rounded-xl text-sm outline-none focus:border-accent transition-colors min-h-[110px] resize-y">{{ field.value|default:'' }}</textarea>
+
+                        {% elif field.name == 'deadline' %}
+                        <input type="datetime-local" name="{{ field.name }}" id="{{ field.id_for_label }}"
+                            class="w-full bg-white/[0.04] border border-border-col text-txt px-3.5 py-2.5 rounded-xl text-sm outline-none focus:border-accent transition-colors"
+                            value="{{ field.value|date:'Y-m-d\TH:i'|default:'' }}" style="color-scheme: dark;">
+
+                        {% elif field.name == 'assigned_to' %}
+                        <div class="relative">
+                            <select name="{{ field.name }}" id="{{ field.id_for_label }}"
+                                class="w-full bg-white/[0.04] border border-border-col text-txt px-3.5 py-2.5 rounded-xl text-sm outline-none focus:border-accent transition-colors appearance-none">
+                                <option value="">— Non assignée —</option>
+                                {% for user_obj in all_users %}
+                                <option value="{{ user_obj.pk }}" {% if field.value == user_obj.pk %}selected{% endif %}>
+                                    {{ user_obj.display_name }}
+                                    {% if user_obj == project.owner %}(Propriétaire){% endif %}
+                                    {% if user_obj.role == 'professeur' %}[Professeur]{% endif %}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            <svg class="absolute right-3.5 top-1/2 -translate-y-1/2 text-txt-muted pointer-events-none"
+                                width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="6 9 12 15 18 9" />
+                            </svg>
+                        </div>
+
+                        {% else %}
+                        <input type="{{ field.field.widget.input_type|default:'text' }}" name="{{ field.name }}"
+                            id="{{ field.id_for_label }}"
+                            class="w-full bg-white/[0.04] border border-border-col text-txt px-3.5 py-2.5 rounded-xl text-sm outline-none focus:border-accent transition-colors"
+                            value="{{ field.value|default:'' }}">
+                        {% endif %}
+
+                        {% if field.help_text %}
+                        <p class="text-[11px] text-txt-muted">{{ field.help_text }}</p>
+                        {% endif %}
+                        {% for error in field.errors %}
+                        <p class="text-[11px] text-accent-red">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+
+                    {% if form.non_field_errors %}
+                    <div class="p-3 bg-accent-red/10 border border-accent-red/20 rounded-xl text-sm text-accent-red">
+                        {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Actions -->
+                    <div class="flex justify-between items-center mt-2 pt-4 border-t border-border-col">
+                        <a href="{% if object %}{% url 'project_detail' object.project.pk %}{% else %}{% url 'project_detail' project.pk %}{% endif %}"
+                            class="px-5 py-2.5 rounded-xl text-sm font-medium text-txt-sec border border-border-col hover:bg-white/5 transition-colors">
+                            Annuler
+                        </a>
+                        <button type="submit"
+                            class="px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-accent hover:bg-accent-bright shadow-[0_4px_15px_rgba(59,111,245,0.3)] hover:-translate-y-0.5 transition-all">
+                            Enregistrer la tâche
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    select option {
+        background: #0a1228;
+        color: #e8edf8;
+    }
+
+    input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+        filter: invert(1) opacity(0.5);
+    }
+</style>
+{% endblock %}

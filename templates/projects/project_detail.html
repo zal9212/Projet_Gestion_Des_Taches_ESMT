@@ -1,0 +1,254 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ object.name }}{% endblock %}
+
+{% block content %}
+<div class="p-6 h-full overflow-y-auto flex flex-col gap-6">
+
+    <!-- ── En-tête ── -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <h1 class="font-syne text-2xl font-bold text-txt mb-1">{{ object.name }}</h1>
+            <p class="text-sm text-txt-sec">
+                Géré par
+                <span class="text-txt font-medium">{{ object.owner.display_name }}</span>
+                <span class="text-txt-muted">(@{{ object.owner.username }})</span>
+            </p>
+        </div>
+        <div class="flex gap-3 flex-wrap">
+            {% if object.owner == user %}
+            <a href="{% url 'project_edit' object.pk %}"
+                class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium border border-accent-yellow text-accent-yellow hover:bg-accent-yellow/10 transition-colors">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                </svg>
+                Modifier
+            </a>
+            <a href="{% url 'project_delete' object.pk %}"
+                class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium border border-accent-red text-accent-red hover:bg-accent-red/10 transition-colors">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6" />
+                    <path d="M19 6l-1 14H6L5 6" />
+                    <path d="M10 11v6M14 11v6M9 6V4h6v2" />
+                </svg>
+                Supprimer
+            </a>
+            {% endif %}
+            <a href="{% url 'dashboard' %}"
+                class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium border border-border-col text-txt-sec hover:bg-white/5 transition-colors">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6" />
+                </svg>
+                Tableau de bord
+            </a>
+        </div>
+    </div>
+
+    <!-- ── Description ── -->
+    <div class="bg-bg-card border border-border-col rounded-2xl overflow-hidden">
+        <div class="px-5 py-3.5 border-b border-border-col">
+            <h2 class="font-syne font-semibold text-sm text-txt">Description</h2>
+        </div>
+        <div class="p-5 text-sm text-txt leading-relaxed">
+            {% if object.description %}
+                {{ object.description|linebreaksbr }}
+            {% else %}
+                <span class="text-txt-muted italic">Aucune description fournie pour ce projet.</span>
+            {% endif %}
+        </div>
+        <div class="px-5 py-3 bg-bg-sidebar border-t border-border-col text-[11px] text-txt-muted text-right">
+            Créé le {{ object.created_at|date:"d/m/Y H:i" }} &nbsp;·&nbsp; Modifié le {{ object.updated_at|date:"d/m/Y H:i" }}
+        </div>
+    </div>
+
+    <!-- ── Membres & Tâches ── -->
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <!-- Tâches (Col 1 & 2) -->
+        <div class="xl:col-span-2 bg-bg-card border border-border-glass rounded-2xl overflow-hidden shadow-xl">
+            <div class="px-5 py-4 border-b border-border-glass bg-white/[0.02] flex items-center justify-between">
+                <h2 class="font-syne font-semibold text-sm text-white flex items-center gap-2">
+                    <svg class="w-4 h-4 text-accent-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M9 11l3 3L22 4" />
+                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
+                    </svg>
+                    Tâches du projet
+                </h2>
+                {% if object.owner == user %}
+                <a href="{% url 'task_add' project_id=object.pk %}"
+                    class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-accent-blue/10 hover:bg-accent-blue/20 text-accent-blue text-xs font-bold transition-all">
+                    + Ajouter une tâche
+                </a>
+                {% endif %}
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left border-collapse">
+                    <thead>
+                        <tr
+                            class="text-txt-dim text-[10px] uppercase font-bold tracking-widest border-b border-border-glass bg-white/[0.01]">
+                            <th class="px-5 py-3">Titre</th>
+                            <th class="px-5 py-3">Assignée à</th>
+                            <th class="px-5 py-3 text-center">Statut</th>
+                            <th class="px-5 py-3">Échéance</th>
+                            <th class="px-5 py-3 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for task in object.project_tasks.all %}
+                        <tr class="border-b border-border-glass hover:bg-white/[0.02] transition-colors group">
+                            <td class="px-5 py-4 font-bold text-white">{{ task.title }}</td>
+                            <td class="px-5 py-4">
+                                <span class="flex items-center gap-2 text-txt-sec">
+                                    <div
+                                        class="w-6 h-6 rounded-full bg-accent-blue/20 flex items-center justify-center text-[10px] font-bold text-accent-blue">
+                                        {{ task.assigned_to.username|first|upper|default:"?" }}
+                                    </div>
+                                    {{ task.assigned_to.display_name|default:"—" }}
+                                </span>
+                            </td>
+                            <td class="px-5 py-4 text-center">
+                                {% if task.assigned_to == user %}
+                                <form method="post" action="{% url 'task_status_update' task.pk %}" class="inline-block">
+                                    {% csrf_token %}
+                                    <select name="status" onchange="this.form.submit()"
+                                        class="bg-bg-card border border-border-col rounded-lg text-[10px] font-bold px-2 py-1.5 text-txt focus:outline-none focus:ring-1 focus:ring-accent-blue cursor-pointer">
+                                        <option value="todo" {% if task.status == 'todo' %}selected{% endif %}>À faire</option>
+                                        <option value="in_progress" {% if task.status == 'in_progress' %}selected{% endif %}>En cours</option>
+                                        <option value="done" {% if task.status == 'done' %}selected{% endif %}>Terminée</option>
+                                    </select>
+                                </form>
+                                {% else %}
+                                {% if task.status == 'todo' %}
+                                <span
+                                    class="px-3 py-1 bg-white/5 text-txt-sec rounded-lg text-[10px] font-bold border border-white/5 uppercase">À
+                                    faire</span>
+                                {% elif task.status == 'in_progress' %}
+                                <span
+                                    class="px-3 py-1 bg-accent-blue/10 text-accent-blue rounded-lg text-[10px] font-bold border border-accent-blue/20 uppercase">En
+                                    cours</span>
+                                {% elif task.status == 'done' %}
+                                {% if task.validated_at %}
+                                <span
+                                    class="px-3 py-1 bg-accent-green/10 text-accent-green rounded-lg text-[10px] font-bold border border-accent-green/20 uppercase">Terminée · Validée</span>
+                                {% else %}
+                                <span
+                                    class="px-3 py-1 bg-amber-500/10 text-amber-400 rounded-lg text-[10px] font-bold border border-amber-500/20 uppercase">Terminée · En attente</span>
+                                {% endif %}
+                                {% endif %}
+                                {% endif %}
+                            </td>
+                            <td class="px-5 py-4 text-txt-dim text-[11px]">{{ task.deadline|date:"d M, H:i"|default:"—" }}</td>
+                            <td class="px-5 py-4">
+                                <div
+                                    class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    {% if object.owner == user %}
+                                    {% if task.status == 'done' and not task.validated_at %}
+                                    <form method="post" action="{% url 'task_validate' task.pk %}" class="inline-block">
+                                        {% csrf_token %}
+                                        <button type="submit" title="Valider pour comptabiliser la prime"
+                                            class="w-8 h-8 rounded-lg bg-accent-green/20 text-accent-green flex items-center justify-center hover:bg-accent-green hover:text-white transition-all">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <polyline points="20 6 9 17 4 12" />
+                                            </svg>
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                    <a href="{% url 'task_edit' task.pk %}"
+                                        class="w-8 h-8 rounded-lg bg-white/5 text-txt-sec flex items-center justify-center hover:bg-accent-blue hover:text-white transition-all">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                                            <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                        </svg>
+                                    </a>
+                                    <a href="{% url 'task_delete' task.pk %}"
+                                        class="w-8 h-8 rounded-lg bg-white/5 text-red-400/70 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <polyline points="3 6 5 6 21 6" />
+                                            <path d="M19 6l-1 14H6L5 6" />
+                                            <path d="M10 11v6M14 11v6M9 6V4h6v2" />
+                                        </svg>
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="px-5 py-12 text-center text-txt-dim italic">Aucune tâche active.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Membres (Col 3) -->
+        <div class="bg-bg-card border border-border-glass rounded-2xl overflow-hidden shadow-xl flex flex-col h-fit">
+            <div class="px-5 py-4 border-b border-border-glass bg-white/[0.02] flex items-center justify-between">
+                <h2 class="font-syne font-semibold text-sm text-white flex items-center gap-2">
+                    <svg class="w-4 h-4 text-accent-glow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M23 21v-2a4 4 0 00-3-3.87" />
+                        <path d="M16 3.13a4 4 0 010 7.75" />
+                    </svg>
+                    Membres
+                </h2>
+                {% if object.owner == user %}
+                <a href="{% url 'member_add' object.pk %}"
+                    class="text-accent-glow hover:text-white text-[11px] font-bold transition-all uppercase tracking-wider">
+                    + Ajouter
+                </a>
+                {% endif %}
+            </div>
+
+            <div class="p-5 space-y-4">
+                <!-- Propriétaire -->
+                <div class="flex items-center justify-between group">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-9 h-9 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-xs font-bold text-white shadow-lg">
+                            {{ object.owner.username|first|upper }}
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-white">{{ object.owner.display_name }}</p>
+                            <p class="text-[10px] text-orange-400 font-bold uppercase tracking-widest">Propriétaire</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Autres membres -->
+                {% for member in object.project_members.all %}
+                <div class="flex items-center justify-between group">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-9 h-9 rounded-full bg-white/5 border border-white/5 flex items-center justify-center text-xs font-bold text-txt-sec">
+                            {{ member.user.username|first|upper }}
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-white group-hover:text-accent-blue transition-colors">{{member.user.display_name }}</p>
+                            <p class="text-[10px] text-txt-dim font-bold uppercase tracking-widest">Membre d'équipe</p>
+                        </div>
+                    </div>
+                    {% if object.owner == user %}
+                    <a href="{% url 'member_delete' member.pk %}"
+                        class="w-8 h-8 rounded-lg bg-white/5 text-txt-dim flex items-center justify-center hover:bg-red-500/20 hover:text-red-400 transition-all opacity-0 group-hover:opacity-100">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

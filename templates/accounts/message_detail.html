@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Message - ESMT Tasks{% endblock %}
+
+{% block content %}
+<div class="p-6 h-full overflow-y-auto flex flex-col gap-6 max-w-2xl mx-auto">
+    <a href="{% url 'messages_inbox' %}" class="text-xs text-txt-sec hover:text-white flex items-center gap-1">
+        ← Retour aux messages
+    </a>
+
+    <div class="bg-white/5 border border-border-col rounded-2xl p-6 space-y-3">
+        <div class="flex items-center justify-between">
+            <div class="space-y-1">
+                <p class="text-xs text-txt-sec">De</p>
+                <p class="text-sm text-white font-semibold">{{ message_obj.sender.display_name }}</p>
+            </div>
+            <span class="text-[10px] text-txt-dim">{{ message_obj.created_at|date:"d/m/Y H:i" }}</span>
+        </div>
+
+        <div class="space-y-1 pt-2 border-t border-white/10 mt-2">
+            <p class="text-xs text-txt-sec">À</p>
+            <p class="text-sm text-white font-semibold">{{ message_obj.recipient.display_name }}</p>
+        </div>
+
+        {% if message_obj.subject %}
+        <div class="space-y-1 pt-2 border-t border-white/10 mt-2">
+            <p class="text-xs text-txt-sec">Sujet</p>
+            <p class="text-sm text-accent-blue font-semibold">{{ message_obj.subject }}</p>
+        </div>
+        {% endif %}
+
+        <div class="space-y-1 pt-2 border-t border-white/10 mt-2">
+            <p class="text-xs text-txt-sec">Message</p>
+            <p class="text-sm text-txt-main whitespace-pre-line leading-relaxed">{{ message_obj.body }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

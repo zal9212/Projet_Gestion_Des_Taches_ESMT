@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Inscription - G.TAKE{% endblock %}
+
+{% block auth_content %}
+<div class="text-center mb-7">
+    <h1 class="font-syne text-2xl font-bold text-txt mb-2">Créer un compte</h1>
+    <p class="text-sm text-txt-sec">Rejoignez G.Take et gérez vos projets</p>
+</div>
+
+<form method="post" class="flex flex-col gap-3.5">
+    {% csrf_token %}
+    {% for field in form %}
+    <div class="flex flex-col gap-1.5">
+        <label for="{{ field.id_for_label }}" class="text-xs font-medium text-txt-sec">{{ field.label }}</label>
+
+        {% if field.name == 'role' %}
+        <select name="{{ field.name }}" id="{{ field.id_for_label }}"
+            class="auth-input text-sm appearance-none bg-[rgba(255,255,255,0.05)]">
+            {% for choice in field.field.choices %}
+            <option value="{{ choice.0 }}" {% if field.value==choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+            {% endfor %}
+        </select>
+        {% else %}
+        <input type="{{ field.field.widget.input_type|default:'text' }}" name="{{ field.name }}"
+            id="{{ field.id_for_label }}" class="auth-input text-sm" value="{{ field.value|default:'' }}">
+        {% endif %}
+
+        {% if field.help_text %}
+        <p class="text-[11px] text-txt-muted leading-relaxed">{{ field.help_text }}</p>
+        {% endif %}
+        {% for error in field.errors %}
+        <p class="text-[11px] text-accent-red">{{ error }}</p>
+        {% endfor %}
+    </div>
+    {% endfor %}
+
+    {% if form.non_field_errors %}
+    <div class="p-3 bg-accent-red/10 border border-accent-red/20 rounded-xl text-sm text-accent-red">
+        {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+    </div>
+    {% endif %}
+
+    <button type="submit"
+        class="w-full mt-2 py-3 rounded-xl text-sm font-semibold text-white bg-accent hover:bg-accent-bright shadow-[0_4px_15px_rgba(59,111,245,0.3)] hover:-translate-y-0.5 transition-all">
+        S'inscrire
+    </button>
+</form>
+
+<p class="mt-6 text-center text-sm text-txt-sec">
+    Déjà un compte ?
+    <a href="{% url 'login' %}" class="text-accent-bright font-medium hover:underline">Se connecter</a>
+</p>
+{% endblock %}

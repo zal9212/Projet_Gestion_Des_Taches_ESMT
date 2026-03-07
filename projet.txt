@@ -1,0 +1,104 @@
+Cahier des Charges : Application de Gestion des
+Tâches Collaboratives
+Contexte
+Votre mission consiste à développer une application web pour gérer des tâches dans
+un environnement collaboratif je préfère dire que l’application sera orientée ESMT pour
+les enseignants et étudiants). Chaque utilisateur peut créer des projets, y ajouter des
+tâches, les assigner à d'autres membres et suivre leur progression. Mettez en place une
+possibilité de voir les statistiques concernant les taches trimestriel et annuel et
+possibilité d’évaluation afin de voir si certain utilisateur (membre d’équipe qui sont des
+enseignants) ont droit à une prime.
+NB: - La prime de 30K pour ceux qui finissent 90% de leur tâche dans les délais
+accordés et à hauteur de 100k ceux qui font 100%.
+-Il y’a deux profil, Etudiant et Professeur
+
+Objectifs 1 (en utilisant les Template Django) :
+1. Gestion des utilisateurs :
+a. Inscription et connexion (authentification avec un système de gestion des
+utilisateurs).
+b. Gestion des profils : chaque utilisateur peut mettre à jour son profil (nom,
+avatar, email et le mot de passe).
+
+2. Gestion des projets :
+a. Un utilisateur peut créer, modifier ou supprimer un projet.
+b. Chaque projet contient une liste de tâches.
+
+Objectifs 2 (frontend Angular) :
+
+3. Gestion des tâches :
+a. Chaque tâche est associée à un projet.
+b. Les tâches incluent un titre, une description, une date limite, un statut (à
+faire, en cours, terminé) et un utilisateur assigné.
+c. Les utilisateurs peuvent mettre à jour le statut des tâches.
+
+d. Les étudiants ne peuvent pas associer un professeur à une tache
+4. Permissions et rôles :
+a. Seuls les créateurs d’un projet peuvent ajouter/supprimer des tâches ou
+des utilisateurs au projet.
+b. Les utilisateurs assignés à un projet peuvent uniquement modifier les
+tâches qui leur sont attribuées.
+
+5. Interface utilisateur :
+a. Les fonctionnalités doivent être accessibles via une interface web
+conviviale et moderne.
+b. Un tableau de bord affichera les projets et leurs tâches associés avec un
+système de filtres (par statut ou utilisateur).
+
+Spécifications techniques
+Backend
+• Framework : Django
+• Modules requis :
+o Django REST Framework pour créer une API RESTful.
+o Django ORM pour la gestion des bases de données.
+o Django Allauth ou équivalent pour la gestion de l’authentification.
+o Django CORS Headers pour permettre des connexions avec un frontend
+(angular).
+
+Frontend
+• Interface minimale obligatoire avec Django Templates (HTML, CSS, JavaScript)
+pour le premier objectif.
+• Pour l’objectif 2 vous pouvez lier l’API à une application React/Angular/Vue.js.
+Base de données
+• Base relationnelle : PostgreSQL ou SQLite (pour simplifier) mais vous pouvez
+utiliser aussi mysql.
+Authentification
+• Utilisation du système d’authentification intégré à Django.
+• Gestion de tokens via djangorestframework-simplejwt (JWT) pour l'API
+exposée à un frontend angular.
+
+Tests
+• Implémentez des tests unitaires pour les fonctionnalités principales avec
+pytest-django.
+
+Livrables
+1. Code source complet de l'application sur un dépôt GitHub ou GitLab.
+2. Documentation incluant :
+a. Instructions pour configurer et lancer le projet.
+b. Explication des modèles de données et des routes API disponibles.
+3. Présentation d'une démo fonctionnelle.
+
+Déroulement et évaluation
+Durée : 3 semaines
+Phases :
+1. Semaine 1 :
+a. Développement des modèles et des vues pour les utilisateurs, projets et
+tâches.
+b. Mise en place de l'authentification.
+2. Semaine 2 & 3:
+a. Création de l’interface utilisateur de base.
+b. Exposition des routes API (si applicable).
+c. Mise en place du frontend Angular 
+d. Tests et débogage.
+e. Finalisation et documentation.
+
+Critères d'évaluation :
+• Respect des fonctionnalités demandées.
+• Structure et clarté du code (respect des bonnes pratiques Django).
+• Qualité de l’interface utilisateur.
+• Qualité de la documentation.
+
+Exemples de fonctionnalités bonus (optionnel)
+• Notifications par email pour les tâches proches de leur date limite.
+• Recherche avancée et filtres pour les tâches.
+• Intégration avec un calendrier (par exemple, Google Calendar).
+• Ajout d’un chat en temps réel (via Django Channels).

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Portail Tâches - ESMT Tasks{% endblock %}
+
+{% block extra_css %}
+<!-- Synchronisation Visuelle Angular-Django -->
+<link rel="stylesheet" href="{% static 'angular/browser/styles-URSOV25I.css' %}">
+<base href="/portal/">
+<style>
+    /* HIDE the redundant Angular-provided layout elements */
+    app-root .sidebar,
+    app-root aside,
+    app-root .topbar,
+    app-root .topbar-right,
+    app-root .breadcrumb,
+    app-root .bg-wrapper,
+    app-root .bg-wrapper-glow,
+    app-root .stars,
+    app-root .mountain {
+        display: none !important;
+    }
+
+    /* Adapt Angular root container to Django layout */
+    app-root>div {
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+        backdrop-filter: none !important;
+        min-height: 450px !important;  /* laisse la place au router-outlet */
+    }
+
+    /* Reset some Angular layout constraints */
+    .relative.z-10.flex.h-screen {
+        padding: 0 !important;
+        overflow: visible !important;
+        min-height: 60vh !important;
+    }
+
+    .flex.w-full.max-w-\[1300px\] {
+        max-width: 100% !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        min-height: 450px !important;
+    }
+
+    /* Main content inside Angular */
+    .flex-1.flex.flex-col.overflow-hidden {
+        overflow: visible !important;
+        min-height: 450px !important;
+    }
+
+    main.flex-1.overflow-y-auto {
+        overflow-y: auto !important;
+        min-height: 450px !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="angular-portal-wrapper">
+    <app-root>
+        <div class="flex flex-col items-center justify-center py-32 text-center">
+            <div class="w-12 h-12 rounded-full border-4 border-accent-blue border-t-transparent animate-spin mb-6">
+            </div>
+            <h2 class="font-syne text-xl text-white font-bold">Synchronisation du Portail...</h2>
+            <p class="text-txt-sec text-sm mt-2 animate-pulse">Lancement de l'environnement Angular synchronisé.</p>
+        </div>
+    </app-root>
+</div>
+
+<!-- Injection des modules Angular -->
+<script src="{% static 'angular/browser/polyfills-DOYHMSTV.js' %}" type="module"></script>
+<script src="{% static 'angular/browser/main-IIMBIELE.js' %}" type="module"></script>
+{% endblock %}

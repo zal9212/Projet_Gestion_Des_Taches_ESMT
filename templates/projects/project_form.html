@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Créer / Modifier un Projet -{% endblock %}
+
+{% block content %}
+<div class="flex justify-center items-start pt-8 px-6">
+    <div class="w-full max-w-2xl">
+        <div class="bg-bg-card border border-border-glass rounded-[30px] overflow-hidden shadow-2xl backdrop-blur-xl">
+
+            <!-- Header -->
+            <div class="px-8 py-6 bg-white/5 border-b border-white/5 flex items-center gap-4">
+                <div
+                    class="w-11 h-11 rounded-2xl bg-accent-blue/10 flex items-center justify-center text-accent-blue shadow-inner border border-white/5">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        {% if object %}
+                        <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                        <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        {% else %}
+                        <rect x="2" y="3" width="20" height="14" rx="2" />
+                        <line x1="8" y1="21" x2="16" y2="21" />
+                        <line x1="12" y1="17" x2="12" y2="21" />
+                        {% endif %}
+                    </svg>
+                </div>
+                <h2 class="font-syne font-bold text-xl text-white tracking-tight">
+                    {% if object %}Modifier le Projet{% else %}Créer un nouveau projet{% endif %}
+                </h2>
+            </div>
+
+            <!-- Formulaire -->
+            <div class="p-8">
+                <form method="post" class="flex flex-col gap-6">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="space-y-2">
+                        <label for="{{ field.id_for_label }}"
+                            class="text-[13px] font-semibold text-txt-dim tracking-wide uppercase">{{ field.label}}</label>
+                        {% if field.name == 'description' %}
+                        <textarea name="{{ field.name }}" id="{{ field.id_for_label }}"
+                            class="w-full bg-white/[0.03] border border-white/10 text-white px-4 py-3 rounded-2xl text-[14px] outline-none focus:border-accent-blue focus:ring-4 focus:ring-accent-blue/10 transition-all min-h-[140px] shadow-inner"
+                            placeholder="Décrivez votre projet ici...">{{ field.value|default:'' }}</textarea>
+                        {% else %}
+                        <input type="{{ field.field.widget.input_type|default:'text' }}" name="{{ field.name }}"
+                            id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}"
+                            class="w-full bg-white/[0.03] border border-white/10 text-white px-4 py-3 rounded-2xl text-[14px] outline-none focus:border-accent-blue focus:ring-4 focus:ring-accent-blue/10 transition-all shadow-inner"
+                            placeholder="Entrez le {{ field.label|lower }}...">
+                        {% endif %}
+
+                        {% if field.help_text %}
+                        <p class="text-[11px] text-txt-dim italic">{{ field.help_text }}</p>
+                        {% endif %}
+
+                        {% for error in field.errors %}
+                        <p class="text-xs text-red-400 font-medium flex items-center gap-1.5">
+                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            {{ error }}
+                        </p>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+
+                    <!-- Actions -->
+                    <div class="flex justify-between items-center mt-4 pt-6 border-t border-white/5">
+                        <a href="{% if object %}{% url 'project_detail' object.pk %}{% else %}{% url 'dashboard' %}{% endif %}"
+                            class="px-6 py-3 rounded-xl text-sm font-bold text-txt-sec border border-white/10 hover:bg-white/5 hover:text-white transition-all">
+                            Annuler
+                        </a>
+                        <button type="submit"
+                            class="px-8 py-3 rounded-xl text-sm font-bold text-white bg-accent-blue hover:bg-accent-glow hover:-translate-y-0.5 shadow-glow transition-all">
+                            {% if object %}Mettre à jour{% else %}Démarrer le projet{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

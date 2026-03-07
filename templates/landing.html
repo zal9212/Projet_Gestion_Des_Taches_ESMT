@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Accueil - ESMT Tasks{% endblock %}
+
+{% block content %}
+<!-- Si l'utilisateur est connecté, base.html affiche la sidebar. 
+     Mais s'il ne l'est pas, base.html affiche le block auth_content.
+      -->
+{% endblock %}
+
+{% block outer_auth_wrapper %}
+<div
+    class="col-span-full w-[1000px] max-w-[95vw] bg-[#0A122D]/90 backdrop-blur-3xl rounded-[40px] border border-white/10 p-12 overflow-hidden relative shadow-[0_30px_100px_rgba(0,0,0,0.6)]">
+
+    <!-- Effets de fond -->
+    <div
+        class="absolute -top-40 -left-40 w-96 h-96 bg-accent-blue/20 blur-[100px] rounded-full mix-blend-screen pointer-events-none">
+    </div>
+    <div
+        class="absolute -bottom-40 -right-40 w-96 h-96 bg-accent-purple/20 blur-[100px] rounded-full mix-blend-screen pointer-events-none">
+    </div>
+
+    <div class="relative z-10 flex flex-col md:flex-row gap-12 items-center">
+
+        <!-- Colonne Gauche : Texte -->
+        <div class="flex-1 text-center md:text-left">
+            <div
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-8 mx-auto md:mx-0">
+                <span class="w-2 h-2 rounded-full bg-accent-green animate-pulse"></span>
+                <span class="text-[10px] font-bold tracking-widest text-txt-main uppercase">Plateforme Étudiante
+                    ESMT</span>
+            </div>
+
+            <h1 class="font-syne text-5xl md:text-6xl font-bold text-white leading-[1.1] tracking-tight mb-6">
+                Gérez vos <span
+                    class="bg-gradient-to-r from-accent-blue to-accent-purple bg-clip-text text-transparent italic">projets</span>
+                sans effort.
+            </h1>
+
+            <p class="text-txt-sec text-base md:text-lg leading-relaxed mb-10 max-w-md mx-auto md:mx-0">
+                L'outil sur-mesure pour les étudiants et professeurs de l'ESMT. Collaborez, suivez vos tâches et
+                atteignez vos objectifs académiques.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start">
+                <a href="{% url 'login' %}"
+                    class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-accent-blue text-white font-bold text-sm shadow-[0_10px_30px_rgba(59,111,245,0.4)] hover:-translate-y-1 transition-transform text-center ring-2 ring-accent-blue ring-offset-2 ring-offset-[#0A122D]">
+                    Se connecter à l'espace
+                </a>
+                <a href="{% url 'register' %}"
+                    class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-bold text-sm hover:bg-white/10 transition-colors text-center">
+                    Créer mon compte
+                </a>
+            </div>
+        </div>
+
+        <!-- Colonne Droite : Visual/Stats -->
+        <div class="flex-1 w-full relative">
+            <div
+                class="relative w-full aspect-square md:aspect-[4/5] bg-gradient-to-br from-white/5 to-transparent rounded-[32px] border border-white/10 p-6 flex flex-col justify-between overflow-hidden shadow-2xl">
+
+                <!-- Mockup App Elements -->
+                <div class="space-y-4 relative z-10">
+                    <div class="flex items-center justify-between">
+                        <div class="space-y-2 w-full">
+                            <div class="h-4 w-3/4 bg-white/10 rounded-lg"></div>
+                            <div class="h-3 w-1/2 bg-white/5 rounded-lg"></div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="p-4 rounded-2xl bg-accent-blue/10 border border-accent-blue/20 backdrop-blur-md translate-x-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="h-2 w-16 bg-accent-blue/50 rounded-full"></span>
+                            <span class="flex -space-x-2">
+                                <span class="w-6 h-6 rounded-full border-2 border-[#0D1530] bg-red-400"></span>
+                                <span class="w-6 h-6 rounded-full border-2 border-[#0D1530] bg-blue-400"></span>
+                            </span>
+                        </div>
+                        <div class="h-3 w-full bg-white/20 rounded-lg mb-2"></div>
+                        <div class="h-3 w-4/5 bg-white/20 rounded-lg"></div>
+                    </div>
+
+                    <div
+                        class="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md -translate-x-4 opacity-50">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="h-2 w-16 bg-white/20 rounded-full"></span>
+                        </div>
+                        <div class="h-3 w-5/6 bg-white/10 rounded-lg mb-2"></div>
+                        <div class="h-3 w-2/3 bg-white/10 rounded-lg"></div>
+                    </div>
+                </div>
+
+                <!-- Floating badge -->
+                <div class="absolute bottom-8 right-8 bg-black/40 backdrop-blur-xl border border-white/20 p-4 rounded-2xl shadow-xl z-20 animate-bounce"
+                    style="animation-duration: 3s;">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-10 h-10 rounded-full bg-accent-green/20 flex items-center justify-center text-accent-green">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-txt-sec uppercase tracking-wider font-bold">Objectif</p>
+                            <p class="text-white font-syne font-bold">100% Atteint</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
