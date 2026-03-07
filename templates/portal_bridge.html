@@ -5,7 +5,7 @@
 
 {% block extra_css %}
 <!-- Synchronisation Visuelle Angular-Django -->
-<link rel="stylesheet" href="{% static 'angular/browser/styles-URSOV25I.css' %}">
+<link rel="stylesheet" href="{% static 'angular/browser/styles.css' %}">
 <base href="/portal/">
 <style>
     /* HIDE the redundant Angular-provided layout elements */
@@ -29,7 +29,8 @@
         box-shadow: none !important;
         border: none !important;
         backdrop-filter: none !important;
-        min-height: 450px !important;  /* laisse la place au router-outlet */
+        min-height: 450px !important;
+        /* laisse la place au router-outlet */
     }
 
     /* Reset some Angular layout constraints */
@@ -73,6 +74,6 @@
 </div>
 
 <!-- Injection des modules Angular -->
-<script src="{% static 'angular/browser/polyfills-DOYHMSTV.js' %}" type="module"></script>
-<script src="{% static 'angular/browser/main-IIMBIELE.js' %}" type="module"></script>
+<script src="{% static 'angular/browser/polyfills.js' %}" type="module"></script>
+<script src="{% static 'angular/browser/main.js' %}" type="module"></script>
 {% endblock %}

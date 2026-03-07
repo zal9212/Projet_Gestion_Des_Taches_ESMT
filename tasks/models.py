@@ -16,6 +16,10 @@ class Task(models.Model):
     validated_at = models.DateTimeField(null=True, blank=True, help_text="Date de validation par le propriétaire du projet.")
     validated_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='validated_tasks', on_delete=models.SET_NULL, null=True, blank=True)
 
+    notified_1_week = models.BooleanField(default=False)
+    notified_48_hours = models.BooleanField(default=False)
+    notified_24_hours = models.BooleanField(default=False)
+
     def save(self, *args, **kwargs):
         if self.status == 'done' and not self.completed_at:
             self.completed_at = timezone.now()

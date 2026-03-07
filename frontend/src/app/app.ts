@@ -54,9 +54,9 @@ import { NotificationBellComponent } from './components/notification-bell.compon
                 </a>
 
                 <!-- Messages -->
-                <a class="nav-item" routerLink="/messages" routerLinkActive="active" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; font-size: 13.5px; font-weight: 500; color: rgba(200, 215, 240, 0.6); text-decoration: none; transition: all 0.2s;">
+                <a class="nav-item" routerLink="/chat" routerLinkActive="active" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; font-size: 13.5px; font-weight: 500; color: rgba(200, 215, 240, 0.6); text-decoration: none; transition: all 0.2s;">
                     <svg style="width: 20px; height: 20px; flex-shrink: 0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 5h18a2 2 0 012 2v10a2 2 0 01-2 2H8l-5 4V7a2 2 0 012-2z"/>
+                        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
                     </svg>
                     Messages
                 </a>

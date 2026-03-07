@@ -144,8 +144,7 @@
                 {% for row in contribution_rows %}
                 <div class="contrib-day-label">
                     {% if forloop.counter == 1 %} Lun {% elif forloop.counter == 2 %} Mar {% elif forloop.counter == 3%}
-                    Mer {% elif forloop.counter == 4 %} Jeu {% elif forloop.counter == 5 %} Ven {% elif forloop.counter
-                    == 6 %} Sam {% else %} Dim {% endif %}
+                    Mer {% elif forloop.counter == 4 %} Jeu {% elif forloop.counter == 5 %} Ven {% elif forloop.counter == 6 %} Sam {% else %} Dim {% endif %}
                 </div>
                 {% for cell in row %}
                 <div class="contrib-cell level-{{ cell.level }}"

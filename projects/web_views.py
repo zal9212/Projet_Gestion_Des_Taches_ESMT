@@ -124,7 +124,11 @@ class ProjectListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         user = self.request.user
-        return Project.objects.filter(Q(owner=user) | Q(project_members__user=user)).distinct().order_by('-created_at')
+        qs = Project.objects.filter(Q(owner=user) | Q(project_members__user=user)).distinct().order_by('-created_at')
+        q = self.request.GET.get('q', '')
+        if q:
+            qs = qs.filter(Q(name__icontains=q) | Q(description__icontains=q))
+        return qs
 
 class ProjectCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Project

@@ -5,9 +5,6 @@ from .views import (
     ProfileView,
     logout_view,
     MemberDirectoryView,
-    MessageListView,
-    MessageCreateView,
-    MessageDetailView,
 )
 from .views_api import MeView, RegisterAPIView, SessionTokenView
 
@@ -18,9 +15,6 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('profile/', ProfileView.as_view(), name='profile'),
     path('members/', MemberDirectoryView.as_view(), name='member_directory'),
-    path('messages/', MessageListView.as_view(), name='messages_inbox'),
-    path('messages/new/', MessageCreateView.as_view(), name='message_create'),
-    path('messages/<int:pk>/', MessageDetailView.as_view(), name='message_detail'),
     path('api/me/', MeView.as_view(), name='me'),
     path('api/register/', RegisterAPIView.as_view(), name='api-register'),
     path('password_change/', auth_views.PasswordChangeView.as_view(template_name='accounts/password_change.html', success_url='/accounts/profile/'), name='password_change'),

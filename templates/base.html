@@ -60,7 +60,8 @@
             border: 1px solid var(--border-glass);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             position: relative;
-            overflow: hidden;
+            /* overflow: visible to allow popups */
+            overflow: visible;
         }
 
         .sidebar {
@@ -157,12 +158,14 @@
             border: 1px solid rgba(255, 255, 255, 0.15);
             cursor: pointer;
         }
+
         select option {
             background: #1e293b;
             color: #f1f5f9;
             padding: 10px 14px;
             font-weight: 500;
         }
+
         select option:checked {
             background: var(--accent-blue);
             color: #fff;
@@ -443,16 +446,15 @@
                         Mes Projets
                     </a>
 
-                    <a class="nav-link {% if '/portal/messages' in request.path %}active{% endif %}"
-                        href="/portal/messages">
+                    <a class="nav-link {% if '/portal/chat' in request.path %}active{% endif %}" href="/portal/chat">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M3 5h18a2 2 0 012 2v10a2 2 0 01-2 2H8l-5 4V7a2 2 0 012-2z" />
+                            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
                         </svg>
                         Messages
                     </a>
 
-                    <a class="nav-link {% if 'portal/dashboard' in request.path %}active{% endif %}"
-                        href="/portal/dashboard">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'tasks' %}active{% endif %}"
+                        href="{% url 'tasks' %}">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2" />
                             <rect x="8" y="2" width="8" height="4" rx="1" />
@@ -481,8 +483,8 @@
                     </a>
 
 
-                    <a class="nav-link" href="javascript:void(0)"
-                        onclick="alert('Module Calendrier bientôt disponible !')">
+                    <a class="nav-link {% if 'portal/calendar' in request.path %}active{% endif %}"
+                        href="/portal/calendar">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="3" y="4" width="18" height="18" rx="2" />
                             <line x1="16" y1="2" x2="16" y2="6" />
@@ -571,8 +573,7 @@
                                 onclick="const m = document.getElementById('notifMenu'); if (m) m.classList.toggle('hidden');">
                                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                     stroke-width="2">
-                                    <path
-                                        d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" />
+                                    <path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" />
                                 </svg>
                                 {% if unread_notifications_count %}
                                 <span
@@ -642,8 +643,8 @@
                             <rect x="14" y="14" width="7" height="7" rx="1" />
                         </svg>
                     </a>
-                    <a href="javascript:void(0)" onclick="alert('Module Calendrier bientôt disponible !')"
-                        class="bottom-nav-item">
+                    <a href="{% url 'calendar' %}"
+                        class="bottom-nav-item {% if request.resolver_match.url_name == 'calendar' %}active{% endif %}">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <rect x="3" y="4" width="18" height="18" rx="2" />
                             <path d="M16 2v4M8 2v4M3 10h18" />

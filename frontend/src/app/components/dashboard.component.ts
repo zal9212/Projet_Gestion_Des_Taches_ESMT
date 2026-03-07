@@ -40,8 +40,16 @@ import { RouterModule } from '@angular/router';
           </div>
         </div>
 
-        <!-- Filters -->
+        <!-- Filters & Search -->
         <div class="flex flex-col gap-4">
+            <!-- Search Bar -->
+            <div class="relative w-full max-w-md">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-txt-muted">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </div>
+                <input type="text" [(ngModel)]="searchQuery" (input)="filterTasks()" placeholder="Rechercher une tâche (titre, description)..." class="w-full bg-bg-card border border-border-col rounded-xl pl-10 pr-4 py-2 text-sm text-txt outline-none focus:border-accent transition-colors shadow-sm">
+            </div>
+
             <div class="flex items-center gap-3 flex-wrap">
                 <button (click)="setStatusFilter('')" [class.active-pill]="statusFilter === ''" class="pill-btn">Toutes</button>
                 <div class="w-px h-6 bg-border-col mx-2 hidden sm:block"></div>

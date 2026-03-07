@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,12 +46,15 @@ INSTALLED_APPS = [
     'tasks',
     'stats',
     'frontend_bridge',
+    'django_apscheduler',
+    'chat',
 
     #bibliotheque de jwt
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
     'django_filters',
+    'channels',
 ]
 
 
@@ -93,6 +97,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
+ASGI_APPLICATION = 'config.asgi.application'
+
+# Channel layers for real-time chat
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 
 
 # Database
@@ -215,3 +227,14 @@ LOGIN_URL = '/'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
 LOGOUT_ON_GET = True
+
+# Configuration des emails pour l'envoi de notifications
+# En dev, on utilise le console backend pour afficher les emails dans le terminal.
+# En prod, remplacer par django.core.mail.backends.smtp.EmailBackend et configurer SMTP.
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config('EMAIL_ADDRESS', default='')
+EMAIL_HOST_PASSWORD = config('PASSWORD', default='')
+DEFAULT_FROM_EMAIL = f"Notification ESMT Tasks <{EMAIL_HOST_USER}>"

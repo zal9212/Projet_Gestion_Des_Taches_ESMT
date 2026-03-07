@@ -40,6 +40,7 @@ urlpatterns = [
     path('api/', include('projects.urls')),
     path('api/', include('stats.urls')),
     path('api/', include('accounts.urls_api')),
+    path('api/chat/', include('chat.urls_api')),
     
     # Authentification Web
     path('accounts/', include('accounts.urls')),

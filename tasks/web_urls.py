@@ -2,7 +2,8 @@ from django.urls import path
 from . import web_views
 
 urlpatterns = [
-    path('tasks/', web_views.TaskListView.as_view(), name='task_list'),
+    path('tasks/', web_views.TaskListView.as_view(), name='tasks'),
+    path('calendar/', web_views.CalendarView.as_view(), name='calendar'),
     path('project/<int:project_id>/task/add/', web_views.TaskCreateView.as_view(), name='task_add'),
     path('task/<int:pk>/edit/', web_views.TaskUpdateView.as_view(), name='task_edit'),
     path('task/<int:pk>/status/', web_views.TaskStatusUpdateView.as_view(), name='task_status_update'),

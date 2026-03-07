@@ -41,19 +41,3 @@ def save_user_profile(sender, instance, **kwargs):
         profile.save()
 
 
-class Message(models.Model):
-    """
-    Message privé simple entre deux utilisateurs.
-    """
-    sender = models.ForeignKey(User, related_name="sent_messages", on_delete=models.CASCADE)
-    recipient = models.ForeignKey(User, related_name="received_messages", on_delete=models.CASCADE)
-    subject = models.CharField(max_length=255, blank=True)
-    body = models.TextField()
-    is_read = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ["-created_at"]
-
-    def __str__(self) -> str:
-        return f"De {self.sender} à {self.recipient} : {self.subject or self.body[:30]}"

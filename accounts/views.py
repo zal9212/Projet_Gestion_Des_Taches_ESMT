@@ -8,7 +8,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.urls import reverse_lazy
 from .forms import CustomUserCreationForm, UserUpdateForm, ProfileUpdateForm
-from .models import Profile, Message
+from .models import Profile
 
 
 # ─── Inscription ──────────────────────────────────────────────────────────────
@@ -114,69 +114,3 @@ class MemberDirectoryView(LoginRequiredMixin, View):
         )
 
 
-class MessageListView(LoginRequiredMixin, View):
-    """
-    Boîte de réception + messages envoyés.
-    """
-    template_name = "accounts/messages_inbox.html"
-
-    def get(self, request, *args, **kwargs):
-        inbox = Message.objects.filter(recipient=request.user).select_related("sender")
-        sent = Message.objects.filter(sender=request.user).select_related("recipient")
-        return render(
-            request,
-            self.template_name,
-            {
-                "inbox_messages": inbox,
-                "sent_messages": sent,
-            },
-        )
-
-
-class MessageCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
-    """
-    Formulaire d'envoi d'un message.
-    """
-    model = Message
-    fields = ["recipient", "subject", "body"]
-    template_name = "accounts/message_form.html"
-    success_message = "Message envoyé avec succès."
-
-    def form_valid(self, form):
-        form.instance.sender = self.request.user
-        response = super().form_valid(form)
-
-        # Créer une notification pour le destinataire
-        from stats.models import Notification
-
-        Notification.objects.create(
-            user=form.instance.recipient,
-            type="message",
-            message=f"Nouveau message de {self.request.user.display_name} : {form.instance.subject or form.instance.body[:50]}",
-        )
-
-        return response
-
-    def get_success_url(self):
-        return reverse_lazy("messages_inbox")
-
-
-class MessageDetailView(LoginRequiredMixin, View):
-    """
-    Détail d'un message (et marquage comme lu).
-    """
-    template_name = "accounts/message_detail.html"
-
-    def get(self, request, pk, *args, **kwargs):
-        message = Message.objects.select_related("sender", "recipient").get(pk=pk)
-
-        # Sécurité : seul l'émetteur ou le destinataire peut voir le message
-        if message.sender != request.user and message.recipient != request.user:
-            messages.error(request, "Vous n'avez pas accès à ce message.")
-            return redirect("messages_inbox")
-
-        if message.recipient == request.user and not message.is_read:
-            message.is_read = True
-            message.save(update_fields=["is_read"])
-
-        return render(request, self.template_name, {"message_obj": message})

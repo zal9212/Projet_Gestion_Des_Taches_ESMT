@@ -9,6 +9,98 @@ from .models import Task
 from projects.models import Project
 from django.core.exceptions import PermissionDenied
 from stats.models import Notification
+import calendar
+from datetime import date, timedelta
+from django.utils import timezone
+from urllib.parse import urlencode
+
+
+class CalendarView(LoginRequiredMixin, View):
+    """Vue calendrier mensuelle affichant les tâches par date de deadline avec export Google Calendar."""
+
+    def get(self, request, *args, **kwargs):
+        from django.shortcuts import render
+        today = date.today()
+        year = int(request.GET.get('year', today.year))
+        month = int(request.GET.get('month', today.month))
+
+        # Navigation mois précédent / suivant
+        first_day = date(year, month, 1)
+        prev = first_day - timedelta(days=1)
+        if month == 12:
+            next_month, next_year = 1, year + 1
+        else:
+            next_month, next_year = month + 1, year
+
+        # Tâches de l'utilisateur avec deadline ce mois
+        user = request.user
+        user_tasks = Task.objects.filter(
+            Q(assigned_to=user) | Q(project__owner=user)
+        ).distinct()
+
+        tasks_this_month = user_tasks.filter(
+            deadline__year=year, deadline__month=month
+        ).select_related('project')
+
+        tasks_no_deadline = user_tasks.filter(deadline__isnull=True).select_related('project')
+
+        # Construire l'URL Google Calendar pour chaque tâche
+        def gcal_url(task):
+            if not task.deadline:
+                return '#'
+            start = task.deadline.strftime('%Y%m%dT%H%M%SZ')
+            end_dt = task.deadline + timedelta(hours=1)
+            end = end_dt.strftime('%Y%m%dT%H%M%SZ')
+            params = {
+                'action': 'TEMPLATE',
+                'text': task.title,
+                'dates': f'{start}/{end}',
+                'details': f'Projet: {task.project.name}\n{task.description or ""}',
+                'sf': 'true',
+                'output': 'xml',
+            }
+            return 'https://calendar.google.com/calendar/r/eventnew?' + urlencode(params)
+
+        # Enrichir les tâches avec leur URL GCal
+        for task in tasks_this_month:
+            task.gcal_url = gcal_url(task)
+
+        # Map date → tâches
+        task_map = {}
+        for task in tasks_this_month:
+            day_key = task.deadline.date()
+            task_map.setdefault(day_key, []).append(task)
+
+        # Grille du calendrier (6 semaines max)
+        cal = calendar.Calendar(firstweekday=0)  # Lundi en premier
+        weeks = cal.monthdatescalendar(year, month)
+        calendar_days = []
+        for week in weeks:
+            for d in week:
+                calendar_days.append({
+                    'day': d.day,
+                    'in_month': d.month == month,
+                    'is_today': d == today,
+                    'tasks': task_map.get(d, []),
+                })
+
+        month_names = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+                       'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
+        day_names = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
+
+        return render(request, 'tasks/calendar.html', {
+            'calendar_days': calendar_days,
+            'month_name': month_names[month - 1],
+            'year': year,
+            'month': month,
+            'prev_month': prev.month,
+            'prev_year': prev.year,
+            'next_month': next_month,
+            'next_year': next_year,
+            'day_names': day_names,
+            'tasks_no_deadline': tasks_no_deadline,
+        })
+
 
 class TaskListView(LoginRequiredMixin, ListView):
     model = Task
@@ -18,7 +110,27 @@ class TaskListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         user = self.request.user
         # Tâches assignées à l'utilisateur OU dans un projet dont il est le propriétaire
-        return Task.objects.filter(Q(assigned_to=user) | Q(project__owner=user)).distinct().order_by('deadline')
+        qs = Task.objects.filter(Q(assigned_to=user) | Q(project__owner=user)).distinct().order_by('deadline')
+        
+        # Filtres & Recherche
+        q = self.request.GET.get('q', '')
+        status = self.request.GET.get('status', '')
+        project_id = self.request.GET.get('project', '')
+
+        if q:
+            qs = qs.filter(Q(title__icontains=q) | Q(description__icontains=q))
+        if status:
+            qs = qs.filter(status=status)
+        if project_id:
+            qs = qs.filter(project_id=project_id)
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        context['filter_projects'] = Project.objects.filter(Q(project_tasks__assigned_to=user) | Q(owner=user)).distinct()
+        return context
 
 class TaskCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Task
