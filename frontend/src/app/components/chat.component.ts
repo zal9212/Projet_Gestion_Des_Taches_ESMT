@@ -36,10 +36,13 @@ interface Conversation {
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="h-full flex gap-0 p-0 font-dmsans overflow-hidden bg-bg-deep/50 backdrop-blur-3xl lg:rounded-[32px] border border-white/5">
+      <div class="chat-wrapper w-full h-full flex gap-0 p-0 font-dmsans overflow-hidden bg-bg-deep/50 backdrop-blur-3xl lg:rounded-[32px] border border-white/5">
       
       <!-- List Section (Contacts & Conversations) -->
-      <div class="w-full lg:w-96 flex flex-col border-r border-white/5 bg-white/5" [class.hidden]="selectedConv() && isMobile">
+      <div class="flex flex-col border-r border-white/5 bg-white/5 transition-all duration-300 overflow-hidden flex-shrink-0"
+           [class.w-full]="!selectedConv()" [class.lg:w-96]="true"
+           [class.max-lg:hidden]="selectedConv()"
+           [class.lg:hidden]="!sidebarVisible()">
         
         <div class="p-6 border-b border-white/5">
           <div class="flex items-center justify-between mb-4">
@@ -84,17 +87,17 @@ interface Conversation {
         <div class="flex-1 overflow-y-auto custom-scrollbar">
           @if (tab() === 'recents') {
             @for (conv of conversations(); track conv.id) {
-              <button (click)="selectConv(conv)" [class.bg-white/5]="selectedConv()?.id === conv.id" class="w-full flex items-center gap-4 p-4 hover:bg-white/5 text-left border-b border-white/5 transition-colors group">
-                <div class="relative">
+              <button (click)="selectConv(conv)" [class.bg-white/5]="selectedConv()?.id === conv.id" class="w-full max-w-full overflow-hidden flex items-center gap-4 p-4 hover:bg-white/5 text-left border-b border-white/5 transition-colors group">
+                <div class="relative flex-shrink-0">
                   <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-accent/20 to-accent/40 flex items-center justify-center font-bold text-white uppercase italic text-lg border border-white/10">{{ getOtherUser(conv).username[0] }}</div>
                   <span class="absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-bg-deep bg-green-500"></span>
                 </div>
-                <div class="flex-1 min-w-0">
+                <div class="flex-1 min-w-0 overflow-hidden">
                   <div class="flex items-center justify-between mb-0.5">
                     <p class="text-sm font-bold text-white truncate">{{ getOtherUser(conv).username }}</p>
-                    <span class="text-[9px] text-txt-muted">{{ conv.last_message?.timestamp || '' }}</span>
+                    <span class="text-[9px] text-txt-muted flex-shrink-0 ml-2">{{ conv.last_message?.timestamp || '' }}</span>
                   </div>
-                  <p class="text-[11px] text-txt-muted truncate group-hover:text-txt-sec transition-colors">{{ conv.last_message?.content || 'Aucun message' }}</p>
+                  <p class="text-[11px] text-txt-muted truncate group-hover:text-txt-sec transition-colors inline-block w-full">{{ conv.last_message?.content || 'Aucun message' }}</p>
                 </div>
               </button>
             } @empty {
@@ -105,11 +108,11 @@ interface Conversation {
             }
           } @else {
              @for (c of contacts(); track c.id) {
-              <button (click)="startConv(c.contact_details!)" class="w-full flex items-center gap-4 p-4 hover:bg-white/5 text-left border-b border-white/5 transition-colors group">
-                <div class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center font-bold text-white uppercase italic text-lg border border-white/10">{{ c.contact_details?.username?.[0] }}</div>
-                <div>
-                   <p class="text-sm font-bold text-white">{{ c.contact_details?.username }}</p>
-                   <p class="text-[10px] text-txt-muted italic">{{ c.contact_details?.role }}</p>
+              <button (click)="startConv(c.contact_details!)" class="w-full max-w-full overflow-hidden flex items-center gap-4 p-4 hover:bg-white/5 text-left border-b border-white/5 transition-colors group">
+                <div class="w-12 h-12 flex-shrink-0 rounded-2xl bg-white/5 flex items-center justify-center font-bold text-white uppercase italic text-lg border border-white/10">{{ c.contact_details?.username?.[0] }}</div>
+                <div class="flex-1 min-w-0 overflow-hidden">
+                   <p class="text-sm font-bold text-white truncate">{{ c.contact_details?.username }}</p>
+                   <p class="text-[10px] text-txt-muted italic truncate inline-block w-full">{{ c.contact_details?.role }}</p>
                 </div>
               </button>
              } @empty {
@@ -122,12 +125,15 @@ interface Conversation {
       </div>
 
       <!-- Chat Main Area -->
-      <div class="flex-1 flex flex-col min-w-0" [class.hidden]="!selectedConv() && isMobile">
+      <div class="flex-1 flex flex-col min-w-0 relative" [class.max-lg:hidden]="!selectedConv()">
         @if (selectedConv()) {
           <div class="p-4 lg:p-6 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
             <div class="flex items-center gap-4">
               <button (click)="selectedConv.set(null)" class="lg:hidden p-2 -ml-2 text-txt-muted hover:text-white">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+              </button>
+              <button (click)="sidebarVisible.set(!sidebarVisible())" class="hidden lg:flex p-2 -ml-2 text-txt-muted hover:text-white transition-transform" [class.rotate-180]="!sidebarVisible()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 17l-5-5 5-5M18 17l-5-5 5-5"/></svg>
               </button>
               <div class="w-10 h-10 rounded-xl bg-accent-bright flex items-center justify-center font-bold text-white font-syne">{{ getOtherUser(selectedConv()!).username[0] }}</div>
               <div>
@@ -136,10 +142,13 @@ interface Conversation {
               </div>
             </div>
             <div class="flex items-center gap-3">
-              <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 text-txt-muted hover:text-white transition-all">
+              @if (selectionMode()) {
+                 <button (click)="cancelSelection()" class="px-4 py-2 rounded-xl bg-white/10 text-white text-[11px] font-bold hover:bg-white/20 transition-all uppercase tracking-widest">Annuler</button>
+              }
+              <button (click)="startCall(false)" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 text-txt-muted hover:text-white transition-all" title="Appel Audio">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
               </button>
-              <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 text-txt-muted hover:text-white transition-all">
+              <button (click)="startCall(true)" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 text-txt-muted hover:text-white transition-all" title="Appel Vidéo">
                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
               </button>
             </div>
@@ -147,17 +156,36 @@ interface Conversation {
 
           <!-- Messages Area -->
           <div #scrollContainer class="flex-1 p-6 overflow-y-auto space-y-4 custom-scrollbar bg-gradient-to-b from-transparent to-white/[0.01]">
-            @for (msg of messages(); track $index) {
-              <div [class]="msg.sender_username === currentUser()?.username ? 'flex justify-end' : 'flex justify-start'">
-                <div class="max-w-[80%] flex flex-col" [class.items-end]="msg.sender_username === currentUser()?.username">
+            @for (msg of messages(); track msg.id) {
+              <div [class]="msg.sender_username === currentUser()?.username ? 'flex justify-end' : 'flex justify-start'"
+                   class="group/msg relative">
+                
+                @if (selectionMode()) {
+                   <div class="flex items-center self-center px-4">
+                      <input type="checkbox" [checked]="isMessageSelected(msg.id)" (change)="toggleSelection(msg.id)"
+                             class="w-5 h-5 rounded-full border-2 border-white/20 bg-transparent checked:bg-accent checked:border-accent appearance-none cursor-pointer transition-all">
+                   </div>
+                }
+
+                <div class="max-w-[80%] flex flex-col" [class.items-end]="msg.sender_username === currentUser()?.username"
+                     (contextmenu)="$event.preventDefault(); enterSelectionMode(msg.id)"
+                     (click)="selectionMode() ? toggleSelection(msg.id) : null">
+                  
                   <div class="flex items-center gap-2 mb-1">
                     <span class="text-[9px] font-bold text-txt-muted uppercase tracking-tighter">{{ msg.sender_username }}</span>
                     <span class="text-[9px] text-txt-muted/50">{{ msg.timestamp }}</span>
+                    
+                    @if (!selectionMode()) {
+                      <button (click)="enterSelectionMode(msg.id)" class="opacity-0 group-hover/msg:opacity-100 p-1 text-txt-muted hover:text-white transition-all">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                      </button>
+                    }
                   </div>
                   
                   <div [class]="msg.sender_username === currentUser()?.username 
                     ? 'bg-accent p-3 lg:p-4 rounded-2xl rounded-tr-none shadow-lg' 
-                    : 'bg-white/5 border border-white/10 p-3 lg:p-4 rounded-2xl rounded-tl-none shadow-lg text-white'">
+                    : 'bg-white/5 border border-white/10 p-3 lg:p-4 rounded-2xl rounded-tl-none shadow-lg text-white'"
+                    [class.ring-2]="isMessageSelected(msg.id)" [class.ring-accent-bright]="isMessageSelected(msg.id)">
                     
                     @if (msg.file) {
                       <div class="mb-2 rounded-lg overflow-hidden border border-white/20 bg-black/20">
@@ -173,7 +201,7 @@ interface Conversation {
                     }
 
                     @if (msg.content) {
-                      <p class="text-xs lg:text-sm leading-relaxed" [class.text-white]="msg.sender_username === currentUser()?.username">{{ msg.content }}</p>
+                      <p class="text-xs lg:text-sm leading-relaxed whitespace-pre-wrap break-all overflow-hidden" [class.text-white]="msg.sender_username === currentUser()?.username">{{ msg.content }}</p>
                     }
                   </div>
                 </div>
@@ -181,37 +209,60 @@ interface Conversation {
             }
           </div>
 
-          <!-- Input Area -->
+          <!-- Input Area / Selection Actions -->
           <div class="p-4 bg-white/[0.03] border-t border-white/5">
-             @if (selectedFile) {
-               <div class="flex items-center gap-2 mb-3 p-2 bg-accent/20 rounded-xl border border-accent/40 w-fit">
-                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
-                 <span class="text-[10px] text-white font-bold">{{ selectedFile.name }}</span>
-                 <button (click)="selectedFile = null" class="p-1 hover:text-red-400">✕</button>
+             @if (selectionMode()) {
+               <div class="flex items-center justify-between p-2">
+                 <div class="flex items-center gap-4">
+                    <span class="text-xs font-bold text-accent-bright uppercase tracking-widest">{{ selectedIds().size }} messages sélectionnés</span>
+                 </div>
+                 <div class="flex items-center gap-3">
+                   <button (click)="showTransferModal.set(true)" class="flex items-center gap-2 px-5 py-3 rounded-2xl bg-accent text-white text-xs font-bold hover:bg-accent-bright transition-all shadow-lg shadow-accent/20">
+                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                     Transférer
+                   </button>
+                   <button (click)="deleteSelected()" class="flex items-center gap-2 px-5 py-3 rounded-2xl bg-red-500/10 text-red-400 text-xs font-bold hover:bg-red-500/20 transition-all border border-red-500/20">
+                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                     Supprimer
+                   </button>
+                 </div>
                </div>
+             } @else {
+               @if (selectedFile) {
+                 <div class="flex items-center gap-2 mb-3 p-2 bg-accent/20 rounded-xl border border-accent/40 w-fit">
+                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                   <span class="text-[10px] text-white font-bold">{{ selectedFile.name }}</span>
+                   <button (click)="selectedFile = null" class="p-1 hover:text-red-400">✕</button>
+                 </div>
+               }
+  
+              <form (submit)="sendMessage()" class="flex items-center gap-3">
+                <input #fileInput type="file" (change)="onFileSelected($event)" class="hidden">
+                <button type="button" (click)="fileInput.click()" class="w-12 h-12 flex items-center justify-center rounded-2xl bg-white/5 hover:bg-white/10 text-txt-muted transition-all">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+                </button>
+                
+                <input type="text" [(ngModel)]="newMessage" name="newMessage"
+                       placeholder="Message..."
+                       class="flex-1 bg-white/5 border border-white/10 rounded-2xl py-3.5 px-5 text-sm text-white focus:border-accent-bright outline-none transition-all"
+                       autocomplete="off">
+                
+                <button type="submit" [disabled]="!newMessage.trim() && !selectedFile"
+                        class="w-12 h-12 flex items-center justify-center rounded-2xl bg-accent hover:bg-accent-bright text-white shadow-lg shadow-accent/40 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                </button>
+              </form>
              }
-
-            <form (submit)="sendMessage()" class="flex items-center gap-3">
-              <input #fileInput type="file" (change)="onFileSelected($event)" class="hidden">
-              <button type="button" (click)="fileInput.click()" class="w-12 h-12 flex items-center justify-center rounded-2xl bg-white/5 hover:bg-white/10 text-txt-muted transition-all">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
-              </button>
-              
-              <input type="text" [(ngModel)]="newMessage" name="newMessage"
-                     placeholder="Message..."
-                     class="flex-1 bg-white/5 border border-white/10 rounded-2xl py-3.5 px-5 text-sm text-white focus:border-accent-bright outline-none transition-all"
-                     autocomplete="off">
-              
-              <button type="submit" [disabled]="!newMessage.trim() && !selectedFile"
-                      class="w-12 h-12 flex items-center justify-center rounded-2xl bg-accent hover:bg-accent-bright text-white shadow-lg shadow-accent/40 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-              </button>
-            </form>
           </div>
         } @else {
           <div class="flex-1 flex flex-col items-center justify-center text-center p-10 opacity-20">
-            <div class="w-32 h-32 rounded-full border-2 border-dashed border-white/50 flex items-center justify-center mb-8">
+            <div class="w-32 h-32 rounded-full border-2 border-dashed border-white/50 flex items-center justify-center mb-8 relative">
               <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              @if (!sidebarVisible()) {
+                <button (click)="sidebarVisible.set(true)" class="absolute -left-16 p-3 bg-accent rounded-full text-white shadow-xl hover:scale-110 transition-all animate-bounce">
+                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 17l5-5-5-5M6 17l5-5-5-5"/></svg>
+                </button>
+              }
             </div>
             <h2 class="font-syne text-2xl font-bold text-white mb-2">ESMT chat Connect</h2>
             <p class="text-sm max-w-xs mx-auto">Communiquez en privé avec vos contacts, partagez des fichiers et collaborez en temps réel.</p>
@@ -247,10 +298,39 @@ interface Conversation {
         </div>
       </div>
     }
+
+    <!-- TRANSFER MODAL -->
+    @if (showTransferModal()) {
+      <div class="fixed inset-0 z-[200] flex items-center justify-center p-4 lg:p-10" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-md" (click)="showTransferModal.set(false)"></div>
+        <div class="relative w-full max-w-lg bg-[#0a122d] border border-white/10 rounded-[32px] shadow-2xl overflow-hidden flex flex-col max-h-[70vh] animate-in zoom-in-95 duration-200">
+          <div class="p-6 border-b border-white/5 flex items-center justify-between">
+            <h2 class="font-syne text-xl font-bold text-white">Transférer à...</h2>
+            <button (click)="showTransferModal.set(false)" class="text-txt-muted hover:text-white transition-colors">✕</button>
+          </div>
+          <div class="flex-1 overflow-y-auto p-4 custom-scrollbar">
+            @for (conv of conversations(); track conv.id) {
+              <button (click)="forwardTo(conv.id)" class="w-full flex items-center gap-4 p-4 rounded-2xl hover:bg-white/5 border border-white/5 mb-2 transition-all group">
+                <div class="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center font-bold text-white uppercase italic border border-white/10">{{ getOtherUser(conv).username[0] }}</div>
+                <p class="text-sm font-bold text-white">{{ getOtherUser(conv).username }}</p>
+                <svg class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-accent-bright" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    }
     `,
   styles: [`
     .custom-scrollbar::-webkit-scrollbar { width: 4px; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(59, 111, 245, 0.2); border-radius: 10px; }
+    :host { display: block; height: 100%; width: 100%; min-height: 500px; }
+    @media (max-width: 1024px) {
+      .chat-wrapper {
+        height: calc(100vh - 180px) !important;
+        max-height: calc(100vh - 180px) !important;
+      }
+    }
   `]
 })
 export class ChatComponent implements OnInit, OnDestroy {
@@ -261,6 +341,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   @ViewChild('scrollContainer') private scrollContainer?: ElementRef;
 
   tab = signal<'recents' | 'contacts'>('recents');
+  sidebarVisible = signal(true);
   searchQuery = '';
   searchResults = signal<User[]>([]);
   showAddModal = signal(false);
@@ -271,16 +352,17 @@ export class ChatComponent implements OnInit, OnDestroy {
   selectedConv = signal<Conversation | null>(null);
   messages = signal<Message[]>([]);
 
+  // Selection & Advanced Actions
+  selectionMode = signal(false);
+  selectedIds = signal<Set<number>>(new Set());
+  showTransferModal = signal(false);
+
   newMessage = '';
   selectedFile: File | null = null;
   currentUser = this.authService.currentUser;
-  isMobile = window.innerWidth < 1024;
 
   ngOnInit() {
     this.loadInitial();
-    window.addEventListener('resize', () => {
-      this.isMobile = window.innerWidth < 1024;
-    });
   }
 
   ngOnDestroy() {
@@ -351,6 +433,8 @@ export class ChatComponent implements OnInit, OnDestroy {
         ...m,
         isMe: m.sender_username === this.currentUser()?.username
       })));
+      this.selectionMode.set(false);
+      this.selectedIds.set(new Set());
       this.scrollToBottom();
     });
   }
@@ -413,6 +497,103 @@ export class ChatComponent implements OnInit, OnDestroy {
   getOtherUser(conv: Conversation): User {
     const other = conv.participants.find(p => p.username !== this.currentUser()?.username);
     return other || { id: 0, username: 'Moi' };
+  }
+
+  startCall(isVideo: boolean) {
+    const conv = this.selectedConv();
+    if (!conv) return;
+
+    // Generate a unique room name based on conversation ID
+    // We add a prefix to avoid collisions with other users on Jitsi public server
+    const roomName = `ESMT_Tasks_Room_${conv.id}`;
+
+    // Build the Jitsi URL
+    // config.startWithAudioMuted=false etc. can be added as query params
+    let jitsiUrl = `https://meet.jit.si/${roomName}#config.startWithVideoMuted=${!isVideo}`;
+
+    // Add User display name to Jitsi
+    const displayName = this.currentUser()?.username || 'Utilisateur ESMT';
+    jitsiUrl += `&userInfo.displayName="${displayName}"`;
+
+    // Notify the other user through the chat that a call is starting
+    const messageContent = isVideo
+      ? "📞 Je lance un appel vidéo. Cliquez pour rejoindre : "
+      : "📞 Je lance un appel audio. Cliquez pour rejoindre : ";
+
+    this.socket?.send(JSON.stringify({
+      message: `${messageContent} ${jitsiUrl}`
+    }));
+
+    // Open Jitsi in a new tab
+    window.open(jitsiUrl, '_blank');
+  }
+
+  // Selection & Advanced Actions
+  toggleSelection(msgId: number | undefined) {
+    if (!msgId) return;
+    const current = new Set(this.selectedIds());
+    if (current.has(msgId)) {
+      current.delete(msgId);
+    } else {
+      current.add(msgId);
+    }
+    this.selectedIds.set(current);
+    if (current.size === 0) this.selectionMode.set(false);
+  }
+
+  enterSelectionMode(msgId?: number) {
+    this.selectionMode.set(true);
+    if (msgId) {
+      this.selectedIds.set(new Set([msgId]));
+    }
+  }
+
+  cancelSelection() {
+    this.selectionMode.set(false);
+    this.selectedIds.set(new Set());
+  }
+
+  isMessageSelected(msgId: number | undefined): boolean {
+    return !!msgId && this.selectedIds().has(msgId);
+  }
+
+  deleteSelected() {
+    const ids = Array.from(this.selectedIds());
+    if (ids.length === 0) return;
+
+    if (confirm(`Voulez-vous supprimer ces ${ids.length} messages ?`)) {
+      this.http.post('/api/chat/messages/batch_delete/', { message_ids: ids }).subscribe(() => {
+        // Optimistic update or reload
+        const currentConv = this.selectedConv();
+        if (currentConv) this.loadMessages(currentConv.id);
+        this.selectionMode.set(false);
+        this.selectedIds.set(new Set());
+      });
+    }
+  }
+
+  forwardTo(convId: number) {
+    const ids = Array.from(this.selectedIds());
+    if (ids.length === 0) return;
+
+    this.http.post('/api/chat/messages/forward/', {
+      message_ids: ids,
+      conversation_id: convId
+    }).subscribe(() => {
+      this.showTransferModal.set(false);
+      this.selectionMode.set(false);
+      this.selectedIds.set(new Set());
+      alert("Messages transférés avec succès !");
+
+      // If we are already in that conversation, reload
+      if (this.selectedConv()?.id === convId) {
+        this.loadMessages(convId);
+      } else {
+        // Otherwise maybe switch to it?
+        const targetConv = this.conversations().find(c => c.id === convId);
+        if (targetConv) this.selectConv(targetConv);
+      }
+    });
   }
 
   scrollToBottom() {

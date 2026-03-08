@@ -8,6 +8,11 @@
 <link rel="stylesheet" href="{% static 'angular/browser/styles.css' %}">
 <base href="/portal/">
 <style>
+    /* Sur le portail : masquer le widget Angular (clippé par overflow), on utilise celui de base.html */
+    app-root app-assistant-widget {
+        display: none !important;
+    }
+
     /* HIDE the redundant Angular-provided layout elements */
     app-root .sidebar,
     app-root aside,

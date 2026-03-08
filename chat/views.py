@@ -1,3 +1,4 @@
+from django.shortcuts import render, get_object_or_404, redirect
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -17,7 +18,6 @@ class ConversationViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def start_private(self, request):
-        from django.shortcuts import get_object_or_404
         recipient_id = request.data.get('recipient_id')
         if not recipient_id:
             return Response({'error': 'recipient_id is required'}, status=status.HTTP_400_BAD_REQUEST)
@@ -67,6 +67,54 @@ class ConversationViewSet(viewsets.ModelViewSet):
         # We might want to notify via WebSocket here, but typically the consumer handles it
         # For files, we use HTTP upload then signal through WS
         return Response(MessageSerializer(msg).data)
+
+class MessageViewSet(viewsets.ModelViewSet):
+    serializer_class = MessageSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        # Can only see messages in conversations you belong to
+        return Message.objects.filter(conversation__participants=self.request.user)
+
+    @action(detail=False, methods=['post'])
+    def forward(self, request):
+        message_ids = request.data.get('message_ids', [])
+        conversation_id = request.data.get('conversation_id')
+        
+        if not message_ids or not conversation_id:
+            return Response({'error': 'message_ids and conversation_id are required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        conversation = get_object_or_404(Conversation, id=conversation_id, participants=request.user)
+        
+        messages = Message.objects.filter(id__in=message_ids, conversation__participants=request.user)
+        forwarded_msgs = []
+        
+        for msg in messages:
+            new_msg = Message.objects.create(
+                conversation=conversation,
+                sender=request.user,
+                content=f"--- Transféré ---\n{msg.content}" if msg.content else "--- Transféré ---",
+                file=msg.file,
+                file_name=msg.file_name,
+                file_type=msg.file_type
+            )
+            forwarded_msgs.append(new_msg)
+        
+        return Response(MessageSerializer(forwarded_msgs, many=True).data)
+
+    @action(detail=False, methods=['post'])
+    def batch_delete(self, request):
+        message_ids = request.data.get('message_ids', [])
+        if not message_ids:
+            return Response({'error': 'message_ids is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Only delete messages you sent OR messages in a conversation you belong to (if we allow that)
+        # Typically you can only delete YOUR messages.
+        msgs = Message.objects.filter(id__in=message_ids, sender=request.user)
+        deleted_count = msgs.count()
+        msgs.delete()
+        
+        return Response({'deleted_count': deleted_count}, status=status.HTTP_200_OK)
 
 class ContactViewSet(viewsets.ModelViewSet):
     serializer_class = ContactSerializer

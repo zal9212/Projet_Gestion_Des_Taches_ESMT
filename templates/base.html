@@ -71,10 +71,59 @@
             border-right: 1px solid var(--border-glass);
             display: flex;
             flex-direction: column;
-            padding: 32px 24px;
-            transition: all 0.3s ease;
+            padding: 32px 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 50;
             height: 100%;
+            position: relative;
+        }
+
+        .sidebar.collapsed {
+            width: 80px;
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+
+        .sidebar.collapsed .nav-text,
+        .sidebar.collapsed .sidebar-header-text,
+        .sidebar.collapsed .logo-container {
+            display: none;
+        }
+
+        .sidebar.collapsed .logo-mini {
+            display: flex;
+        }
+
+        .sidebar .logo-mini {
+            display: none;
+        }
+
+        /* Toggle Button */
+        .sidebar-toggle-btn {
+            position: absolute;
+            right: -14px;
+            top: 32px;
+            width: 28px;
+            height: 28px;
+            background: var(--accent-blue);
+            border: 2px solid white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.2s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar-toggle-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .sidebar.collapsed .sidebar-toggle-btn svg {
+            transform: rotate(180deg);
         }
 
         .main-content {
@@ -260,6 +309,7 @@
                 left: -260px;
                 top: 0;
                 bottom: 0;
+                z-index: 999;
             }
 
             .sidebar.show {
@@ -281,17 +331,22 @@
                 inset: 0;
                 background: rgba(0, 0, 0, 0.6);
                 backdrop-filter: blur(4px);
-                z-index: 45;
+                z-index: 998;
             }
 
             .sidebar-overlay.show {
                 display: block;
+            }
+
+            .content-scroll {
+                padding-bottom: 110px !important;
             }
         }
 
         @media (max-width: 640px) {
             .content-scroll {
                 padding: 20px;
+                padding-bottom: 110px !important;
             }
 
             .topbar {
@@ -417,13 +472,30 @@
 
             <!-- SIDEBAR -->
             <aside id="sidebar" class="sidebar">
-                <div class="flex items-center justify-center mb-10 overflow-hidden shrink-0">
+                <!-- Toggle Button Desktop -->
+                <button class="sidebar-toggle-btn hidden lg:flex" onclick="toggleSidebarPC()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                        <path d="M15 18l-6-6 6-6" />
+                    </svg>
+                </button>
+
+                <!-- Logo Full -->
+                <div class="logo-container flex items-center justify-center mb-10 overflow-hidden shrink-0">
                     <img src="{% static 'images/logo_esmt.jpg' %}" alt="ESMT Logo" class="h-16 w-auto"
                         style="height: 64px; width: auto !important; mix-blend-mode: screen; filter: brightness(1.1);">
                 </div>
 
+                <!-- Logo Mini -->
+                <div class="logo-mini hidden items-center justify-center mb-10 shrink-0">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-accent-blue/20 flex items-center justify-center font-black text-accent-blue text-lg italic border border-accent-blue/30">
+                        E</div>
+                </div>
+
                 <nav class="nav-container flex-1 flex flex-col gap-2 overflow-y-auto pr-1">
-                    <p class="px-4 text-[11px] font-bold text-txt-dim uppercase tracking-widest mb-2">Principal</p>
+                    <p
+                        class="sidebar-header-text px-4 text-[11px] font-bold text-txt-dim uppercase tracking-widest mb-2">
+                        Principal</p>
                     <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
                         href="{% url 'dashboard' %}">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -432,86 +504,88 @@
                             <rect x="14" y="14" width="7" height="7" />
                             <rect x="3" y="14" width="7" height="7" />
                         </svg>
-                        Tableau de bord
+                        <span class="nav-text">Tableau de bord</span>
                     </a>
 
                     <a class="nav-link {% if request.resolver_match.url_name == 'project_list' or 'project/' in request.path %}active{% endif %}"
-                        href="{% url 'project_list' %}">
+                        href="{% url 'project_list' %}" title="Mes Projets">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2z" />
                             <path d="M3 10h18" />
                             <path d="M7 15h.01" />
                             <path d="M11 15h.01" />
                         </svg>
-                        Mes Projets
+                        <span class="nav-text">Mes Projets</span>
                     </a>
 
-                    <a class="nav-link {% if '/portal/chat' in request.path %}active{% endif %}" href="/portal/chat">
+                    <a class="nav-link {% if '/portal/chat' in request.path %}active{% endif %}" href="/portal/chat"
+                        title="Messages">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
                         </svg>
-                        Messages
+                        <span class="nav-text">Messages</span>
                     </a>
 
                     <a class="nav-link {% if request.resolver_match.url_name == 'tasks' %}active{% endif %}"
-                        href="{% url 'tasks' %}">
+                        href="{% url 'tasks' %}" title="Mes Tâches">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2" />
                             <rect x="8" y="2" width="8" height="4" rx="1" />
                         </svg>
-                        Mes Tâches
+                        <span class="nav-text">Mes Tâches</span>
                     </a>
 
                     {% if user.role == 'professeur' %}
-                    <a class="nav-link {% if 'stats' in request.path %}active{% endif %}" href="/stats-primes/">
+                    <a class="nav-link {% if 'stats' in request.path %}active{% endif %}" href="/stats-primes/"
+                        title="Statistiques & Primes">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="18" y1="20" x2="18" y2="10" />
                             <line x1="12" y1="20" x2="12" y2="4" />
                             <line x1="6" y1="20" x2="6" y2="14" />
                         </svg>
-                        Statistiques & Primes
+                        <span class="nav-text">Statistiques & Primes</span>
                     </a>
                     {% endif %}
 
                     <a class="nav-link {% if request.resolver_match.url_name == 'member_directory' %}active{% endif %}"
-                        href="{% url 'member_directory' %}">
+                        href="{% url 'member_directory' %}" title="Membres">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path
                                 d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                         </svg>
-                        Membres (Fiabilité)
+                        <span class="nav-text">Membres (Fiabilité)</span>
                     </a>
 
 
                     <a class="nav-link {% if 'portal/calendar' in request.path %}active{% endif %}"
-                        href="/portal/calendar">
+                        href="/portal/calendar" title="Calendrier">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="3" y="4" width="18" height="18" rx="2" />
                             <line x1="16" y1="2" x2="16" y2="6" />
                             <line x1="8" y1="2" x2="8" y2="6" />
                             <line x1="3" y1="10" x2="21" y2="10" />
                         </svg>
-                        Calendrier
+                        <span class="nav-text">Calendrier</span>
                     </a>
                 </nav>
 
                 <div class="mt-auto flex flex-col gap-2 pt-6 border-t border-border-glass">
                     <a class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}"
-                        href="{% url 'profile' %}">
+                        href="{% url 'profile' %}" title="Paramètres">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="12" cy="12" r="3" />
                             <path
                                 d="M19.07 4.93A10 10 0 113.93 19.07M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2" />
                         </svg>
-                        Paramètres
+                        <span class="nav-text">Paramètres</span>
                     </a>
-                    <a class="nav-link text-red-400" href="{% url 'logout' %}">
+                    <a class="nav-link text-red-400" href="{% url 'logout' %}" title="Déconnexion">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
                             <polyline points="16 17 21 12 16 7" />
                             <line x1="21" y1="12" x2="9" y2="12" />
                         </svg>
-                        Déconnexion
+                        <span class="nav-text">Déconnexion</span>
                     </a>
                 </div>
             </aside>
@@ -643,27 +717,72 @@
                             <rect x="14" y="14" width="7" height="7" rx="1" />
                         </svg>
                     </a>
+                    <a href="{% url 'project_list' %}"
+                        class="bottom-nav-item {% if request.resolver_match.url_name == 'project_list' or 'project/' in request.path %}active{% endif %}">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2z" />
+                            <path d="M3 10h18" />
+                            <path d="M7 15h.01" />
+                            <path d="M11 15h.01" />
+                        </svg>
+                    </a>
+                    <a href="/portal/chat"
+                        class="bottom-nav-item {% if '/portal/chat' in request.path %}active{% endif %}">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+                        </svg>
+                    </a>
+                    <a href="{% url 'tasks' %}"
+                        class="bottom-nav-item {% if request.resolver_match.url_name == 'tasks' %}active{% endif %}">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2" />
+                            <rect x="8" y="2" width="8" height="4" rx="1" />
+                        </svg>
+                    </a>
                     <a href="{% url 'calendar' %}"
                         class="bottom-nav-item {% if request.resolver_match.url_name == 'calendar' %}active{% endif %}">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <rect x="3" y="4" width="18" height="18" rx="2" />
-                            <path d="M16 2v4M8 2v4M3 10h18" />
-                            <path d="M9 14h.01M12 14h.01M15 14h.01M9 17h.01M12 17h.01M15 17h.01" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
                         </svg>
                     </a>
-                    <a href="/portal/stats"
-                        class="bottom-nav-item {% if 'portal/stats' in request.path %}active{% endif %}">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path d="M3 12h3l3-9 6 18 3-9h3" />
+                </div>
+            </div>
+
+            <!-- Widget Assistant IA : hors de main-content pour éviter le clipping de l'en-tête -->
+            <div id="assistant-widget" style="position:fixed;inset:0;pointer-events:none;z-index:200;">
+                <div style="pointer-events:auto;position:absolute;bottom:24px;right:24px;">
+                    <button id="assistant-toggle" type="button"
+                        class="w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg"
+                        style="background:#3b6ff5; box-shadow:0 4px 14px rgba(59,111,245,0.4);"
+                        title="Assistant IA">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                         </svg>
-                    </a>
-                    <a href="/portal/dashboard"
-                        class="bottom-nav-item {% if 'portal/dashboard' in request.path %}active{% endif %}">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path d="M9 11l3 3L22 4" />
-                            <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
-                        </svg>
-                    </a>
+                    </button>
+                    <div id="assistant-panel" class="hidden absolute bottom-14 right-0 flex flex-col rounded-2xl shadow-2xl border"
+                        style="width:320px;max-width:90vw;height:420px;background:rgba(7,13,31,0.98);border-color:rgba(255,255,255,0.1);">
+                        <header class="shrink-0 px-4 py-3 border-b flex items-center justify-between gap-3" style="border-color:rgba(255,255,255,0.1);background:rgba(20,35,70,0.9);">
+                            <div>
+                                <h2 class="m-0 text-base font-bold" style="font-family:'Syne',sans-serif;color:#fff;">Assistant IA</h2>
+                                <p class="m-0 mt-1 text-[11px]" style="color:rgba(200,215,240,0.8);">Questions sur tes tâches, projets, primes...</p>
+                            </div>
+                            <button id="assistant-close" type="button" class="shrink-0 w-9 h-9 flex items-center justify-center rounded-lg text-base font-medium" style="color:#fff;background:rgba(255,255,255,0.1);" title="Fermer">✕</button>
+                        </header>
+                        <main id="assistant-messages" class="flex-1 min-h-0 overflow-y-auto px-3 py-2" style="background:rgba(5,10,26,0.5);">
+                            <p id="assistant-placeholder" class="text-center text-[11px] mt-4" style="color:rgba(200,215,240,0.5);">Exemples : "Tâches en retard ?", "Pourquoi pas de prime ?"</p>
+                        </main>
+                        <form id="assistant-form" class="p-2 border-t flex items-center gap-2 shrink-0" style="border-color:rgba(255,255,255,0.08);background:rgba(5,10,26,0.9);">
+                            {% csrf_token %}
+                            <input type="text" id="assistant-input" name="message" autocomplete="off"
+                                class="flex-1 rounded-xl px-3 py-1.5 text-[11px] outline-none"
+                                placeholder="Pose ta question..."
+                                style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:#e8edf8;">
+                            <button type="submit" id="assistant-send" class="px-3 py-1.5 rounded-xl text-[10px] font-bold text-white" style="background:#3b6ff5;">Env.</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -697,6 +816,130 @@
             const overlay = document.getElementById('sidebarOverlay');
             side.classList.toggle('show');
             overlay.classList.toggle('show');
+        }
+
+        function toggleSidebarPC() {
+            const side = document.getElementById('sidebar');
+            side.classList.toggle('collapsed');
+            // Save state to localStorage
+            const isCollapsed = side.classList.contains('collapsed');
+            localStorage.setItem('sidebarCollapsed', isCollapsed);
+        }
+
+        // Apply saved state on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+            if (isCollapsed && window.innerWidth > 1024) {
+                const side = document.getElementById('sidebar');
+                if (side) side.classList.add('collapsed');
+            }
+            // Assistant widget
+            initAssistantWidget();
+        });
+
+        function initAssistantWidget() {
+            const toggle = document.getElementById('assistant-toggle');
+            const panel = document.getElementById('assistant-panel');
+            const closeBtn = document.getElementById('assistant-close');
+            const form = document.getElementById('assistant-form');
+            const input = document.getElementById('assistant-input');
+            const messagesEl = document.getElementById('assistant-messages');
+            const sendBtn = document.getElementById('assistant-send');
+            if (!toggle || !panel || !form || !input || !messagesEl) return;
+
+            let history = [];
+            let loading = false;
+
+            toggle.addEventListener('click', () => {
+                panel.classList.toggle('hidden');
+                toggle.style.visibility = panel.classList.contains('hidden') ? 'visible' : 'hidden';
+                if (!panel.classList.contains('hidden')) input.focus();
+            });
+            closeBtn.addEventListener('click', () => {
+                panel.classList.add('hidden');
+                toggle.style.visibility = 'visible';
+            });
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const text = input.value.trim();
+                if (!text || loading) return;
+
+                history.push({ role: 'user', content: text });
+                input.value = '';
+                document.getElementById('assistant-placeholder')?.remove();
+                appendMsg('user', text);
+                loading = true;
+                sendBtn.disabled = true;
+                appendLoading();
+
+                const csrf = document.querySelector('[name=csrfmiddlewaretoken]')?.value ||
+                    document.cookie.match(/csrftoken=([^;]+)/)?.[1]?.trim() || '';
+
+                try {
+                    const res = await fetch('/api/assistant/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrf,
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        credentials: 'same-origin',
+                        body: JSON.stringify({ message: text, history: history.slice(0, -1) })
+                    });
+                    removeLoading();
+                    const data = await res.json();
+                    if (res.ok) {
+                        const answer = data.answer || '';
+                        history.push({ role: 'assistant', content: answer });
+                        appendMsg('assistant', answer);
+                    } else {
+                        const err = data.detail || 'Erreur serveur';
+                        history.push({ role: 'assistant', content: 'Erreur : ' + err });
+                        appendMsg('assistant', 'Erreur : ' + err);
+                    }
+                } catch (err) {
+                    removeLoading();
+                    const msg = 'Impossible de joindre l\'assistant. Vérifiez votre connexion.';
+                    history.push({ role: 'assistant', content: msg });
+                    appendMsg('assistant', msg);
+                }
+                loading = false;
+                sendBtn.disabled = false;
+            });
+
+            function appendMsg(role, content) {
+                const wrap = document.createElement('div');
+                wrap.className = 'flex ' + (role === 'user' ? 'justify-end' : 'justify-start');
+                const bubble = document.createElement('div');
+                bubble.className = 'px-3 py-2 rounded-2xl text-[11px] max-w-[80%]';
+                bubble.textContent = content;
+                if (role === 'user') {
+                    bubble.style.cssText = 'background:#3b6ff5; color:white; border-radius:16px 16px 4px 16px;';
+                } else {
+                    bubble.style.cssText = 'background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); color:#e8edf8; border-radius:16px 16px 16px 4px;';
+                }
+                wrap.appendChild(bubble);
+                messagesEl.appendChild(wrap);
+                messagesEl.scrollTop = messagesEl.scrollHeight;
+            }
+
+            function appendLoading() {
+                const wrap = document.createElement('div');
+                wrap.className = 'flex justify-start';
+                wrap.id = 'assistant-loading';
+                const bubble = document.createElement('div');
+                bubble.className = 'px-3 py-2 rounded-2xl rounded-bl-sm text-[11px] flex items-center gap-1.5';
+                bubble.style.cssText = 'background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); color:#e8edf8;';
+                bubble.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" style="background:#3b6ff5;"></span> L\'assistant réfléchit...';
+                wrap.appendChild(bubble);
+                messagesEl.appendChild(wrap);
+                messagesEl.scrollTop = messagesEl.scrollHeight;
+            }
+
+            function removeLoading() {
+                document.getElementById('assistant-loading')?.remove();
+            }
         }
     </script>
     {% block extra_js %}{% endblock %}

@@ -145,6 +145,13 @@ try:
 except Exception:
     pass
 
+# Configuration IA locale (Ollama)
+# Exemple dans .env :
+# OLLAMA_BASE_URL=http://localhost:11434
+# OLLAMA_MODEL=llama3
+OLLAMA_BASE_URL = config('OLLAMA_BASE_URL', default='http://localhost:11434')
+OLLAMA_MODEL = config('OLLAMA_MODEL', default='llama3')
+
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 

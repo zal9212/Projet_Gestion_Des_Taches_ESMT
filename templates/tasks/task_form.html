@@ -15,8 +15,7 @@
                         {% if object %}Modifier la tâche{% else %}Nouvelle tâche{% endif %}
                     </h2>
                     {% if not object and project %}
-                    <p class="text-xs text-txt-sec mt-0.5">Au sein du projet : <strong class="text-txt">{{ project.name
-                            }}</strong></p>
+                    <p class="text-xs text-txt-sec mt-0.5">Au sein du projet : <strong class="text-txt">{{ project.nam }}</strong></p>
                     {% endif %}
                 </div>
                 <div
@@ -35,16 +34,14 @@
 
                     {% for field in form %}
                     <div class="flex flex-col gap-1.5">
-                        <label for="{{ field.id_for_label }}" class="text-xs font-medium text-txt-sec">{{ field.label
-                            }}</label>
+                        <label for="{{ field.id_for_label }}" class="text-xs font-medium text-txt-sec">{{ field.label}}</label>
 
                         {% if field.name == 'status' %}
                         <div class="relative">
                             <select name="{{ field.name }}" id="{{ field.id_for_label }}"
                                 class="w-full bg-white/[0.04] border border-border-col text-txt px-3.5 py-2.5 rounded-xl text-sm outline-none focus:border-accent transition-colors appearance-none">
                                 <option value="todo" {% if field.value == 'todo' %}selected{% endif %}>À faire</option>
-                                <option value="in_progress" {% if field.value == 'in_progress' %}selected{% endif %}>En
-                                    cours</option>
+                                <option value="in_progress" {% if field.value == 'in_progress' %}selected{% endif %}>En cours</option>
                                 <option value="done" {% if field.value == 'done' %}selected{% endif %}>Terminé</option>
                             </select>
                             <svg class="absolute right-3.5 top-1/2 -translate-y-1/2 text-txt-muted pointer-events-none"
@@ -55,8 +52,7 @@
                         </div>
 
                         {% elif field.name == 'description' %}
-                        <textarea name="{{ field.name }}" id="{{ field.id_for_label }}"
-                            class="w-full bg-white/[0.04] border border-border-col text-txt px-3.5 py-2.5 rounded-xl text-sm outline-none focus:border-accent transition-colors min-h-[110px] resize-y">{{ field.value|default:'' }}</textarea>
+                        <textarea name="{{ field.name }}" id="{{ field.id_for_label }}" class="w-full bg-white/[0.04] border border-border-col text-txt px-3.5 py-2.5 rounded-xl text-sm outline-none focus:border-accent transition-colors min-h-[110px] resize-y">{{ field.value|default:'' }}</textarea>
 
                         {% elif field.name == 'deadline' %}
                         <input type="datetime-local" name="{{ field.name }}" id="{{ field.id_for_label }}"
@@ -77,8 +73,7 @@
                                 {% endfor %}
                             </select>
                             <svg class="absolute right-3.5 top-1/2 -translate-y-1/2 text-txt-muted pointer-events-none"
-                                width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
+                                width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <polyline points="6 9 12 15 18 9" />
                             </svg>
                         </div>
