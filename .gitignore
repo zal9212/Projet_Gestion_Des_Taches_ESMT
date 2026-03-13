@@ -10,7 +10,11 @@ __pycache__/
 .env
 
 # Base de données SQLite
-db.sqlite3
+db.sqlite3-shm
+db.sqlite3-wal
 
 # Dossier des médias (uploads utilisateurs)
 media/
+
+# IDE settings
+.idea/
