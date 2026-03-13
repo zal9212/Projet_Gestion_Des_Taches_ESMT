@@ -72,4 +72,8 @@ export class TaskService {
     deleteTask(id: number): Observable<any> {
         return this.http.delete(`${this.apiUrl}${id}/`);
     }
+
+    validateTask(id: number): Observable<any> {
+        return this.http.post(`${this.apiUrl}${id}/validate/`, {});
+    }
 }

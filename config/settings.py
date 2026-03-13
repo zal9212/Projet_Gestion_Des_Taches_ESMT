@@ -145,12 +145,7 @@ try:
 except Exception:
     pass
 
-# Configuration IA locale (Ollama)
-# Exemple dans .env :
-# OLLAMA_BASE_URL=http://localhost:11434
-# OLLAMA_MODEL=llama3
-OLLAMA_BASE_URL = config('OLLAMA_BASE_URL', default='http://localhost:11434')
-OLLAMA_MODEL = config('OLLAMA_MODEL', default='llama3')
+
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -195,6 +190,7 @@ STATICFILES_DIRS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -211,6 +207,10 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:4200",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
+    "http://192.168.1.160:4200",
+    "http://192.168.1.160:8000",
+    "http://192.168.1.100:4200",
+    "http://192.168.1.100:8000",
 ]
 
 #Configuration de Simple JWT

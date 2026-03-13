@@ -43,22 +43,22 @@ class DashboardView(LoginRequiredMixin, ListView):
         all_user_projects = context['projects']
         all_tasks = Task.objects.filter(project__in=all_user_projects).select_related('project', 'assigned_to')
         
-        # Statistiques Globales PLATFORME (pour refléter l'activité réelle du système)
+        # Statistiques Personnelles (ce qui concerne l'utilisateur directement)
         context['stats'] = {
-            'total_projects': Project.objects.count(),
-            'total_tasks': Task.objects.count(),
-            'tasks_done': Task.objects.filter(status='done').count(),
-            'tasks_todo': Task.objects.filter(status='todo').count(),
-            'tasks_in_progress': Task.objects.filter(status='in_progress').count(),
-            'my_assigned_tasks': Task.objects.filter(assigned_to=user).count(),
+            'total_projects': all_user_projects.count(),
+            'total_tasks': all_tasks.filter(assigned_to=user).count(),
+            'tasks_done': all_tasks.filter(assigned_to=user, status='done').count(),
+            'tasks_todo': all_tasks.filter(assigned_to=user, status='todo').count(),
+            'tasks_in_progress': all_tasks.filter(assigned_to=user, status='in_progress').count(),
+            'my_assigned_tasks': all_tasks.filter(assigned_to=user).count(),
         }
 
         # Système de filtres pour les tâches du tableau de bord
         status_filter = self.request.GET.get('status')
         user_filter = self.request.GET.get('assigned_to')
         
-        # Récupère les tâches filtrées
-        tasks_qs = all_tasks.order_by('-deadline')
+        # Récupère les tâches filtrées (Uniquement celles qui me concernent : assignées ou projet possédé)
+        tasks_qs = all_tasks.filter(Q(assigned_to=user) | Q(project__owner=user)).distinct().order_by('-deadline')
         if status_filter:
             tasks_qs = tasks_qs.filter(status=status_filter)
         if user_filter:
@@ -71,14 +71,15 @@ class DashboardView(LoginRequiredMixin, ListView):
             project_tasks = [t for t in tasks_list if t.project_id == project.id]
             projects_with_tasks.append({'project': project, 'tasks': project_tasks})
         
-        # Utilisateurs assignés (pour le filtre dropdown)
-        assignee_ids = all_tasks.exclude(assigned_to__isnull=True).values_list('assigned_to', flat=True).distinct()
+        # Utilisateurs assignés (pour le filtre dropdown) - Limités à ceux visibles dans cette vue personnelle
+        assignee_ids = tasks_qs.exclude(assigned_to__isnull=True).values_list('assigned_to', flat=True).distinct()
         context['assignable_users'] = User.objects.filter(id__in=assignee_ids).order_by('username')
         
-        # Graphique contributions type GitHub (tâches terminées sur toute la PLATEFORME)
+        # Graphique contributions type GitHub (tâches terminées par l'UTILISATEUR uniquement)
         end_date = timezone.now().date()
         start_date = end_date - timedelta(days=52 * 7)
         all_done_tasks = Task.objects.filter(
+            assigned_to=user,
             status='done',
             completed_at__isnull=False,
             completed_at__date__gte=start_date,

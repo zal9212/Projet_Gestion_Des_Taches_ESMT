@@ -1,4 +1,5 @@
 from rest_framework import viewsets, permissions, status, filters
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Task
@@ -103,3 +104,36 @@ class TaskViewSet(viewsets.ModelViewSet):
             from rest_framework.exceptions import PermissionDenied
             raise PermissionDenied("Seul le créateur du projet peut supprimer cette tâche.")
         return super().destroy(request, *args, **kwargs)
+
+    @action(detail=True, methods=['post'])
+    def validate(self, request, pk=None):
+        """
+        Action personnalisée pour valider une tâche (réservé au propriétaire du projet).
+        """
+        task = self.get_object()
+        user = request.user
+
+        # Seul le propriétaire du projet peut valider
+        if task.project.owner != user:
+            return Response({"detail": "Seul le créateur du projet peut valider cette tâche."}, status=status.HTTP_403_FORBIDDEN)
+
+        # La tâche doit être terminée
+        if task.status != 'done':
+            return Response({"detail": "La tâche doit être terminée pour être validée."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Valider la tâche (en utilisant les champs déjà présents dans le modèle)
+        from django.utils import timezone
+        task.validated_at = timezone.now()
+        task.validated_by = user
+        task.save()
+
+        # Notification pour l'assigné
+        if task.assigned_to:
+            from stats.models import Notification
+            Notification.objects.create(
+                user=task.assigned_to,
+                type="assignement",
+                message=f"Félicitations ! Votre tâche « {task.title} » a été validée par {user.display_name}."
+            )
+
+        return Response({"detail": "Tâche validée avec succès."}, status=status.HTTP_200_OK)

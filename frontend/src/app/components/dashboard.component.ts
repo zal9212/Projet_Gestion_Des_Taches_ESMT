@@ -13,10 +13,10 @@ import { RouterModule } from '@angular/router';
   template: `
     <div class="h-full flex flex-col md:flex-row gap-8 p-6 lg:p-10 overflow-hidden font-dmsans animate-in fade-in duration-700">
       
-      <!-- LEFT COLUMN: Tasks & Projects -->
+      <!-- COLONNE GAUCHE : Tâches et Projets -->
       <div class="flex-1 flex flex-col gap-6 overflow-hidden min-w-0">
         
-        <!-- Hero Section -->
+        <!-- Section Principale -->
         <div class="hero flex justify-between items-start">
           <div>
             <h1 class="font-syne text-4xl font-bold tracking-tight text-txt leading-tight">
@@ -32,7 +32,7 @@ import { RouterModule } from '@angular/router';
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
              </button>
              @if (hasOwnedProjects()) {
-                <button (click)="showCreateTask = true" class="bg-accent hover:bg-accent-bright text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-[0_4px_15px_rgba(59,111,245,0.4)] transition-all flex items-center gap-2">
+                <button (click)="showCreateTask = true" class="bg-accent hover:bg-accent-bright text-white px-6 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                   Nouvelle tâche
                 </button>
@@ -40,9 +40,9 @@ import { RouterModule } from '@angular/router';
           </div>
         </div>
 
-        <!-- Filters & Search -->
+        <!-- Filtres et Recherche -->
         <div class="flex flex-col gap-4">
-            <!-- Search Bar -->
+            <!-- Barre de Recherche -->
             <div class="relative w-full max-w-md">
                 <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-txt-muted">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -75,11 +75,12 @@ import { RouterModule } from '@angular/router';
             </div>
         </div>
 
-        <!-- Task List -->
+        <!-- Liste des Tâches -->
         <div class="flex-1 overflow-y-auto pr-2 flex flex-col gap-3 custom-scrollbar">
             @for (task of filteredTasks(); track task.id) {
-                <div class="bg-bg-card border border-border-col rounded-2xl p-5 hover:border-border-lt transition-all group relative overflow-hidden">
-                    <!-- Objectif 2, 4b: Visual indicator if the user is assigned -->
+                <div class="bg-bg-card border border-border-col rounded-2xl p-5 hover:border-border-lt transition-all group relative overflow-hidden flex flex-col"
+                     [class.opacity-60]="task.status === 'done'">
+                    <!-- Objectif 2, 4b : Indicateur visuel si l'utilisateur est assigné -->
                     @if (task.assigned_to === auth.currentUser()?.id) {
                         <div class="absolute top-0 right-0 px-2 py-1 bg-accent/20 text-accent text-[8px] font-bold rounded-bl-lg uppercase">Ma tâche</div>
                     }
@@ -92,17 +93,27 @@ import { RouterModule } from '@angular/router';
                                 @case ('done') { <span class="text-accent-green flex items-center gap-1.5"><i class="w-1.5 h-1.5 rounded-full bg-accent-green"></i> Terminé</span> }
                             }
                             <span class="text-txt-muted px-2">•</span>
-                            <span class="text-accent-bright">{{ task.project_name }}</span>
+                            @if (task.validated_at) {
+                                <span class="text-accent-green bg-accent-green/10 px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-widest border border-accent-green/20">Validé</span>
+                            } @else {
+                                <span class="text-accent-bright">{{ task.project_name }}</span>
+                            }
                         </div>
                         
                         <div class="flex items-center gap-2">
-                            @if (canUpdateTask(task)) {
+                            @if (canUpdateTask(task) && !task.validated_at) {
                                 <select (change)="updateStatus(task, $event)" class="bg-white/5 border border-border-col rounded-lg text-[10px] px-2 py-1 outline-none text-txt-sec cursor-pointer hover:bg-white/10 transition-colors">
                                     <option value="" disabled selected>Changer statut</option>
                                     <option value="todo">À faire</option>
                                     <option value="in_progress">En cours</option>
                                     <option value="done">Terminé</option>
                                 </select>
+                            }
+                            @if (canValidateTask(task)) {
+                                <button (click)="validateTask(task.id)" class="bg-accent-green/20 hover:bg-accent-green/40 text-accent-green text-[9px] font-bold px-2 py-1 rounded-lg transition-all flex items-center gap-1">
+                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                                    Valider
+                                </button>
                             }
                             @if (canDeleteTask(task)) {
                                 <button (click)="deleteTask(task.id)" class="text-txt-muted hover:text-accent-red p-1.5 transition-colors" title="Supprimer la tâche">
@@ -112,8 +123,8 @@ import { RouterModule } from '@angular/router';
                         </div>
                     </div>
 
-                    <h3 class="text-base font-bold text-txt mb-1">{{ task.title }}</h3>
-                    <p class="text-xs text-txt-sec line-clamp-2 leading-relaxed mb-4">{{ task.description }}</p>
+                    <h3 class="text-base font-bold text-txt mb-1" [class.line-through]="task.status === 'done'">{{ task.title }}</h3>
+                    <p class="text-xs text-txt-sec line-clamp-2 leading-relaxed mb-4" [class.opacity-50]="task.status === 'done'">{{ task.description }}</p>
 
                     <div class="flex items-center justify-between mt-auto">
                         <div class="flex items-center gap-4 text-[11px] text-txt-muted">
@@ -140,16 +151,16 @@ import { RouterModule } from '@angular/router';
         </div>
       </div>
 
-      <!-- RIGHT COLUMN: Projects Management -->
+      <!-- COLONNE DROITE : Gestion des Projets -->
       <aside class="w-full md:w-80 flex flex-col gap-5 overflow-y-auto pr-1">
         
-        <!-- Stats summary -->
-        <div class="bg-gradient-to-br from-[#1e378c]/50 to-[#0f1e50]/70 border border-accent/20 rounded-2xl p-6 shadow-xl">
+        <!-- Résumé des statistiques -->
+        <div class="bg-[#0a122d] border border-accent/20 rounded-2xl p-6 shadow-lg">
             <h4 class="text-[10px] font-bold uppercase tracking-[0.2em] text-accent-bright mb-4">Statistiques</h4>
             <div class="grid grid-cols-2 gap-4">
                 <div class="bg-white/5 rounded-xl p-3 border border-white/5">
-                    <div class="text-xl font-bold text-txt">{{ tasks().length }}</div>
-                    <div class="text-[9px] text-txt-muted uppercase font-bold">Total</div>
+                    <div class="text-xl font-bold text-txt">{{ getMyTasksCount() }}</div>
+                    <div class="text-[9px] text-txt-muted uppercase font-bold">Mes Tâches</div>
                 </div>
                 <div class="bg-accent-green/10 rounded-xl p-3 border border-accent-green/20">
                     <div class="text-xl font-bold text-accent-green">{{ getDoneCount() }}</div>
@@ -158,13 +169,13 @@ import { RouterModule } from '@angular/router';
             </div>
         </div>
 
-        <!-- Projects Header -->
+        <!-- En-tête des Projets -->
         <div class="flex items-center justify-between px-2">
             <h4 class="text-xs font-bold uppercase tracking-widest text-txt">Mes Projets</h4>
             <span class="text-[10px] bg-white/10 text-txt-sec px-2 py-0.5 rounded-full">{{ projects().length }}</span>
         </div>
 
-        <!-- Projects List -->
+        <!-- Liste des Projets -->
         <div class="flex flex-col gap-3 pb-10">
              @for (project of projects(); track project.id) {
                 <div class="bg-bg-card border border-border-col rounded-2xl p-4 hover:border-border-lt transition-all">
@@ -192,10 +203,10 @@ import { RouterModule } from '@angular/router';
         </div>
       </aside>
 
-      <!-- MODAL: Create Task -->
+      <!-- MODALE : Créer une Tâche -->
       @if (showCreateTask) {
         <div class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
-             <div class="bg-[#0a122d] border border-border-col rounded-[32px] w-full max-w-md p-8 shadow-[0_40px_100px_rgba(0,0,0,0.8)] animate-in zoom-in-95 duration-300">
+             <div class="bg-[#0a122d] border border-border-col rounded-[32px] w-full max-w-sm p-8 shadow-2xl animate-in zoom-in-95 duration-300">
                   <header class="flex justify-between items-center mb-6">
                        <h2 class="font-syne font-bold text-xl text-txt">Nouvelle Tâche</h2>
                        <button (click)="showCreateTask = false" class="text-txt-muted hover:text-txt"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
@@ -314,6 +325,14 @@ export class DashboardComponent implements OnInit {
 
   filterTasks() {
     let filtered = this.tasks();
+    const user = this.auth.currentUser();
+    
+    // Filtre de base personnel : tâches assignées OU projets que l'on possède
+    if (user) {
+      const ownedProjectIds = this.projects().filter(p => p.owner === user.id).map(p => p.id);
+      filtered = filtered.filter(t => t.assigned_to === user.id || ownedProjectIds.includes(t.project));
+    }
+
     if (this.statusFilter) {
       filtered = filtered.filter(t => t.status === this.statusFilter);
     }
@@ -338,7 +357,13 @@ export class DashboardComponent implements OnInit {
   }
 
   getDoneCount() {
-    return this.tasks().filter(t => t.status === 'done').length;
+    const userId = this.auth.currentUser()?.id;
+    return this.tasks().filter(t => t.status === 'done' && t.assigned_to === userId).length;
+  }
+
+  getMyTasksCount() {
+    const userId = this.auth.currentUser()?.id;
+    return this.tasks().filter(t => t.assigned_to === userId).length;
   }
 
   getOwnedProjects() {
@@ -406,6 +431,22 @@ export class DashboardComponent implements OnInit {
     if (!user) return false;
     // 4a. Seuls les créateurs d’un projet peuvent supprimer des tâches
     return this.projects().some(p => p.id === task.project && p.owner === user.id);
+  }
+
+  canValidateTask(task: Task): boolean {
+    const user = this.auth.currentUser();
+    if (!user || task.validated_at || task.status !== 'done') return false;
+    // Seul le propriétaire du projet peut valider
+    return this.projects().some(p => p.id === task.project && p.owner === user.id);
+  }
+
+  validateTask(id: number) {
+    if (confirm("Valider cette tâche ? Elle sera comptabilisée pour les primes.")) {
+      this.taskService.validateTask(id).subscribe({
+        next: () => this.loadData(),
+        error: (err) => alert("Erreur: " + (err.error?.detail || err.message))
+      });
+    }
   }
 
   openProjectMembers(project: Project) {

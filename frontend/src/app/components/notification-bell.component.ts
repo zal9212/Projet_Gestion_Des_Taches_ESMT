@@ -30,7 +30,7 @@ import { Notification } from '../models/models';
                 </div>
                 <div class="max-h-64 overflow-y-auto">
                     @for (n of notifService.notifications(); track n.id) {
-                        <div class="px-4 py-3 text-xs border-b border-white/5" [class.bg-accent/5]="!n.is_read">
+                        <div class="px-4 py-3 text-xs border-b border-border-col" [class.bg-accent/5]="!n.is_read">
                             <p class="text-[11px] text-txt mb-1">{{ n.message }}</p>
                             <p class="text-[10px] text-txt-muted">{{ n.created_at | date:'dd/MM HH:mm' }}</p>
                         </div>

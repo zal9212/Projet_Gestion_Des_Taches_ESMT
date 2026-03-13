@@ -76,12 +76,14 @@ select {
     border: 1px solid rgba(255, 255, 255, 0.15);
     cursor: pointer;
 }
+
 select option {
     background: #1e293b;
     color: #f1f5f9;
     padding: 10px 14px;
     font-weight: 500;
 }
+
 select option:checked {
     background: var(--blue-accent);
     color: #fff;

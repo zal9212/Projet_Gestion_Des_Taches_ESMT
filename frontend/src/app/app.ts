@@ -3,12 +3,12 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth.service';
 import { NotificationBellComponent } from './components/notification-bell.component';
-import { AssistantWidgetComponent } from './components/assistant-widget.component';
+
 
 @Component({
     selector: 'app-root',
     standalone: true,
-    imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, NotificationBellComponent, AssistantWidgetComponent],
+    imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, NotificationBellComponent],
     template: `
     <!-- Background synchronization with Django -->
     <div class="bg-wrapper fixed inset-0 z-0 overflow-hidden" 
@@ -85,7 +85,7 @@ import { AssistantWidgetComponent } from './components/assistant-widget.componen
                 </a>
 
                 <!-- Statistiques & Primes -->
-                <a class="nav-item" href="/stats-primes/" [title]="sidebarCollapsed() ? 'Statistiques & Primes' : ''"
+                <a class="nav-item" routerLink="/analytics" routerLinkActive="active" [title]="sidebarCollapsed() ? 'Statistiques & Primes' : ''"
                    style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; font-size: 13.5px; font-weight: 500; color: rgba(200, 215, 240, 0.6); text-decoration: none; transition: all 0.2s;">
                     <svg style="width: 20px; height: 20px; flex-shrink: 0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="18" y1="20" x2="18" y2="10" />
@@ -96,7 +96,7 @@ import { AssistantWidgetComponent } from './components/assistant-widget.componen
                 </a>
 
                 <!-- Calendrier -->
-                <a class="nav-item" href="javascript:void(0)" onclick="alert('Calendrier bientôt disponible !')" [title]="sidebarCollapsed() ? 'Calendrier' : ''"
+                <a class="nav-item" routerLink="/calendar" routerLinkActive="active" [title]="sidebarCollapsed() ? 'Calendrier' : ''"
                    style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; font-size: 13.5px; font-weight: 500; color: rgba(200, 215, 240, 0.6); text-decoration: none; transition: all 0.2s;">
                     <svg style="width: 20px; height: 20px; flex-shrink: 0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="4" width="18" height="18" rx="2" />
@@ -189,8 +189,7 @@ import { AssistantWidgetComponent } from './components/assistant-widget.componen
           </div>
         </div>
 
-        <!-- Widget Assistant IA : hors du conteneur overflow pour que l'en-tête soit visible -->
-        <app-assistant-widget></app-assistant-widget>
+
       } @else {
         <!-- LOADING LAYOUT -->
         <div class="flex flex-col items-center justify-center p-8">

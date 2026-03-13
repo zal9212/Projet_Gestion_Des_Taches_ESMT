@@ -14,16 +14,16 @@
                 <line x1="23" y1="8" x2="18" y2="13" />
             </svg>
         </div>
-        <h1 class="font-syne text-2xl font-bold text-white mb-3">Retirer le membre ?</h1>
+        <h1 class="font-syne text-2xl font-bold text-txt-main mb-3">Retirer le membre ?</h1>
         <p class="text-txt-sec text-sm leading-relaxed mb-8">
-            Êtes-vous sûr de vouloir retirer <span class="text-white font-bold">@{{ object.user.username }}</span> du
-            projet <span class="text-white font-bold">{{ object.project.name }}</span> ? cette action est réversible.
+            Êtes-vous sûr de vouloir retirer <span class="text-txt-main font-bold">@{{ object.user.username }}</span> du
+            projet <span class="text-txt-main font-bold">{{ object.project.name }}</span> ? cette action est réversible.
         </p>
 
         <form method="post" class="flex items-center gap-4">
             {% csrf_token %}
             <a href="{% url 'project_detail' object.project.pk %}"
-                class="flex-1 py-3.5 bg-white/5 hover:bg-white/10 text-txt-sec rounded-xl font-bold transition-colors border border-white/10">
+                class="flex-1 py-3.5 bg-bg-panel hover:bg-bg-panel text-txt-sec rounded-xl font-bold transition-colors border border-border-glass">
                 Annuler
             </a>
             <button type="submit"

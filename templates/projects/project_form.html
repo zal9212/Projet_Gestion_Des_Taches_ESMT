@@ -4,13 +4,13 @@
 
 {% block content %}
 <div class="flex justify-center items-start pt-8 px-6">
-    <div class="w-full max-w-2xl">
-        <div class="bg-bg-card border border-border-glass rounded-[30px] overflow-hidden shadow-2xl backdrop-blur-xl">
+    <div class="w-full max-w-xl">
+        <div class="bg-bg-card border border-border-glass rounded-[30px] overflow-hidden shadow-xl">
 
-            <!-- Header -->
-            <div class="px-8 py-6 bg-white/5 border-b border-white/5 flex items-center gap-4">
+            <!-- En-tête -->
+            <div class="px-8 py-6 bg-bg-panel border-b border-border-col flex items-center gap-4">
                 <div
-                    class="w-11 h-11 rounded-2xl bg-accent-blue/10 flex items-center justify-center text-accent-blue shadow-inner border border-white/5">
+                    class="w-11 h-11 rounded-2xl bg-accent-blue/10 flex items-center justify-center text-accent-blue shadow-inner border border-border-col">
                     <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         {% if object %}
                         <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
@@ -22,7 +22,7 @@
                         {% endif %}
                     </svg>
                 </div>
-                <h2 class="font-syne font-bold text-xl text-white tracking-tight">
+                <h2 class="font-syne font-bold text-xl text-txt-main tracking-tight">
                     {% if object %}Modifier le Projet{% else %}Créer un nouveau projet{% endif %}
                 </h2>
             </div>
@@ -37,12 +37,12 @@
                             class="text-[13px] font-semibold text-txt-dim tracking-wide uppercase">{{ field.label}}</label>
                         {% if field.name == 'description' %}
                         <textarea name="{{ field.name }}" id="{{ field.id_for_label }}"
-                            class="w-full bg-white/[0.03] border border-white/10 text-white px-4 py-3 rounded-2xl text-[14px] outline-none focus:border-accent-blue focus:ring-4 focus:ring-accent-blue/10 transition-all min-h-[140px] shadow-inner"
+                            class="w-full bg-bg-card border border-border-glass text-txt-main px-4 py-3 rounded-2xl text-[14px] outline-none focus:border-accent-blue focus:ring-4 focus:ring-accent-blue/10 transition-all min-h-[140px] shadow-inner"
                             placeholder="Décrivez votre projet ici...">{{ field.value|default:'' }}</textarea>
                         {% else %}
                         <input type="{{ field.field.widget.input_type|default:'text' }}" name="{{ field.name }}"
                             id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}"
-                            class="w-full bg-white/[0.03] border border-white/10 text-white px-4 py-3 rounded-2xl text-[14px] outline-none focus:border-accent-blue focus:ring-4 focus:ring-accent-blue/10 transition-all shadow-inner"
+                            class="w-full bg-bg-card border border-border-glass text-txt-main px-4 py-3 rounded-2xl text-[14px] outline-none focus:border-accent-blue focus:ring-4 focus:ring-accent-blue/10 transition-all shadow-inner"
                             placeholder="Entrez le {{ field.label|lower }}...">
                         {% endif %}
 
@@ -64,13 +64,13 @@
                     {% endfor %}
 
                     <!-- Actions -->
-                    <div class="flex justify-between items-center mt-4 pt-6 border-t border-white/5">
+                    <div class="flex justify-between items-center mt-4 pt-6 border-t border-border-col">
                         <a href="{% if object %}{% url 'project_detail' object.pk %}{% else %}{% url 'dashboard' %}{% endif %}"
-                            class="px-6 py-3 rounded-xl text-sm font-bold text-txt-sec border border-white/10 hover:bg-white/5 hover:text-white transition-all">
+                            class="px-6 py-3 rounded-xl text-sm font-bold text-txt-sec border border-border-glass hover:bg-bg-panel hover:text-txt-main transition-all">
                             Annuler
                         </a>
                         <button type="submit"
-                            class="px-8 py-3 rounded-xl text-sm font-bold text-white bg-accent-blue hover:bg-accent-glow hover:-translate-y-0.5 shadow-glow transition-all">
+                            class="px-8 py-3 rounded-xl text-sm font-bold text-white bg-accent-blue hover:bg-accent-glow transition-all">
                             {% if object %}Mettre à jour{% else %}Démarrer le projet{% endif %}
                         </button>
                     </div>

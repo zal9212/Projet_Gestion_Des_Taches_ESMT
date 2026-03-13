@@ -5,10 +5,10 @@
 {% block content %}
 <div class="p-6 h-full overflow-y-auto flex flex-col gap-8">
 
-    <!-- ── Header ── -->
+    <!-- ── En-tête ── -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <h1 class="font-syne text-3xl font-bold text-white tracking-tight mb-2">Tous mes Projets</h1>
+            <h1 class="font-syne text-3xl font-bold text-txt-main tracking-tight mb-2">Tous mes Projets</h1>
             <p class="text-sm text-txt-sec">Gérez et suivez l'avancement de vos collaborations</p>
         </div>
         <a href="{% url 'project_add' %}"
@@ -27,7 +27,7 @@
             <div class="flex-1 w-full">
                 <input type="text" name="q" value="{{ request.GET.q }}"
                     placeholder="Rechercher un projet (nom ou description)..."
-                    class="w-full bg-white/5 border border-border-glass rounded-xl px-4 py-2.5 text-white placeholder:text-txt-dim focus:border-accent-blue focus:ring-1 focus:ring-accent-blue outline-none transition-all">
+                    class="w-full bg-transparent border border-border-glass rounded-xl px-4 py-2.5 text-txt-main placeholder:text-txt-dim focus:border-accent-blue focus:ring-1 focus:ring-accent-blue outline-none transition-all">
             </div>
 
             <div class="w-full md:w-auto">
@@ -42,7 +42,7 @@
             {% if request.GET.q %}
             <div class="w-full md:w-auto">
                 <a href="{% url 'project_list' %}"
-                    class="w-full px-4 py-2.5 bg-white/5 hover:bg-white/10 text-white rounded-xl font-bold transition-all flex items-center justify-center">
+                    class="w-full px-4 py-2.5 bg-bg-panel hover:bg-bg-panel text-txt-main rounded-xl font-bold transition-all flex items-center justify-center">
                     Effacer
                 </a>
             </div>
@@ -50,15 +50,14 @@
         </form>
     </div>
 
-    <!-- ── Grid ── -->
+    <!-- ── Grille ── -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
         {% for project in projects %}
         <a href="{% url 'project_detail' project.pk %}"
-            class="group bg-bg-card border border-border-glass rounded-[24px] p-6 hover:border-accent-blue/40 transition-all hover:bg-white/[0.03] flex flex-col h-full shadow-lg relative overflow-hidden">
+            class="group bg-bg-card border border-border-glass rounded-[24px] p-6 hover:border-accent-blue/40 transition-all hover:bg-bg-card flex flex-col h-full shadow-lg relative overflow-hidden">
 
-            <!-- Glow effect on hover -->
-            <div
-                class="absolute -top-24 -right-24 w-48 h-48 bg-accent-blue/10 blur-[80px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+            <!-- Effet de lueur au survol -->
+            <div class="absolute -top-24 -right-24 w-48 h-48 bg-accent-blue/10 blur-[80px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
             </div>
 
             <div class="flex items-center justify-between mb-6">
@@ -78,7 +77,7 @@
                     {% endfor %}
                     {% if project.project_members.count > 3 %}
                     <div
-                        class="w-8 h-8 rounded-full border-2 border-bg-deep bg-white/5 flex items-center justify-center text-[10px] font-bold text-txt-dim">
+                        class="w-8 h-8 rounded-full border-2 border-bg-deep bg-bg-panel flex items-center justify-center text-[10px] font-bold text-txt-dim">
                         +{{ project.project_members.count|add:"-3" }}
                     </div>
                     {% endif %}
@@ -87,12 +86,12 @@
 
             <div class="mb-6 flex-1">
                 <h3
-                    class="font-syne font-bold text-lg text-white mb-2 group-hover:text-accent-glow transition-colors line-clamp-1">
+                    class="font-syne font-bold text-lg text-txt-main mb-2 group-hover:text-accent-glow transition-colors line-clamp-1">
                     {{ project.name }}</h3>
                 <p class="text-xs text-txt-sec line-clamp-3 leading-relaxed">{{ project.description }}</p>
             </div>
 
-            <div class="space-y-4 pt-6 mt-auto border-t border-white/5">
+            <div class="space-y-4 pt-6 mt-auto border-t border-border-col">
                 <div
                     class="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-txt-dim">
                     <span>{{ project.project_tasks.count }} Tâches</span>
@@ -105,25 +104,25 @@
                         class="px-3 py-1 bg-accent-blue/10 text-accent-blue text-[9px] font-black rounded-lg border border-accent-blue/20">PROPRIÉTAIRE</span>
                     {% else %}
                     <span
-                        class="px-3 py-1 bg-white/5 text-txt-sec text-[9px] font-black rounded-lg border border-white/5">MEMBRE</span>
+                        class="px-3 py-1 bg-bg-panel text-txt-sec text-[9px] font-black rounded-lg border border-border-col">MEMBRE</span>
                     {% endif %}
 
                     {% with done=project.project_tasks.all|dictsort:"status" %}
-                    <!-- This is a placeholder for actual progress calculation if needed -->
+                    <!-- Ceci est un espace réservé pour le calcul réel de la progression si nécessaire -->
                     {% endwith %}
                 </div>
             </div>
         </a>
         {% empty %}
         <div
-            class="col-span-full py-20 flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-[40px] bg-white/[0.01]">
+            class="col-span-full py-20 flex flex-col items-center justify-center border-2 border-dashed border-border-col rounded-[40px] bg-white/[0.01]">
             <div
-                class="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-6 text-txt-dim opacity-40">
+                class="w-20 h-20 rounded-full bg-bg-panel flex items-center justify-center mb-6 text-txt-dim opacity-40">
                 <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                     <path d="M14 2H6a2 2 0 00-2 2v16c0 1.1.9 2 2 2h12a2 2 0 00 2-2V8l-6-6z" />
                 </svg>
             </div>
-            <h3 class="text-xl font-bold text-white mb-2">Aucun projet trouvé</h3>
+            <h3 class="text-xl font-bold text-txt-main mb-2">Aucun projet trouvé</h3>
             <p class="text-txt-sec text-sm mb-8">Vous n'avez pas encore de projet actif.</p>
             <a href="{% url 'project_add' %}" class="btn-accent">Créer mon premier projet</a>
         </div>

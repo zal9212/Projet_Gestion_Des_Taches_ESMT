@@ -46,7 +46,7 @@
     }
 
     .progress-ring .bg {
-        stroke: rgba(255, 255, 255, 0.1);
+        stroke: var(--border-col);
     }
 
     .progress-ring .bar {
@@ -68,31 +68,38 @@
         aspect-ratio: 1;
         max-width: 14px;
         border-radius: 3px;
-        background: rgba(255, 255, 255, 0.06);
+        background: var(--bg-panel);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        box-sizing: border-box;
     }
 
     .contrib-cell.level-0 {
-        background: rgba(255, 255, 255, 0.06);
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(255, 255, 255, 0.07);
     }
 
     .contrib-cell.level-1 {
         background: rgba(34, 197, 94, 0.35);
+        border-color: rgba(34, 197, 94, 0.5);
     }
 
     .contrib-cell.level-2 {
         background: rgba(34, 197, 94, 0.55);
+        border-color: rgba(34, 197, 94, 0.7);
     }
 
     .contrib-cell.level-3 {
         background: rgba(34, 197, 94, 0.75);
+        border-color: rgba(34, 197, 94, 0.85);
     }
 
     .contrib-cell.level-4 {
         background: rgba(34, 197, 94, 0.95);
+        border-color: rgba(34, 197, 94, 1);
     }
 
     .contrib-cell:hover {
-        outline: 1px solid rgba(255, 255, 255, 0.3);
+        outline: 1px solid var(--border-col);
     }
 
     .contrib-day-label {
@@ -110,10 +117,10 @@
 
 {% block content %}
 <div class="space-y-8">
-    <!-- Header -->
+    <!-- En-tête -->
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="font-syne text-3xl font-bold text-white">Performances & <span
+            <h1 class="font-syne text-3xl font-bold text-txt-main">Performances & <span
                     class="text-accent-glow">Primes</span></h1>
             <p class="text-txt-sec mt-1">Suivez votre progression et consultez vos récompenses annuelles.</p>
         </div>
@@ -129,7 +136,7 @@
     <!-- Graphique contributions (type GitHub) -->
     {% if contribution_rows %}
     <div class="stats-card">
-        <h2 class="font-syne text-lg font-bold text-white mb-2">
+        <h2 class="font-syne text-lg font-bold text-txt-main mb-2">
             {{ contribution_total }} tâche{{ contribution_total|pluralize }} terminée{{ contribution_total|pluralize }}
             sur l'année écoulée
         </h2>
@@ -170,18 +177,18 @@
     <!-- Section Primes -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {% for prime in my_primes %}
-        <div class="stats-card border-l-4 {% if prime.amount %}border-orange-400{% else %}border-white/10{% endif %}">
+        <div class="stats-card border-l-4 {% if prime.amount %}border-orange-400{% else %}border-border-glass{% endif %}">
             <div class="flex justify-between items-start mb-4">
                 <div>
                     <span class="text-[10px] font-bold text-txt-dim uppercase tracking-widest">Bonus Annuel {{prime.year
                         }}</span>
-                    <h3 class="text-2xl font-bold text-white mt-1">{{ prime.amount|floatformat:0 }}k <span
+                    <h3 class="text-2xl font-bold text-txt-main mt-1">{{ prime.amount|floatformat:0 }}k <span
                             class="text-sm text-txt-sec">CFA</span></h3>
                 </div>
                 {% if prime.amount %}
                 <div class="prime-badge">PRIME ÉLIGIBLE</div>
                 {% else %}
-                <span class="text-[10px] font-bold text-txt-dim uppercase px-2 py-1 rounded bg-white/5">Non
+                <span class="text-[10px] font-bold text-txt-dim uppercase px-2 py-1 rounded bg-bg-panel">Non
                     éligible</span>
                 {% endif %}
             </div>
@@ -193,7 +200,7 @@
                     <polyline points="22 4 12 14.01 9 11.01" />
                 </svg>
                 {% endif %}
-                Taux de réussite: <span class="text-white font-bold">{{ prime.completion_rate }}%</span>
+                Taux de réussite: <span class="text-txt-main font-bold">{{ prime.completion_rate }}%</span>
             </div>
         </div>
         {% empty %}
@@ -204,9 +211,9 @@
         {% endfor %}
     </div>
 
-    <!-- Details Stats -->
+    <!-- Statistiques Détaillées -->
     <div class="space-y-6">
-        <h2 class="font-syne text-xl font-bold text-white flex items-center gap-3">
+        <h2 class="font-syne text-xl font-bold text-txt-main flex items-center gap-3">
             <svg class="w-6 h-6 text-accent-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2">
                 <path d="M21.21 15.89A10 10 0 118 2.83M22 12A10 10 0 0012 2v10z" />
@@ -220,7 +227,7 @@
                 <h3 class="text-sm font-bold text-txt-dim uppercase">Rapports Trimestriels</h3>
                 <div class="space-y-4">
                     {% for stat in my_stats_trimestrial %}
-                    <div class="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5">
+                    <div class="flex items-center justify-between p-4 bg-bg-panel rounded-xl border border-border-col">
                         <div class="flex items-center gap-4">
                             <div class="progress-ring">
                                 <svg>
@@ -230,12 +237,12 @@
                                     </circle>
                                 </svg>
                                 <div
-                                    class="absolute inset-0 flex items-center justify-center text-xs font-bold text-white">
+                                    class="absolute inset-0 flex items-center justify-center text-xs font-bold text-txt-main">
                                     {{ stat.completion_rate|floatformat:0 }}%
                                 </div>
                             </div>
                             <div>
-                                <p class="text-white font-bold">Trimestre {{ stat.quarter }} / {{ stat.year }}</p>
+                                <p class="text-txt-main font-bold">Trimestre {{ stat.quarter }} / {{ stat.year }}</p>
                                 <p class="text-[11px] text-txt-sec">{{ stat.completed_tasks }} / {{ stat.total_tasks }}
                                     tâches terminées</p>
                             </div>
@@ -262,15 +269,15 @@
                 <h3 class="text-sm font-bold text-txt-dim uppercase">Rapports Annuels</h3>
                 <div class="space-y-4">
                     {% for stat in my_stats_annual %}
-                    <div class="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5">
+                    <div class="flex items-center justify-between p-4 bg-bg-panel rounded-xl border border-border-col">
                         <div>
-                            <p class="text-white font-bold">Année {{ stat.year }}</p>
+                            <p class="text-txt-main font-bold">Année {{ stat.year }}</p>
                             <p class="text-[11px] text-txt-sec">Calculé le {{ stat.generated_at|date:"d M Y" }}</p>
                         </div>
                         <div class="flex items-center gap-6">
                             <div class="text-center">
                                 <p class="text-[10px] text-txt-dim uppercase">Tâches</p>
-                                <p class="text-white font-bold">{{ stat.completed_tasks }}</p>
+                                <p class="text-txt-main font-bold">{{ stat.completed_tasks }}</p>
                             </div>
                             <div class="text-center">
                                 <p class="text-[10px] text-txt-dim uppercase">Score</p>

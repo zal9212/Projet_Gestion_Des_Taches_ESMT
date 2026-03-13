@@ -113,4 +113,13 @@ class MemberDirectoryView(LoginRequiredMixin, View):
             }
         )
 
+# ─── Suppression de compte ───────────────────────────────────────────────────
+class DeleteAccountView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        django_logout(request)
+        user.delete()
+        messages.success(request, "Votre compte a été supprimé définitivement.")
+        return redirect('landing')
+
 

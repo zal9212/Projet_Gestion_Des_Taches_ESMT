@@ -6,7 +6,7 @@
 <div class="p-6">
     <div class="flex items-center justify-between mb-8">
         <div>
-            <h1 class="font-syne text-3xl font-bold text-white mb-2">Mes Tâches</h1>
+            <h1 class="font-syne text-3xl font-bold text-txt-main mb-2">Mes Tâches</h1>
             <p class="text-sm text-txt-sec">Gérez et suivez l'avancement de vos travaux assignés.</p>
         </div>
     </div>
@@ -16,12 +16,12 @@
         <form method="GET" action="{% url 'tasks' %}" class="flex flex-col md:flex-row gap-4 items-center">
             <div class="flex-1 w-full">
                 <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Rechercher une tâche..."
-                    class="w-full bg-white/5 border border-border-glass rounded-xl px-4 py-2.5 text-white placeholder:text-txt-dim focus:border-accent-blue focus:ring-1 focus:ring-accent-blue outline-none transition-all">
+                    class="w-full bg-bg-panel border border-border-glass rounded-xl px-4 py-2.5 text-txt-main placeholder:text-txt-dim focus:border-accent-blue focus:ring-1 focus:ring-accent-blue outline-none transition-all">
             </div>
 
             <div class="w-full md:w-48">
                 <select name="status"
-                    class="w-full bg-body border border-border-glass rounded-xl px-4 py-2.5 text-white focus:border-accent-blue focus:ring-1 focus:ring-accent-blue outline-none transition-all appearance-none cursor-pointer">
+                    class="w-full bg-body border border-border-glass rounded-xl px-4 py-2.5 text-txt-main focus:border-accent-blue focus:ring-1 focus:ring-accent-blue outline-none transition-all appearance-none cursor-pointer">
                     <option value="">Tous les statuts</option>
                     <option value="todo" {% if request.GET.status == 'todo' %}selected{% endif %}>À faire</option>
                     <option value="in_progress" {% if request.GET.status == 'in_progress' %}selected{% endif %}>En cours
@@ -32,7 +32,7 @@
 
             <div class="w-full md:w-56">
                 <select name="project"
-                    class="w-full bg-body border border-border-glass rounded-xl px-4 py-2.5 text-white focus:border-accent-blue focus:ring-1 focus:ring-accent-blue outline-none transition-all appearance-none cursor-pointer">
+                    class="w-full bg-body border border-border-glass rounded-xl px-4 py-2.5 text-txt-main focus:border-accent-blue focus:ring-1 focus:ring-accent-blue outline-none transition-all appearance-none cursor-pointer">
                     <option value="">Tous les projets</option>
                     {% for p in filter_projects %}
                     <option value="{{ p.id }}" {% if request.GET.project == p.id|stringformat:"s" %}selected{% endif %}>{{ p.name }}</option>
@@ -52,7 +52,7 @@
             {% if request.GET.q or request.GET.status or request.GET.project %}
             <div class="w-full md:w-auto">
                 <a href="{% url 'tasks' %}"
-                    class="w-full px-4 py-2.5 bg-white/5 hover:bg-white/10 text-white rounded-xl font-bold transition-all flex items-center justify-center">
+                    class="w-full px-4 py-2.5 bg-bg-panel hover:bg-bg-panel text-txt-main rounded-xl font-bold transition-all flex items-center justify-center">
                     Effacer
                 </a>
             </div>
@@ -72,7 +72,7 @@
             </div>
 
             <div>
-                <h3 class="font-syne font-bold text-white mb-1">{{ task.title }}</h3>
+                <h3 class="font-syne font-bold text-txt-main mb-1">{{ task.title }}</h3>
                 <p class="text-xs text-txt-sec line-clamp-2">{{ task.description|default:"Aucune description" }}</p>
             </div>
 
@@ -97,7 +97,7 @@
         </div>
         {% empty %}
         <div
-            class="col-span-full py-20 flex flex-col items-center justify-center bg-white/5 rounded-[30px] border border-dashed border-border-glass">
+            class="col-span-full py-20 flex flex-col items-center justify-center bg-bg-panel rounded-[30px] border border-dashed border-border-glass">
             <svg class="w-12 h-12 text-txt-dim mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="1">
                 <path

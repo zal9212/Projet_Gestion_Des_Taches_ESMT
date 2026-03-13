@@ -27,16 +27,16 @@
 
             <h3 class="font-syne font-bold text-base text-txt mb-0.5">{{ user.display_name }}</h3>
             <p class="text-xs text-txt-muted mb-3">@{{ user.username }}</p>
-            <span class="px-3 py-1 rounded-full bg-white/10 border border-border-col text-[11px] text-txt-sec mb-4">{{user.display_role }}</span>
+            <span class="px-3 py-1 rounded-full bg-bg-panel border border-border-col text-[11px] text-txt-sec mb-4">{{user.display_role }}</span>
 
             <p
-                class="text-[12px] text-txt-sec italic leading-relaxed text-left w-full bg-white/[0.03] border border-border-col rounded-xl p-3">
+                class="text-[12px] text-txt-sec italic leading-relaxed text-left w-full bg-bg-card border border-border-col rounded-xl p-3">
                 "{{ user.profile.bio|default:"Aucune biographie renseignée." }}"
             </p>
         </div>
 
         <!-- Footer carte -->
-        <div class="px-4 py-3 border-t border-border-col bg-bg-sidebar text-center">
+        <div class="px-4 py-3 border-t border-border-col bg-bg-sidebar space-y-2">
             <a href="{% url 'password_change' %}"
                 class="text-[13px] text-accent-bright hover:opacity-80 transition-opacity flex items-center justify-center gap-2">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -45,6 +45,37 @@
                 </svg>
                 Modifier le mot de passe
             </a>
+            
+            <button type="button" onclick="document.getElementById('delete-modal').classList.remove('hidden')"
+                class="w-full text-[11px] text-red-500/70 hover:text-red-500 transition-colors uppercase font-bold tracking-widest pt-2 border-t border-white/5">
+                Supprimer le compte
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal de confirmation de suppression -->
+    <div id="delete-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div class="w-full max-w-sm bg-bg-card border border-border-col rounded-3xl p-6 shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div class="w-12 h-12 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mb-4">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                </svg>
+            </div>
+            <h3 class="text-lg font-bold text-txt mb-2 font-syne">Supprimer définitivement ?</h3>
+            <p class="text-xs text-txt-sec mb-6 leading-relaxed">Cette action est irréversible. Toutes vos données, projets et tâches seront définitivement supprimés.</p>
+            
+            <div class="flex gap-3">
+                <button onclick="document.getElementById('delete-modal').classList.add('hidden')"
+                    class="flex-1 px-4 py-2.5 rounded-xl border border-border-col text-xs font-bold text-txt-sec hover:bg-white/5 transition-colors">
+                    Annuler
+                </button>
+                <form action="{% url 'delete_account_final' %}" method="post" class="flex-1">
+                    {% csrf_token %}
+                    <button type="submit" class="w-full px-4 py-2.5 rounded-xl bg-red-500 text-white text-xs font-bold hover:bg-red-600 transition-colors shadow-lg shadow-red-500/20">
+                        Supprimer
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 

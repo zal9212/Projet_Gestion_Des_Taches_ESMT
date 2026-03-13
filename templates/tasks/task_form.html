@@ -1,14 +1,14 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 
 {% block title %}{% if object %}Modifier la tâche{% else %}Ajouter une tâche{% endif %} - G.TAKE{% endblock %}
 
 {% block content %}
 <div class="flex justify-center items-start pt-8 px-6 h-full overflow-y-auto">
-    <div class="w-full max-w-2xl">
+    <div class="w-full max-w-xl">
         <div
-            class="bg-bg-card border border-border-col rounded-2xl overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.3)]">
+            class="bg-bg-card border border-border-col rounded-2xl overflow-hidden shadow-lg">
 
-            <!-- Header -->
+            <!-- En-tête -->
             <div class="px-6 py-4 bg-bg-sidebar border-b border-border-col flex items-center justify-between">
                 <div>
                     <h2 class="font-syne font-bold text-base text-txt">
@@ -103,11 +103,11 @@
                     <!-- Actions -->
                     <div class="flex justify-between items-center mt-2 pt-4 border-t border-border-col">
                         <a href="{% if object %}{% url 'project_detail' object.project.pk %}{% else %}{% url 'project_detail' project.pk %}{% endif %}"
-                            class="px-5 py-2.5 rounded-xl text-sm font-medium text-txt-sec border border-border-col hover:bg-white/5 transition-colors">
+                            class="px-5 py-2.5 rounded-xl text-sm font-medium text-txt-sec border border-border-col hover:bg-bg-panel transition-colors">
                             Annuler
                         </a>
                         <button type="submit"
-                            class="px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-accent hover:bg-accent-bright shadow-[0_4px_15px_rgba(59,111,245,0.3)] hover:-translate-y-0.5 transition-all">
+                            class="px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-accent hover:bg-accent-bright transition-all">
                             Enregistrer la tâche
                         </button>
                     </div>

@@ -3,121 +3,182 @@
 
 {% block title %}Accueil - ESMT Tasks{% endblock %}
 
-{% block content %}
-<!-- Si l'utilisateur est connecté, base.html affiche la sidebar. 
-     Mais s'il ne l'est pas, base.html affiche le block auth_content.
-      -->
-{% endblock %}
-
 {% block outer_auth_wrapper %}
-<div
-    class="col-span-full w-[1000px] max-w-[95vw] bg-[#0A122D]/90 backdrop-blur-3xl rounded-[40px] border border-white/10 p-12 overflow-hidden relative shadow-[0_30px_100px_rgba(0,0,0,0.6)]">
+<style>
+    
+    body {
+        background-color: var(--bg-deep) !important;
+        color: var(--txt-main) !important;
+    }
+    
+    .landing-hero {
+        background: linear-gradient(rgba(10, 18, 45, 0.7), rgba(10, 18, 45, 0.9)), url('{% static "images/landing_hero.png" %}') center/cover;
+        border-radius: 40px;
+        border: 1px solid var(--border-glass);
+        box-shadow: 0 30px 100px rgba(0,0,0,0.5);
+    }
 
-    <!-- Effets de fond -->
-    <div
-        class="absolute -top-40 -left-40 w-96 h-96 bg-accent-blue/20 blur-[100px] rounded-full mix-blend-screen pointer-events-none">
-    </div>
-    <div
-        class="absolute -bottom-40 -right-40 w-96 h-96 bg-accent-purple/20 blur-[100px] rounded-full mix-blend-screen pointer-events-none">
-    </div>
+    .feature-card {
+        background: var(--bg-glass);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--border-glass);
+        border-radius: 32px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-    <div class="relative z-10 flex flex-col md:flex-row gap-12 items-center">
+    .feature-card:hover {
+        border-color: var(--accent-blue);
+        transform: translateY(-8px);
+        background: rgba(59, 111, 245, 0.05);
+    }
 
-        <!-- Colonne Gauche : Texte -->
-        <div class="flex-1 text-center md:text-left">
-            <!-- LOGO ESMT -->
-            <div class="mb-6 flex justify-center md:justify-start">
-                <img src="{% static 'images/logo_esmt.jpg' %}" alt="ESMT Logo"
-                    class="h-20 w-auto mix-blend-screen brightness-110">
+    .nav-glass {
+        background: rgba(10, 18, 45, 0.4);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--border-glass);
+        border-radius: 24px;
+    }
+
+    .text-glow {
+        text-shadow: 0 0 20px rgba(59, 111, 245, 0.4);
+    }
+</style>
+
+<div class="w-full max-w-[1400px] mx-auto p-4 md:p-8 space-y-12">
+    
+    <!-- Navbar Cohérente -->
+    <nav class="flex items-center justify-between py-4 px-8 nav-glass">
+        <div class="flex items-center gap-3">
+            <img src="{% static 'images/logo_esmt.jpg' %}" alt="Logo" class="h-10 w-auto rounded-lg mix-blend-screen brightness-125">
+            <span class="font-syne font-bold text-xl tracking-tight text-txt-main">ESMT Tasks</span>
+        </div>
+        
+        <div class="flex items-center gap-8">
+            <a href="{% url 'register' %}" class="hidden sm:block text-xs font-black uppercase tracking-widest text-txt-sec hover:text-accent-blue transition-colors">Inscription</a>
+            <a href="{% url 'login' %}" class="bg-accent-blue hover:bg-accent-bright text-white px-8 py-3 rounded-xl text-xs font-black transition-all shadow-glow">
+                CONNEXION
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero Section Dark & Premium -->
+    <div class="landing-hero min-h-[600px] flex flex-col items-center justify-center text-center p-8 md:p-12 relative overflow-hidden">
+        <!-- Particules/Glow décoratifs -->
+        <div class="absolute -top-40 -left-40 w-96 h-96 bg-accent-blue/20 blur-[100px] rounded-full"></div>
+        <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-accent-purple/20 blur-[100px] rounded-full"></div>
+
+        <div class="relative z-10 max-w-3xl space-y-8">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-blue/10 border border-accent-blue/20">
+                <span class="w-2 h-2 rounded-full bg-accent-blue animate-pulse"></span>
+                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-accent-blue">Excellence Numérique ESMT</span>
             </div>
 
-            <div
-                class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-8 mx-auto md:mx-0">
-                <span class="w-2 h-2 rounded-full bg-accent-green animate-pulse"></span>
-                <span class="text-[10px] font-bold tracking-widest text-txt-main uppercase">Plateforme Étudiante
-                    ESMT</span>
-            </div>
-
-            <h1 class="font-syne text-5xl md:text-6xl font-bold text-white leading-[1.1] tracking-tight mb-6">
-                Gérez vos <span
-                    class="bg-gradient-to-r from-accent-blue to-accent-purple bg-clip-text text-transparent italic">projets</span>
-                sans effort.
+            <h1 class="font-syne text-5xl md:text-7xl font-bold text-txt-main leading-tight tracking-tight">
+                Le Succès Académique<br>
+                <span class="bg-gradient-to-r from-accent-blue to-accent-purple bg-clip-text text-transparent italic">par la Collaboration</span>
             </h1>
 
-            <p class="text-txt-sec text-base md:text-lg leading-relaxed mb-10 max-w-md mx-auto md:mx-0">
-                L'outil sur-mesure pour les étudiants et professeurs de l'ESMT. Collaborez, suivez vos tâches et
-                atteignez vos objectifs académiques.
+            <p class="text-lg text-txt-sec font-medium leading-relaxed max-w-2xl mx-auto">
+                La plateforme officielle de collaboration de l'ESMT. Connectez Enseignants et Étudiants pour une gestion de projets fluide, transparente et performante.
             </p>
 
-            <div class="flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start">
-                <a href="{% url 'login' %}"
-                    class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-accent-blue text-white font-bold text-sm shadow-[0_10px_30px_rgba(59,111,245,0.4)] hover:-translate-y-1 transition-transform text-center ring-2 ring-accent-blue ring-offset-2 ring-offset-[#0A122D]">
-                    Se connecter à l'espace
+            <div class="flex flex-col sm:flex-row gap-4 justify-center pt-6">
+                <a href="{% url 'register' %}" class="bg-accent-blue hover:bg-accent-bright text-white px-10 py-4 rounded-2xl font-bold transition-all shadow-glow hover:-translate-y-1">
+                    Lancer un projet
                 </a>
-                <a href="{% url 'register' %}"
-                    class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-bold text-sm hover:bg-white/10 transition-colors text-center">
-                    Créer mon compte
+                <a href="{% url 'login' %}" class="bg-white/5 border border-border-glass hover:bg-white/10 text-txt-main px-10 py-4 rounded-2xl font-bold transition-all backdrop-blur-md">
+                    Accéder au Portail
                 </a>
             </div>
         </div>
-
-        <!-- Colonne Droite : Visual/Stats -->
-        <div class="flex-1 w-full relative">
-            <div
-                class="relative w-full aspect-square md:aspect-[4/5] bg-gradient-to-br from-white/5 to-transparent rounded-[32px] border border-white/10 p-6 flex flex-col justify-between overflow-hidden shadow-2xl">
-
-                <!-- Mockup App Elements -->
-                <div class="space-y-4 relative z-10">
-                    <div class="flex items-center justify-between">
-                        <div class="space-y-2 w-full">
-                            <div class="h-4 w-3/4 bg-white/10 rounded-lg"></div>
-                            <div class="h-3 w-1/2 bg-white/5 rounded-lg"></div>
-                        </div>
-                    </div>
-
-                    <div
-                        class="p-4 rounded-2xl bg-accent-blue/10 border border-accent-blue/20 backdrop-blur-md translate-x-4">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="h-2 w-16 bg-accent-blue/50 rounded-full"></span>
-                            <span class="flex -space-x-2">
-                                <span class="w-6 h-6 rounded-full border-2 border-[#0D1530] bg-red-400"></span>
-                                <span class="w-6 h-6 rounded-full border-2 border-[#0D1530] bg-blue-400"></span>
-                            </span>
-                        </div>
-                        <div class="h-3 w-full bg-white/20 rounded-lg mb-2"></div>
-                        <div class="h-3 w-4/5 bg-white/20 rounded-lg"></div>
-                    </div>
-
-                    <div
-                        class="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md -translate-x-4 opacity-50">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="h-2 w-16 bg-white/20 rounded-full"></span>
-                        </div>
-                        <div class="h-3 w-5/6 bg-white/10 rounded-lg mb-2"></div>
-                        <div class="h-3 w-2/3 bg-white/10 rounded-lg"></div>
-                    </div>
-                </div>
-
-                <!-- Floating badge -->
-                <div class="absolute bottom-8 right-8 bg-black/40 backdrop-blur-xl border border-white/20 p-4 rounded-2xl shadow-xl z-20 animate-bounce"
-                    style="animation-duration: 3s;">
-                    <div class="flex items-center gap-3">
-                        <div
-                            class="w-10 h-10 rounded-full bg-accent-green/20 flex items-center justify-center text-accent-green">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2.5">
-                                <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-[10px] text-txt-sec uppercase tracking-wider font-bold">Objectif</p>
-                            <p class="text-white font-syne font-bold">100% Atteint</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
+
+    <!-- Section Fonctionnalités : Grille Complète -->
+    <div class="space-y-12">
+        <div class="text-center space-y-4">
+            <h2 class="font-syne text-3xl md:text-5xl font-bold text-txt-main">Tout ce dont vous avez besoin pour <span class="text-accent-blue">réussir</span></h2>
+            <p class="text-txt-sec max-w-2xl mx-auto">Une suite d'outils puissants conçus spécifiquement pour l'écosystème académique de l'ESMT.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Gestion de Projets -->
+            <div class="feature-card p-8 space-y-5 group">
+                <div class="w-12 h-12 rounded-xl bg-accent-blue/10 flex items-center justify-center text-accent-blue group-hover:bg-accent-blue group-hover:text-white transition-all duration-300">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                </div>
+                <h3 class="font-syne text-xl font-bold text-txt-main">Gestion de Projets</h3>
+                <p class="text-sm text-txt-sec leading-relaxed">
+                    Structurez vos travaux de groupe par projet. Centralisez les membres et les objectifs en un seul endroit sécurisé.
+                </p>
+            </div>
+
+            <!-- Gestion des Tâches -->
+            <div class="feature-card p-8 space-y-5 group">
+                <div class="w-12 h-12 rounded-xl bg-accent-purple/10 flex items-center justify-center text-accent-purple group-hover:bg-accent-purple group-hover:text-white transition-all duration-300">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                </div>
+                <h3 class="font-syne text-xl font-bold text-txt-main">Suivi des Tâches</h3>
+                <p class="text-sm text-txt-sec leading-relaxed">
+                    Assignez des responsabilités claires. Suivez l'état d'avancement (À faire, En cours, Terminé) et ne manquez aucun rendu.
+                </p>
+            </div>
+
+            <!-- Messagerie Instantanée -->
+            <div class="feature-card p-8 space-y-5 group">
+                <div class="w-12 h-12 rounded-xl bg-accent-blue/10 flex items-center justify-center text-accent-blue group-hover:bg-accent-blue group-hover:text-white transition-all duration-300">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                </div>
+                <h3 class="font-syne text-xl font-bold text-txt-main">Chat en Temps Réel</h3>
+                <p class="text-sm text-txt-sec leading-relaxed">
+                    Communiquez instantanément avec votre équipe. Échangez des idées et résolvez les problèmes rapidement via le chat intégré.
+                </p>
+            </div>
+
+            <!-- Notifications Email -->
+            <div class="feature-card p-8 space-y-5 group">
+                <div class="w-12 h-12 rounded-xl bg-accent-green/10 flex items-center justify-center text-accent-green group-hover:bg-accent-green group-hover:text-white transition-all duration-300">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                </div>
+                <h3 class="font-syne text-xl font-bold text-txt-main">Alertes Email</h3>
+                <p class="text-sm text-txt-sec leading-relaxed">
+                    Recevez des notifications automatiques par mail pour chaque nouvelle tâche assignée ou mise à jour importante de vos projets.
+                </p>
+            </div>
+
+            <!-- Performance & Mérites -->
+            <div class="feature-card p-8 space-y-5 group">
+                <div class="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-all duration-300">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
+                </div>
+                <h3 class="font-syne text-xl font-bold text-txt-main">Performance & Mérites</h3>
+                <p class="text-sm text-txt-sec leading-relaxed">
+                    Valorisez votre engagement. Suivez votre score de fiabilité et bénéficiez d'un système de récompenses et de primes basé sur vos succès.
+                </p>
+            </div>
+
+            <!-- Calendrier Angular -->
+            <div class="feature-card p-8 space-y-5 group">
+                <div class="w-12 h-12 rounded-xl bg-accent-blue/10 flex items-center justify-center text-accent-blue group-hover:bg-accent-blue group-hover:text-white transition-all duration-300">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                </div>
+                <h3 class="font-syne text-xl font-bold text-txt-main">Portail & Calendrier</h3>
+                <p class="text-sm text-txt-sec leading-relaxed">
+                    Accédez à un calendrier interactif synchronisé. Planifiez votre semestre et visualisez vos échéances en un clin d'œil.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logos Institutionnels -->
+    <div class="py-12 border-y border-border-glass flex flex-col items-center gap-8">
+        <span class="text-[10px] font-black uppercase tracking-[0.4em] text-txt-dim">Partenaires Institutionnels</span>
+        <div class="flex flex-wrap justify-center gap-12 md:gap-20 opacity-40 grayscale brightness-200">
+             <span class="font-bold text-lg tracking-tighter text-txt-main">ESMT DAKAR</span>
+             <span class="font-bold text-lg tracking-widest text-txt-main">ECOWAS</span>
+             <span class="font-bold text-lg tracking-widest text-txt-main">ITU</span>
+             <span class="font-bold text-lg tracking-tighter text-txt-main">ORANGE</span>
+        </div>
+    </div>
+
 </div>
 {% endblock %}

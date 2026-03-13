@@ -40,7 +40,7 @@
                 <form method="post" class="flex flex-col sm:flex-row gap-3 mt-2">
                     {% csrf_token %}
                     <a href="{% url 'project_detail' object.project.pk %}"
-                        class="flex-1 py-3 rounded-xl text-sm font-medium text-txt-sec border border-border-col hover:bg-white/5 transition-colors text-center">
+                        class="flex-1 py-3 rounded-xl text-sm font-medium text-txt-sec border border-border-col hover:bg-bg-panel transition-colors text-center">
                         Non, annuler
                     </a>
                     <button type="submit"

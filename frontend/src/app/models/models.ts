@@ -32,6 +32,8 @@ export interface Task {
     assigned_to?: number;
     assigned_to_username?: string;
     completed_at?: string;
+    validated_at?: string;
+    validated_by?: number;
 }
 
 export interface ProjectMember {

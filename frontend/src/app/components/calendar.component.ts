@@ -18,7 +18,7 @@ interface CalendarDay {
   template: `
     <div class="h-full flex flex-col gap-5 p-6 lg:p-8 overflow-y-auto font-dmsans animate-in fade-in duration-700 relative">
 
-      <!-- Header -->
+      <!-- En-tête -->
       <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 class="font-syne text-4xl font-bold tracking-tight text-txt leading-tight">
@@ -27,11 +27,11 @@ interface CalendarDay {
           <p class="text-sm text-txt-sec mt-1">Cliquez sur une tâche pour voir les détails et l'ajouter à Google Calendar.</p>
         </div>
         <div class="flex items-center gap-3">
-          <button (click)="prevMonth()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 border border-border-col text-txt hover:bg-white/10 transition-all">
+          <button (click)="prevMonth()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-bg-panel border border-border-col text-txt hover:bg-bg-panel transition-all">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
           </button>
           <span class="font-syne font-bold text-txt text-lg min-w-[200px] text-center capitalize">{{ currentMonthLabel() }}</span>
-          <button (click)="nextMonth()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 border border-border-col text-txt hover:bg-white/10 transition-all">
+          <button (click)="nextMonth()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-bg-panel border border-border-col text-txt hover:bg-bg-panel transition-all">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
           </button>
           <button (click)="goToToday()" class="px-4 py-2 rounded-xl bg-accent/10 border border-accent/30 text-accent font-bold text-sm hover:bg-accent/20 transition-all">
@@ -40,7 +40,7 @@ interface CalendarDay {
         </div>
       </div>
 
-      <!-- Legend -->
+      <!-- Légende -->
       <div class="flex flex-wrap items-center gap-5 text-xs font-medium text-txt-muted">
         <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm bg-yellow-500/50 border border-yellow-500/30"></span> À faire</div>
         <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm bg-purple-500/50 border border-purple-500/30"></span> En cours</div>
@@ -51,21 +51,21 @@ interface CalendarDay {
         </div>
       </div>
 
-      <!-- Day Names -->
+      <!-- Noms des jours -->
       <div class="grid grid-cols-7 gap-1.5">
         @for (name of dayNames; track name) {
           <div class="text-center text-[10px] font-bold text-txt-muted uppercase tracking-widest py-1.5">{{ name }}</div>
         }
       </div>
 
-      <!-- Calendar Grid -->
+      <!-- Grille du calendrier -->
       <div class="grid grid-cols-7 gap-1.5">
         @for (day of calendarDays(); track day.date.toISOString()) {
           <div [class]="getDayClass(day)">
             <div class="flex items-center justify-between mb-1">
               <span [class]="day.isToday
                 ? 'w-6 h-6 bg-accent text-white rounded-full flex items-center justify-center text-[11px] font-bold shadow-lg shadow-accent/40'
-                : 'text-[11px] font-bold ' + (day.inMonth ? 'text-txt-muted' : 'text-white/10')">
+                : 'text-[11px] font-bold ' + (day.inMonth ? 'text-txt-muted' : 'text-txt-main/10')">
                 {{ day.date.getDate() }}
               </span>
             </div>
@@ -78,7 +78,7 @@ interface CalendarDay {
         }
       </div>
 
-      <!-- No-deadline tasks -->
+      <!-- Tâches sans date limite -->
       @if (tasksWithoutDeadline().length > 0) {
         <div class="bg-bg-card border border-border-col rounded-2xl p-5 mt-2">
           <p class="text-[10px] font-bold uppercase tracking-widest text-txt-muted mb-3">
@@ -92,17 +92,17 @@ interface CalendarDay {
         </div>
       }
 
-      <!-- ── TASK DETAIL POPUP  ── -->
+      <!-- ── FENÊTRE DÉTAIL DE LA TÂCHE  ── -->
       @if (selectedTask()) {
         <div class="fixed inset-0 z-40" (click)="closeTask()"></div>
         <div
-          class="absolute z-50 w-72 max-h-[88vh] overflow-y-auto bg-[#1a2340] border border-white/10 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.9)] backdrop-blur-xl animate-in zoom-in-95 fade-in duration-200"
+          class="absolute z-50 w-72 max-h-[88vh] overflow-y-auto bg-[#1a2340] border border-border-glass rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.9)] backdrop-blur-xl animate-in zoom-in-95 fade-in duration-200"
           [style.top.px]="popupY()"
           [style.left.px]="popupX()">
 
-          <!-- 1. Header with Background and Title -->
+          <!-- 1. En-tête avec fond et titre -->
           <div [class]="'p-5 pb-6 rounded-t-2xl relative ' + getHeaderBgClass(selectedTask()!.status)">
-            <!-- Close -->
+            <!-- Fermer -->
             <button (click)="closeTask()" class="absolute top-4 right-4 text-black/40 hover:text-black/70 transition-colors">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
@@ -110,10 +110,10 @@ interface CalendarDay {
           </div>
 
           <div class="p-5">
-            <!-- Info rows -->
+            <!-- Lignes d'informations -->
             <div class="space-y-4 text-sm mt-1">
 
-              <!-- Date & Time -->
+              <!-- Date et heure -->
               <div class="flex items-start gap-4 text-txt-sec">
                 <svg class="w-5 h-5 mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 <div class="flex-1">
@@ -121,7 +121,7 @@ interface CalendarDay {
                 </div>
               </div>
 
-              <!-- Type (Custom label like the image) -->
+              <!-- Type (libellé personnalisé) -->
               <div class="flex items-start gap-4 text-txt-sec">
                 <svg class="w-5 h-5 mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                 <div class="flex-1">
@@ -129,7 +129,7 @@ interface CalendarDay {
                 </div>
               </div>
 
-              <!-- Project -->
+              <!-- Projet -->
               <div class="flex items-start gap-4 text-txt-sec">
                  <svg class="w-5 h-5 mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
                  <div class="flex-1">
@@ -137,7 +137,7 @@ interface CalendarDay {
                 </div>
               </div>
 
-              <!-- Status Badge (extra info not in image but useful) -->
+              <!-- Badge de statut (informations supplémentaires utiles) -->
               <div class="flex items-start gap-4">
                 <div class="w-5"></div>
                 <span [class]="getStatusBadgeClass(selectedTask()!.status)">{{ getStatusLabel(selectedTask()!.status) }}</span>
@@ -145,7 +145,7 @@ interface CalendarDay {
 
               <!-- Description -->
               @if (selectedTask()!.description) {
-                <div class="bg-white/5 rounded-xl px-4 py-3 text-xs text-txt-sec leading-relaxed ml-9">
+                <div class="bg-bg-panel rounded-xl px-4 py-3 text-xs text-txt-sec leading-relaxed ml-9">
                   {{ selectedTask()!.description }}
                 </div>
               }
@@ -154,11 +154,11 @@ interface CalendarDay {
       
             
 
-            <!-- Google Calendar Button (below, as functional addition) -->
+            <!-- Bouton Google Calendar (ci-dessous, ajout fonctionnel) -->
             @if (selectedTask()!.deadline) {
               <div class="mt-4">
                 <a [href]="getGCalUrl(selectedTask()!)" target="_blank" rel="noopener"
-                   class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-sm transition-all bg-[#4285f4] hover:bg-[#5a95f5] text-white">
+                   class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-sm transition-all bg-[#4285f4] hover:bg-[#5a95f5] text-txt-main">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5C3.9 3 3 3.9 3 5v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zm-7-2h2v-5h-2v5zm-4 0h2v-3H8v3zm8 0h2v-7h-2v7z"/></svg>
                   Sync Google Calendar
                 </a>

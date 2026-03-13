@@ -9,8 +9,8 @@ class TaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ['id', 'project', 'project_name', 'title', 'description', 'status', 'deadline', 'assigned_to', 'assigned_to_username', 'completed_at']
-        read_only_fields = ['completed_at']
+        fields = ['id', 'project', 'project_name', 'title', 'description', 'status', 'deadline', 'assigned_to', 'assigned_to_username', 'completed_at', 'validated_at', 'validated_by']
+        read_only_fields = ['completed_at', 'validated_at', 'validated_by']
 
     def validate(self, data):
         """

@@ -36,7 +36,7 @@
             </a>
             {% endif %}
             <a href="{% url 'dashboard' %}"
-                class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium border border-border-col text-txt-sec hover:bg-white/5 transition-colors">
+                class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium border border-border-col text-txt-sec hover:bg-bg-panel transition-colors">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="15 18 9 12 15 6" />
                 </svg>
@@ -52,9 +52,9 @@
         </div>
         <div class="p-5 text-sm text-txt leading-relaxed">
             {% if object.description %}
-                {{ object.description|linebreaksbr }}
+            {{ object.description|linebreaksbr }}
             {% else %}
-                <span class="text-txt-muted italic">Aucune description fournie pour ce projet.</span>
+            <span class="text-txt-muted italic">Aucune description fournie pour ce projet.</span>
             {% endif %}
         </div>
         <div class="px-5 py-3 bg-bg-sidebar border-t border-border-col text-[11px] text-txt-muted text-right">
@@ -66,8 +66,8 @@
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <!-- Tâches (Col 1 & 2) -->
         <div class="xl:col-span-2 bg-bg-card border border-border-glass rounded-2xl overflow-hidden shadow-xl">
-            <div class="px-5 py-4 border-b border-border-glass bg-white/[0.02] flex items-center justify-between">
-                <h2 class="font-syne font-semibold text-sm text-white flex items-center gap-2">
+            <div class="px-5 py-4 border-b border-border-glass bg-bg-panel flex items-center justify-between">
+                <h2 class="font-syne font-semibold text-sm text-txt-main flex items-center gap-2">
                     <svg class="w-4 h-4 text-accent-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="2.5">
                         <path d="M9 11l3 3L22 4" />
@@ -97,8 +97,8 @@
                     </thead>
                     <tbody>
                         {% for task in object.project_tasks.all %}
-                        <tr class="border-b border-border-glass hover:bg-white/[0.02] transition-colors group">
-                            <td class="px-5 py-4 font-bold text-white">{{ task.title }}</td>
+                        <tr class="border-b border-border-glass hover:bg-bg-panel transition-colors group">
+                            <td class="px-5 py-4 font-bold text-txt-main">{{ task.title }}</td>
                             <td class="px-5 py-4">
                                 <span class="flex items-center gap-2 text-txt-sec">
                                     <div
@@ -110,19 +110,22 @@
                             </td>
                             <td class="px-5 py-4 text-center">
                                 {% if task.assigned_to == user %}
-                                <form method="post" action="{% url 'task_status_update' task.pk %}" class="inline-block">
+                                <form method="post" action="{% url 'task_status_update' task.pk %}"
+                                    class="inline-block">
                                     {% csrf_token %}
                                     <select name="status" onchange="this.form.submit()"
                                         class="bg-bg-card border border-border-col rounded-lg text-[10px] font-bold px-2 py-1.5 text-txt focus:outline-none focus:ring-1 focus:ring-accent-blue cursor-pointer">
-                                        <option value="todo" {% if task.status == 'todo' %}selected{% endif %}>À faire</option>
+                                        <option value="todo" {% if task.status == 'todo' %}selected{% endif %}>À faire
+                                        </option>
                                         <option value="in_progress" {% if task.status == 'in_progress' %}selected{% endif %}>En cours</option>
-                                        <option value="done" {% if task.status == 'done' %}selected{% endif %}>Terminée</option>
+                                        <option value="done" {% if task.status == 'done' %}selected{% endif %}>Terminée
+                                        </option>
                                     </select>
                                 </form>
                                 {% else %}
                                 {% if task.status == 'todo' %}
                                 <span
-                                    class="px-3 py-1 bg-white/5 text-txt-sec rounded-lg text-[10px] font-bold border border-white/5 uppercase">À
+                                    class="px-3 py-1 bg-bg-panel text-txt-sec rounded-lg text-[10px] font-bold border border-border-col uppercase">À
                                     faire</span>
                                 {% elif task.status == 'in_progress' %}
                                 <span
@@ -131,15 +134,17 @@
                                 {% elif task.status == 'done' %}
                                 {% if task.validated_at %}
                                 <span
-                                    class="px-3 py-1 bg-accent-green/10 text-accent-green rounded-lg text-[10px] font-bold border border-accent-green/20 uppercase">Terminée · Validée</span>
+                                    class="px-3 py-1 bg-accent-green/10 text-accent-green rounded-lg text-[10px] font-bold border border-accent-green/20 uppercase">Terminée
+                                    · Validée</span>
                                 {% else %}
                                 <span
-                                    class="px-3 py-1 bg-amber-500/10 text-amber-400 rounded-lg text-[10px] font-bold border border-amber-500/20 uppercase">Terminée · En attente</span>
+                                    class="px-3 py-1 bg-amber-500/10 text-amber-400 rounded-lg text-[10px] font-bold border border-amber-500/20 uppercase">Terminée
+                                    · En attente</span>
                                 {% endif %}
                                 {% endif %}
                                 {% endif %}
                             </td>
-                            <td class="px-5 py-4 text-txt-dim text-[11px]">{{ task.deadline|date:"d M, H:i"|default:"—" }}</td>
+                            <td class="px-5 py-4 text-txt-dim text-[11px]">{{ task.deadline|date:"d M, H:i"|default:"—"}}</td>
                             <td class="px-5 py-4">
                                 <div
                                     class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -149,14 +154,15 @@
                                         {% csrf_token %}
                                         <button type="submit" title="Valider pour comptabiliser la prime"
                                             class="w-8 h-8 rounded-lg bg-accent-green/20 text-accent-green flex items-center justify-center hover:bg-accent-green hover:text-white transition-all">
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2">
                                                 <polyline points="20 6 9 17 4 12" />
                                             </svg>
                                         </button>
                                     </form>
                                     {% endif %}
                                     <a href="{% url 'task_edit' task.pk %}"
-                                        class="w-8 h-8 rounded-lg bg-white/5 text-txt-sec flex items-center justify-center hover:bg-accent-blue hover:text-white transition-all">
+                                        class="w-8 h-8 rounded-lg bg-bg-panel text-txt-sec flex items-center justify-center hover:bg-accent-blue hover:text-white transition-all">
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
                                             stroke="currentColor" stroke-width="2">
                                             <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
@@ -164,7 +170,7 @@
                                         </svg>
                                     </a>
                                     <a href="{% url 'task_delete' task.pk %}"
-                                        class="w-8 h-8 rounded-lg bg-white/5 text-red-400/70 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all">
+                                        class="w-8 h-8 rounded-lg bg-bg-panel text-red-400/70 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all">
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
                                             stroke="currentColor" stroke-width="2">
                                             <polyline points="3 6 5 6 21 6" />
@@ -188,8 +194,8 @@
 
         <!-- Membres (Col 3) -->
         <div class="bg-bg-card border border-border-glass rounded-2xl overflow-hidden shadow-xl flex flex-col h-fit">
-            <div class="px-5 py-4 border-b border-border-glass bg-white/[0.02] flex items-center justify-between">
-                <h2 class="font-syne font-semibold text-sm text-white flex items-center gap-2">
+            <div class="px-5 py-4 border-b border-border-glass bg-bg-panel flex items-center justify-between">
+                <h2 class="font-syne font-semibold text-sm text-txt-main flex items-center gap-2">
                     <svg class="w-4 h-4 text-accent-glow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="2.5">
                         <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
@@ -201,7 +207,7 @@
                 </h2>
                 {% if object.owner == user %}
                 <a href="{% url 'member_add' object.pk %}"
-                    class="text-accent-glow hover:text-white text-[11px] font-bold transition-all uppercase tracking-wider">
+                    class="text-accent-glow hover:text-txt-main text-[11px] font-bold transition-all uppercase tracking-wider">
                     + Ajouter
                 </a>
                 {% endif %}
@@ -216,7 +222,7 @@
                             {{ object.owner.username|first|upper }}
                         </div>
                         <div>
-                            <p class="text-sm font-bold text-white">{{ object.owner.display_name }}</p>
+                            <p class="text-sm font-bold text-txt-main">{{ object.owner.display_name }}</p>
                             <p class="text-[10px] text-orange-400 font-bold uppercase tracking-widest">Propriétaire</p>
                         </div>
                     </div>
@@ -227,17 +233,18 @@
                 <div class="flex items-center justify-between group">
                     <div class="flex items-center gap-3">
                         <div
-                            class="w-9 h-9 rounded-full bg-white/5 border border-white/5 flex items-center justify-center text-xs font-bold text-txt-sec">
+                            class="w-9 h-9 rounded-full bg-bg-panel border border-border-col flex items-center justify-center text-xs font-bold text-txt-sec">
                             {{ member.user.username|first|upper }}
                         </div>
                         <div>
-                            <p class="text-sm font-bold text-white group-hover:text-accent-blue transition-colors">{{member.user.display_name }}</p>
+                            <p class="text-sm font-bold text-txt-main group-hover:text-accent-blue transition-colors">
+                                {{member.user.display_name }}</p>
                             <p class="text-[10px] text-txt-dim font-bold uppercase tracking-widest">Membre d'équipe</p>
                         </div>
                     </div>
                     {% if object.owner == user %}
                     <a href="{% url 'member_delete' member.pk %}"
-                        class="w-8 h-8 rounded-lg bg-white/5 text-txt-dim flex items-center justify-center hover:bg-red-500/20 hover:text-red-400 transition-all opacity-0 group-hover:opacity-100">
+                        class="w-8 h-8 rounded-lg bg-bg-panel text-txt-dim flex items-center justify-center hover:bg-red-500/20 hover:text-red-400 transition-all opacity-0 group-hover:opacity-100">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"></line>

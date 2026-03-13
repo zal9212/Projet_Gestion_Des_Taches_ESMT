@@ -151,3 +151,8 @@ class NotificationViewSet(viewsets.ModelViewSet):
         notif.is_read = True
         notif.save()
         return Response({'status': 'notification marquée comme lue'})
+
+    @action(detail=False, methods=['post'])
+    def mark_all_as_read(self, request):
+        self.get_queryset().update(is_read=True)
+        return Response({'status': 'toutes les notifications sont marquées comme lues'})

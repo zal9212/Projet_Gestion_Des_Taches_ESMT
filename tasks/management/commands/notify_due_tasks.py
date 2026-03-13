@@ -79,4 +79,5 @@ class Command(BaseCommand):
                     logger.error(f"Erreur d'envoi d'email à {user.email}: {e}")
                     self.stdout.write(self.style.ERROR(f"Erreur d'envoi d'email à {user.email}: {e}"))
                     
-        self.stdout.write(self.style.SUCCESS(f"Traitement terminé : Notifications envoyées pour {count} tâche(s)."))
+        if count > 0:
+            self.stdout.write(self.style.SUCCESS(f"Traitement terminé : Notifications envoyées pour {count} tâche(s)."))

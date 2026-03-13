@@ -16,7 +16,7 @@ import { AuthService } from '../services/auth.service';
       </div>
 
       <div class="flex flex-col lg:flex-row gap-8">
-        <!-- Profile Overview -->
+        <!-- Aperçu du Profil -->
         <div class="w-full lg:w-80 flex flex-col gap-6">
             <div class="bg-bg-card border border-border-col rounded-3xl p-8 flex flex-col items-center text-center">
                 <div class="w-32 h-32 rounded-3xl bg-accent/20 border-2 border-accent/30 flex items-center justify-center text-accent text-4xl font-bold mb-6 overflow-hidden shadow-2xl">
@@ -43,14 +43,14 @@ import { AuthService } from '../services/auth.service';
             </div>
         </div>
 
-        <!-- Settings Form -->
+        <!-- Formulaire des Paramètres -->
         <div class="flex-1 bg-bg-card border border-border-col rounded-3xl overflow-hidden flex flex-col">
-            <div class="px-8 py-5 border-b border-border-col bg-white/[0.02]">
+            <div class="px-8 py-5 border-b border-border-col bg-bg-panel">
                 <h3 class="font-syne font-bold text-base text-txt">Modifier les informations</h3>
             </div>
             
             <div class="p-8 flex flex-col gap-8">
-                <!-- Personnal Info Section -->
+                <!-- Section Informations Personnelles -->
                 <div>
                     <h4 class="text-[11px] font-bold uppercase tracking-widest text-accent-bright border-b border-border-col pb-2 mb-6">Informations personnelles</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -69,7 +69,7 @@ import { AuthService } from '../services/auth.service';
                     </div>
                 </div>
 
-                <!-- Avatar Section -->
+                <!-- Section Avatar -->
                 <div>
                     <h4 class="text-[11px] font-bold uppercase tracking-widest text-accent-bright border-b border-border-col pb-2 mb-6">Avatar & Biographie</h4>
                     <div class="flex flex-col gap-6">
@@ -81,12 +81,12 @@ import { AuthService } from '../services/auth.service';
                 </div>
             </div>
 
-            <div class="mt-auto px-8 py-5 border-t border-border-col bg-white/[0.02] flex justify-end">
+            <div class="mt-auto px-8 py-5 border-t border-border-col bg-bg-panel flex justify-end">
                 <p class="text-[10px] text-txt-muted mr-auto flex items-center gap-2 italic">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                     Les modifications sont gérées par l'ESMT.
                 </p>
-                <button class="px-8 py-2.5 bg-white/5 border border-border-col rounded-xl text-xs font-bold text-txt-muted cursor-not-allowed opacity-50">
+                <button class="px-8 py-2.5 bg-bg-panel border border-border-col rounded-xl text-xs font-bold text-txt-muted cursor-not-allowed opacity-50">
                     Enregistrer (Désactivé)
                 </button>
             </div>
