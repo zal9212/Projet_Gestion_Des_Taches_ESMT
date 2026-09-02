@@ -189,6 +189,39 @@ pytest --cov=. --cov-report=html
 
 ---
 
+## Déploiement Render
+
+Le dépôt est prêt pour un déploiement **monolithique Django + Angular intégré** (un seul service web).
+
+### 1) Créer le service dans Render
+
+- Créer un **Web Service** (environnement Python) sur ce dépôt.
+- Option simple: importer `render.yaml` (Blueprint), puis ajuster le nom du service.
+- Option manuelle (Dashboard):
+  - **Build Command**: `pip install -r requirements.txt`
+  - **Start Command**: `python manage.py migrate && python manage.py collectstatic --noinput && gunicorn config.asgi:application -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT`
+
+### 2) Variables d'environnement à définir
+
+Copier `.env.example` et renseigner au minimum:
+
+- `SECRET_KEY` (obligatoire)
+- `DEBUG=False`
+- `ALLOWED_HOSTS=.onrender.com` (ou votre domaine exact)
+- `CSRF_TRUSTED_ORIGINS=https://<votre-service>.onrender.com`
+- `CORS_ALLOWED_ORIGINS=https://<votre-service>.onrender.com` (si front/back séparés, mettre l’URL frontend)
+- `DATABASE_URL` (optionnel mais recommandé pour PostgreSQL Render ; sinon SQLite locale)
+- `EMAIL_ADDRESS`, `PASSWORD` (si notifications email activées)
+
+### 3) Points d'attention
+
+- Les migrations sont exécutées au démarrage (`manage.py migrate`).
+- Les fichiers statiques sont servis en production via **WhiteNoise**.
+- Si vous utilisez `DATABASE_URL`, Render doit avoir une base PostgreSQL provisionnée.
+- Avec `DEBUG=False`, vérifier que `ALLOWED_HOSTS` et `CSRF_TRUSTED_ORIGINS` correspondent bien à l'URL Render.
+
+---
+
 ## Règle de calcul des primes
 
 Le taux de complétion est calculé sur l'année entière selon la formule :
